@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v3.8.5">
-    <title>Home</title>
+    <title>Kendall's Blog</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/album/">
 
@@ -43,13 +43,13 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item active">
+          <li class="nav-item">
             <a class="nav-link" href="http://instagram.com/kendall_bousquet">Instagram</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% static 'personal_icon.png' %}">Resume</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item active">
             <a class="nav-link" href="{% url 'allblogs' %}">Blog</a>
           </li>
         </ul>
@@ -59,44 +59,31 @@
 
 <main role="main">
 
-  <section class="jumbotron text-center">
-    <div class="container">
-      <h1 class="jumbotron-heading">Kendall Lindsey Bousquet</h1>
-      <img src="{% static 'ai.png' %}" alt="">
-      <p class="lead text-muted">I am a model.</p>
-      <p>
-        <a href="mailto: xxkb5@aol.com" class="btn btn-primary my-2">Contact me.</a>
-      </p>
-    </div>
-  </section>
+<div class="container">
 
-  <div class="album py-5 bg-light">
-    <div class="container">
+  <h1 class="text-center pt-3">Welcome to Kendall's Blog</h1>
+  <br>
+  <br>
+  <h2>Latest Posts</h2>
+  <hr>
 
-      <div class="row">
+    <div class="row">
+      {% for blog in blogs.all %}
 
-        {% for job in jobs.all %}
-        <div class="col-md-4">
-          <div class="card mb-4 shadow-sm">
-            <img class="bd-placeholder-img card-img-top" src="{{ job.image.url }}"</img>
-            <div class="card-body">
-              <p class="card-text">{{ job.summary }}</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted">9 mins</small>
-              </div>
-            </div>
-          </div>
+        <div class="col-sm-4">
+          <h3><a href="{% url 'detail' blog.id %}">{{ blog.title }}</a></h3>
+          <small>Published: {{ blog.pub_date_pretty }}</small>
+          <p>{{ blog.summary }}</p>
+          <img src="{{ blog.image.url }}" width="100px">
         </div>
-        {% endfor %}
 
-      </div>
 
+      {% endfor %}
     </div>
-  </div>
+    <br>
+    <br>
+
+</div>
 
 </main>
 
