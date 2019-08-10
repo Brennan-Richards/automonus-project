@@ -1,11 +1,11 @@
-from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
-import jobs.views
+from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', jobs.views.home, name='home'),
-    path('blog/', include('blog.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('income', views.income, name='income'),
+    path('housing', views.housing, name='housing'),
+    path('car', views.car, name='car'),
+    path('utilities', views.utilities, name='utilities'),
+    path('food', views.food, name='food'),
+    path('miscellaneous', views.miscellaneous, name='miscellaneous'),
+]
