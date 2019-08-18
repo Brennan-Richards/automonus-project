@@ -26,9 +26,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['serene-tundra-76328.herokuapp.com/']
-
-
 # Application definition
 
 INSTALLED_APPS = [
