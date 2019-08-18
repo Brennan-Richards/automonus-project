@@ -26,7 +26,7 @@ SECRET_KEY = 'B$QKt.zEqom(]`Qe[cz>X!m@*O3Z:N'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['radiant-anchorage-31578.herokuapp.com']
+ALLOWED_HOSTS = ['guarded-ravine-87096.herokuapp.com']
 
 # Application definition
 
