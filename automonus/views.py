@@ -13,7 +13,6 @@ import urllib
 def content(request):
 
     displayform = DisplayForm(request.POST or None)
-    user = request.user
 
     if displayform.is_valid():
         display = displayform.save(commit=False)
