@@ -13,8 +13,8 @@ Pillow = "*"
 django-mathfilters = "*"
 requests = "*"
 psycopg2-binary = "*"
-multiselectfield = "*"
-django-multiselectfield = "*"
+dj-database-url = "*"
+whitenoise = "*"
 
 [requires]
 python_version = "3.7"
