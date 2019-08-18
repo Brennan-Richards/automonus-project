@@ -14,17 +14,13 @@ def content(request):
 
     displayform = DisplayForm(request.POST or None)
 
-    twentyfive = 25
-
-    uacol = 100
-
     if displayform.is_valid():
         display = displayform.save(commit=False)
         display.user = request.user
         display.save()
         return redirect('automonus_content')
 
-    return render(request, 'automonus/automonus_content.html', {'form':displayform}, {'uacol':100})
+    return render(request, 'automonus/automonus_content.html', {'form':displayform})
 
 class UpdateDisplay(generic.UpdateView):
     model = Display

@@ -26,7 +26,7 @@ SECRET_KEY = 'B$QKt.zEqom(]`Qe[cz>X!m@*O3Z:N'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['guarded-ravine-87096.herokuapp.com']
+ALLOWED_HOSTS = ['guarded-ravine-87096.herokuapp.com', 'localhost']
 
 # Application definition
 
@@ -58,7 +58,7 @@ ROOT_URLCONF = 'automonus.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['automonus/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,7 +78,18 @@ WSGI_APPLICATION = 'automonus.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
+
     'default': dj_database_url.config()
+
+    # 'default': {
+    # 'ENGINE': 'django.db.backends.postgresql',
+    # 'NAME': 'template1',
+    # 'USER': 'brennanrichards',
+    # 'PASSWORD': 'F00tb@ll#',
+    # 'HOST': 'localhost',
+    # 'PORT': '5432',
+}
+
 }
 
 
