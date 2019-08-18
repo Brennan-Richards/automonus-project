@@ -1,0 +1,26 @@
+{% load static %}
+{% load mathfilters %}
+
+<div class="row">
+  <div class="col-sm-6 offset-sm-3">
+
+    <p class="text-muted">Complete all of the modules below to see an overview of your finances. This section will be home to your most important financial metrics.</p>
+    <br>
+
+    <ul>
+    {% if user.tax %}
+      <li><p>After you pay taxes and FICA, your income is equal to ${{ user.tax.calc_income|sub:user.tax.annual_cost }} per year.</p></li>
+    {% endif %}
+
+    {% if user.food and user.car and user.housing and user.utilities and user.miscellaneous %}
+      <li><p>The total cost of your living expenses is: ${{ user.display.cost_of_living_expenses }}. </p></li>
+      <li><p><strong>After you pay your taxes and your living expenses, your income is equal to: ${{ user.tax.income_after_tax_and_fica|sub:user.display.cost_of_living_expenses }}</strong></p></li>
+    {% endif %}
+    </ul>
+
+  </div>
+</div>
+
+<br>
+<br>
+<hr>

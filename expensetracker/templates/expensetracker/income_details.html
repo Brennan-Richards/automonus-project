@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load mathfilters %}
+
+  <table class="table">
+
+    <tr>
+      <td></td>
+      <th>Daily</th>
+      <th>Weekly</th>
+      <th>Biweekly</th>
+      <th>Monthly</th>
+      <th>Yearly</th>
+    </tr>
+
+    <tr>
+      {% with income=user.income.calc_income %}
+      <td>Salary</td>
+      <td> {{ income|div:365 }} </td>
+      <td> {{ income|div:52 }} </td>
+      <td> {{ income|div:26 }} </td>
+      <td> {{ income|div:12 }} </td>
+      <td> {{ income }} </td>
+      {% endwith %}
+    </tr>
+
+  </table>
+
+{% endblock %}

@@ -1,10 +1,15 @@
 from django import forms
-from .models import Income, Housing, Car, Utilities, Food, Miscellaneous
+from .models import Display, Income, Tax, Housing, Car, Utilities, Food, Miscellaneous
 
 class IncomeForm(forms.ModelForm):
     class Meta:
         model = Income
         fields = ['salary', 'paycheck_period']
+
+class TaxForm(forms.ModelForm):
+    class Meta:
+        model = Tax
+        fields = ['dependents', 'state', 'filing_status', 'periods', 'pay_rate']
 
 class HousingForm(forms.ModelForm):
     class Meta:
@@ -35,3 +40,8 @@ class MiscellaneousForm(forms.ModelForm):
         model = Miscellaneous
         fields = ['health_insurance', 'healthinsurance_pay_per', 'life_insurance', 'lifeinsurance_pay_per',
         'clothing', 'clothing_pay_per']
+
+class DisplayForm(forms.ModelForm):
+    class Meta:
+        model = Display
+        fields = ['display']

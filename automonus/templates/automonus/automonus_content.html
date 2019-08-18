@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+  {% load static from staticfiles %}
+  {% load mathfilters %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'custom.css' %}">
+<title>Home</title>
+
+<div class="row">
+
+{% if user.is_authenticated %}
+
+<div class="col-sm-10 offset-sm-1 text-center">
+
+  <!-- OVERVIEW -->
+
+    <h2 align="left">Overview</h2>
+    <br>
+
+    {% include 'automonus/overview.html' %}
+
+    <!-- INCOME -->
+
+      <h2 align="left">Income</h2>
+      <br>
+
+      {% include 'automonus/income.html' %}
+
+    <!-- DISPLAY -->
+
+    <h2 align="left">Expenses</h2>
+    <br>
+
+
+    <!-- MASTER -->
+      {{ uacol }}
+
+      {% include 'automonus/master.html' %}
+
+
+  </div>
+</div>
+{% else %}
+
+ <!-- MARKETING, LOG IN OR SIGN UP -->
+
+    <div class="col-sm-4 offset-md-4 text-center">
+
+        <small class="text-muted">You are not logged in to Automonus.</small>
+
+        <img src="{% static 'snake&brain.png' %}" width=250>
+
+        <br>
+        <br>
+
+
+        <a class="btn btn-lg btn-block btn-outline-success" href="{% url 'signup' %}">Create an account</a>
+
+        <a class="btn btn-lg btn-block btn-outline-primary" href="{% url 'login' %}">Log in</a>
+
+    </div>
+
+{% endif %}
+
+{% endblock %}
