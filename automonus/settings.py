@@ -26,7 +26,7 @@ SECRET_KEY = 'B$QKt.zEqom(]`Qe[cz>X!m@*O3Z:N'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['automonus-project.herokuapp.com/', 'localhost']
+ALLOWED_HOSTS = ['automonus-project.herokuapp.com', 'localhost']
 
 # Application definition
 
