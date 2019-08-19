@@ -80,7 +80,15 @@ WSGI_APPLICATION = 'automonus.wsgi.application'
 DATABASES = {
 
     'default': dj_database_url.config()
-    
+
+    # 'default': {
+    # 'ENGINE': 'django.db.backends.postgresql',
+    # 'NAME': 'template1',
+    # 'USER': 'brennanrichards',
+    # 'PASSWORD': 'F00tb@ll#',
+    # 'HOST': 'localhost',
+    # 'PORT': '5432',
+    #  }
 
 }
 
