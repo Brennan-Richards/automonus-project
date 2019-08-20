@@ -52,12 +52,6 @@
       <div class="card-body">
         <p>The state and country withhold ${{ user.tax.annual_cost }} of your paycheck <strong>yearly</strong>.</p>
         <p>After paying taxes and FICA, your annual income is equal to ${{ user.tax.calc_income|sub:user.tax.annual_cost }}</p>
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="btn-group">
-            <a href="{% url 'tax_update' user.tax.id %}" type="button" class="btn btn-sm btn-outline-secondary">Update Tax Information</a>
-            <a href="{% url 'tax_details' user.tax.id %}" type="button" class="btn btn-sm btn-outline-secondary">See Details</a>
-          </div>
-        </div>
       </div>
     </div>
   </div>
