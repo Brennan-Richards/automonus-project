@@ -26,7 +26,7 @@ SECRET_KEY = 'B$QKt.zEqom(]`Qe[cz>X!m@*O3Z:N'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['automonus-project.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['automonus-project.herokuapp.com']
 
 # Application definition
 
@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware'
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'automonus.urls'
