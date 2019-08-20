@@ -683,6 +683,7 @@ class Display(models.Model):
             return 1.00
 
     def cost_of_living_expenses(self):
+        
         user_id = self.user.id
 
         car = Car.objects.get(user=user_id).annual_cost
