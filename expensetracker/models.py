@@ -246,12 +246,14 @@ class Car(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=False)
 
-    miles = models.IntegerField()
+    gas = models.DecimalField(max_digits=11, decimal_places=2, default=0)
+    car_mpg = models.DecimalField(max_digits=11, decimal_places=2, default=0)
     maintenance = models.DecimalField(max_digits=11, decimal_places=2, default=0)
     car_insurance = models.DecimalField(max_digits=11, decimal_places=2, default=0)
     car_property_tax = models.DecimalField(max_digits=11, decimal_places=2, default=0)
 
-    gas_cost = models.DecimalField(max_digits=11, decimal_places=2, default=0)
+    miles_driven = models.IntegerField(default=0)
+    current_price_of_gas = Decimal(2.68)
 
     annual_cost = models.DecimalField(max_digits=11, decimal_places=2, default=0)
 
@@ -300,7 +302,7 @@ class Car(models.Model):
 
     def gas_yt(self):
         gas = self.gas
-        gas_period = self.gas_pay_per
+        gas_period = self.miles_per
 
         return calc_yearly_total(gas, gas_period)
 
@@ -322,12 +324,20 @@ class Car(models.Model):
 
         return calc_yearly_total(carproptax, carproptax_period)
 
+    def get_gas_cost(self):
+
+        cost_per_mile = self.current_price_of_gas / self.car_mpg
+        miles_driven = self.miles_driven
+
+        return cost_per_mile * miles_driven
+
+
     def yearly_total(self):
 
         expenses = ['gas', 'maintenance', 'car_insurance', 'car_property_tax']
 
         exp_values = {'gas':self.gas, 'maintenance': self.maintenance, 'car_insurance':self.car_insurance, 'car_property_tax':self.car_property_tax}
-        choices = {'gas':self.gas_pay_per, 'maintenance':self.maintenance_pay_per, 'car_insurance':self.carinsurance_pay_per, 'car_property_tax':self.carproptax_pay_per}
+        choices = {'gas':self.miles_per, 'maintenance':self.maintenance_pay_per, 'car_insurance':self.carinsurance_pay_per, 'car_property_tax':self.carproptax_pay_per}
 
         total = 0
 

@@ -159,6 +159,7 @@ def car(request):
         car = carform.save(commit=False)
         car.user = request.user
         car.annual_cost = car.yearly_total()
+        car.gas = car.get_gas_cost()
         car.save()
         return redirect('automonus_content')
 
@@ -176,7 +177,8 @@ class UpdateCar(generic.UpdateView):
 
     def form_valid(self, form):
         car_update = form.save(commit=False)
-        car_upate.annual_cost = car_update.yearly_total()
+        car_update.annual_cost = car_update.yearly_total()
+        car_update.gas = car_update.get_gas_cost()
         car_update.save()
         return redirect('automonus_content')
 

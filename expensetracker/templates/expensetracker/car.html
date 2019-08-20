@@ -4,10 +4,13 @@
 
 <div class="col-sm-8 offset-md-2">
 
+<h3>The current price of gas is ${{ user.car.gas }}. We will use this value to compute how much you spend on gas.</h3>
+
 <h3 align='center'>Car/Transportation Expenses</h3>
 <form action="#" method="POST" role="form">
     {% csrf_token %}
-    <p>Your gas costs you ${{ form.gas }} {{ form.gas_pay_per }}</p>
+    <p>You drive {{ form.miles_driven }} miles per {{ form.miles_per }} period.<span class="text-muted">(For reference, people drive about 13,000 miles per year on average.)</span></p>
+    <p>Your car gets {{ form.car_mpg }} miles/gallon.</p>
     <p>You pay approximately ${{ form.maintenance }} each {{ form.maintenance_pay_per }} to maintain your vehicle.</p>
     <p>Your car insurance costs you ${{ form.car_insurance }} per {{ form.carinsurance_pay_per }}. </p>
     <p>Your car costs you ${{ form.car_property_tax }} in property tax and you pay for it {{ form.carproptax_pay_per }}.</p>
@@ -15,7 +18,7 @@
     <div class="text-center">
       <input class="btn btn-primary center" type="submit" value="Submit" />
     </div>
-    
+
 </form>
 
 </div>
