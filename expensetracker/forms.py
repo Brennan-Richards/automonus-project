@@ -20,7 +20,7 @@ class HousingForm(forms.ModelForm):
 class CarForm(forms.ModelForm):
     class Meta:
         model = Car
-        fields = ['gas', 'gas_pay_per', 'maintenance', 'maintenance_pay_per', 'car_insurance',
+        fields = ['miles', 'miles_per', 'maintenance', 'maintenance_pay_per', 'car_insurance',
         'carinsurance_pay_per', 'car_property_tax', 'carproptax_pay_per']
 
 class UtilitiesForm(forms.ModelForm):

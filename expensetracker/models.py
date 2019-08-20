@@ -246,10 +246,12 @@ class Car(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=False)
 
-    gas = models.DecimalField(max_digits=11, decimal_places=2, default=0)
+    miles = models.IntegerField()
     maintenance = models.DecimalField(max_digits=11, decimal_places=2, default=0)
     car_insurance = models.DecimalField(max_digits=11, decimal_places=2, default=0)
     car_property_tax = models.DecimalField(max_digits=11, decimal_places=2, default=0)
+
+    gas_cost = models.DecimalField(max_digits=11, decimal_places=2, default=0)
 
     annual_cost = models.DecimalField(max_digits=11, decimal_places=2, default=0)
 
@@ -269,7 +271,7 @@ class Car(models.Model):
     ]
 
 
-    gas_pay_per = models.CharField(
+    miles_per = models.CharField(
         max_length=7,
         choices=PAY_PERIOD_CHOICES,
         default=YEARLY,

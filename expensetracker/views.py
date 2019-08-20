@@ -87,12 +87,12 @@ class UpdateTax(generic.UpdateView):
 
     def form_valid(self, form):
 
-        form.save(commit=False)
+        tax_update = form.save(commit=False)
 
-        filing_status = str(form.cleaned_data['filing_status'])
-        state = str(form.cleaned_data['state'])
-        exemptions = str(form.cleaned_data['dependents'])
-        pay_rate = str(form.cleaned_data['pay_rate'])
+        filing_status = str(tax_update.cleaned_data['filing_status'])
+        state = str(tax_update.cleaned_data['state'])
+        exemptions = str(tax_update.cleaned_data['dependents'])
+        pay_rate = str(tax_update.cleaned_data['pay_rate'])
 
         headers = {
             'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBUElfS0VZX01BTkFHRVIiLCJodHRwOi8vdGF4ZWUuaW8vdXNlcl9pZCI6IjVkMzI4NDE4NDRmMzYwMWEyODMwYjI3YyIsImh0dHA6Ly90YXhlZS5pby9zY29wZXMiOlsiYXBpIl0sImlhdCI6MTU2MzU5MTcwNH0.CvvzJUxbg2wbU56KqUvZ87k8nLz9XJ263QBG10sFjwo',
@@ -100,11 +100,11 @@ class UpdateTax(generic.UpdateView):
         }
 
         data = {
-          'state': form.cleaned_data['state'],
-          'filing_status': form.cleaned_data['filing_status'],
-          'pay_periods': form.cleaned_data['periods'],
-          'pay_rate': form.cleaned_data['pay_rate'],
-          'exemptions': form.cleaned_data['dependents'],
+          'state': tax_update.cleaned_data['state'],
+          'filing_status': tax_update.cleaned_data['filing_status'],
+          'pay_periods': tax_update.cleaned_data['periods'],
+          'pay_rate': tax_update.cleaned_data['pay_rate'],
+          'exemptions': tax_update.cleaned_data['dependents'],
         }
 
         response = requests.post('https://taxee.io/api/v2/calculate/2019', headers=headers, data=data)
@@ -113,11 +113,11 @@ class UpdateTax(generic.UpdateView):
 
         print(json_response)
 
-        form.fica = json_response['annual']['fica']['amount']
-        form.annual_state_tax = json_response['annual']['state']['amount']
-        form.annual_federal_tax = json_response['annual']['federal']['amount']
+        tax_update.fica = json_response['annual']['fica']['amount']
+        tax_update.annual_state_tax = json_response['annual']['state']['amount']
+        tax_update.annual_federal_tax = json_response['annual']['federal']['amount']
 
-        form.save()
+        tax_update.save()
 
         return redirect('automonus_content')
 
@@ -149,7 +149,7 @@ class UpdateHousing(generic.UpdateView):
     def form_valid(self, form):
         housing_update = form.save(commit=False)
         housing_upate.annual_cost = housing_update.yearly_total()
-        housing.save()
+        form.save()
         return redirect('automonus_content')
 
 def car(request):
@@ -171,9 +171,14 @@ class DetailCar(generic.DetailView):
 class UpdateCar(generic.UpdateView):
     model = Car
     template_name = 'expensetracker/car_update.html'
-    fields = ['gas', 'gas_pay_per', 'maintenance', 'maintenance_pay_per', 'car_insurance',
-    'carinsurance_pay_per', 'car_property_tax', 'carproptax_pay_per']
+    form_class = CarForm
     success_url = reverse_lazy('automonus_content')
+
+    def form_valid(self, form):
+        car_update = form.save(commit=False)
+        car_upate.annual_cost = car_update.yearly_total()
+        car_update.save()
+        return redirect('automonus_content')
 
 def utilities(request):
     utilitiesform = UtilitiesForm(request.POST or None)
@@ -194,10 +199,14 @@ class DetailUtilities(generic.DetailView):
 class UpdateUtilities(generic.UpdateView):
     model = Utilities
     template_name = 'expensetracker/utilities_update.html'
-    fields = ['electricity', 'electricity_pay_per', 'heating', 'heating_pay_per',
-    'phone', 'phone_pay_per', 'cable', 'cable_pay_per', 'internet', 'internet_pay_per', 'water',
-    'water_pay_per']
+    form_class = UtilitiesForm
     success_url = reverse_lazy('automonus_content')
+
+    def form_valid(self, form):
+        utilities_update = form.save(commit=False)
+        utilities_upate.annual_cost = utilities_update.yearly_total()
+        utilities_update.save()
+        return redirect('automonus_content')
 
 def food(request):
     foodform = FoodForm(request.POST or None)
@@ -218,8 +227,14 @@ class DetailFood(generic.DetailView):
 class UpdateFood(generic.UpdateView):
     model = Food
     template_name = 'expensetracker/food_update.html'
-    fields = ['groceries', 'groceries_pay_per', 'restaurant_food_costs', 'restaurant_pay_per']
+    form_class = FoodForm
     success_url = reverse_lazy('automonus_content')
+
+    def form_valid(self, form):
+        food_update = form.save(commit=False)
+        food_upate.annual_cost = food_update.yearly_total()
+        food_update.save()
+        return redirect('automonus_content')
 
 
 def miscellaneous(request):
@@ -241,6 +256,11 @@ class DetailMiscellaneous(generic.DetailView):
 class UpdateMiscellaneous(generic.UpdateView):
     model = Miscellaneous
     template_name = 'expensetracker/miscellaneous_update.html'
-    fields = ['health_insurance', 'healthinsurance_pay_per', 'life_insurance', 'lifeinsurance_pay_per',
-    'clothing', 'clothing_pay_per']
+    form_class = MiscellaneousForm
     success_url = reverse_lazy('automonus_content')
+
+    def form_valid(self, form):
+        misc_update = form.save(commit=False)
+        misc_upate.annual_cost = misc_update.yearly_total()
+        misc_update.save()
+        return redirect('automonus_content')
