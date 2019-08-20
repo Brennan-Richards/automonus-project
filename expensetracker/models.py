@@ -20,7 +20,7 @@ def calc_yearly_total(expense, expense_period_choice):
     else:
         yearly_total = expense
 
-    return yearly_total
+    return round(yearly_total,2)
 
 class Income(models.Model):
 
@@ -239,7 +239,7 @@ class Housing(models.Model):
             else:
                 total += exp_values[expense] * Decimal(1)
 
-        return total
+        return round(total, 2)
 
 class Car(models.Model):
     name = 'Car'
@@ -340,7 +340,7 @@ class Car(models.Model):
             else:
                 total += exp_values[expense] * Decimal(1)
 
-        return total
+        return round(total,2)
 
 class Utilities(models.Model):
     name = 'Utilities'
@@ -466,7 +466,7 @@ class Utilities(models.Model):
             else:
                 total += exp_values[expense] * Decimal(1)
 
-        return total
+        return round(total,2)
 
 class Food(models.Model):
     name = 'Food'
@@ -539,7 +539,7 @@ class Food(models.Model):
             else:
                 total += exp_values[expense] * Decimal(1)
 
-        return total
+        return round(total,2)
 
 class Miscellaneous(models.Model):
     name = 'Miscellaneous'
@@ -626,7 +626,7 @@ class Miscellaneous(models.Model):
             else:
                 total += exp_values[expense] * Decimal(1)
 
-        return total
+        return round(total,2)
 
 class Display(models.Model):
 
@@ -686,4 +686,4 @@ class Display(models.Model):
         for total in totals:
             all_cost += total
 
-        return all_cost
+        return round(all_cost,2)

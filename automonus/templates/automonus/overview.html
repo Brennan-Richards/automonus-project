@@ -2,21 +2,34 @@
 {% load mathfilters %}
 
 <div class="row">
-  <div class="col-sm-6 offset-sm-3">
+  <div class="col-sm-8 offset-sm-2">
 
-    <p class="text-muted">Complete all of the modules below to see an overview of your finances. This section will be home to your most important financial metrics.</p>
+    <h4>Hello! Welcome to The Automonus Project.</h4>
+    <p>Complete all of the modules below to see an overview of your finances. This section will be home to your most important financial metrics, such as:</p>
     <br>
 
-    <ul>
+    <ul class="text-left">
     {% if user.tax %}
       <li><p>After you pay taxes and FICA, your income is equal to ${{ user.tax.calc_income|sub:user.tax.annual_cost }} per year.</p></li>
+    {% else %}
+      <li><p class = text-muted>How much money you make each year after paying taxes.</p></li>
     {% endif %}
 
     {% if user.food and user.car and user.housing and user.utilities and user.miscellaneous %}
       <li><p>The total cost of your living expenses is: ${{ user.display.cost_of_living_expenses }}. </p></li>
       <li><p><strong>After you pay your taxes and your living expenses, your income is equal to: ${{ user.tax.income_after_tax_and_fica|sub:user.display.cost_of_living_expenses }}</strong></p></li>
+    {% else %}
+      <li><p class="text-muted">The total cost of your living expenses.</p></li>
+      <li><p class="text-muted">How much of your yearly salary remains after your taxes and living expenses are paid.</p></li>
     {% endif %}
+
     </ul>
+
+    <hr>
+
+
+    <p>In addition, refer to the completed modules below for specific information on the cost of each of your expenses over any given time period. If at any time you wish to see a more in-depth breakdown of your costs for a particular expense, just click the 'Details' link after completion.</p>
+
 
   </div>
 </div>

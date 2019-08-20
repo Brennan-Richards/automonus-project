@@ -7,9 +7,9 @@
   <div class="col-md-4">
     <div class="card mb-4 bg-dark text-white box-shadow">
       <br>
-      <p>Currently showing your costs per: <strong>{{ user.display.display_string }}</strong>. </p>
+      <h4>Currently showing your costs per: <strong>{{ user.display.display_string }}</strong>. </h4>
       <div class="card-body">
-        <a href="{% url 'display_update' user.display.id %}" class="btn btn-sm btn-outline-light">Change the overview time period.</a>
+        <a href="{% url 'display_update' user.display.id %}" class="btn btn-sm btn-outline-light">Update display period.</a>
       </div>
     </div>
   </div>
@@ -40,19 +40,23 @@
         {% if user.housing %}
           <div class="col-md-4">
             <div class="card mb-4 box-shadow">
+              <div class="card-header">
+                <ul class="nav nav-pills card-header-pills">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'housing_update' user.housing.id %}">Update</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'housing_details' user.housing.id%}">Details</a>
+                  </li>
+                </ul>
+              </div>
               <h4 class="text-muted">Housing</h4>
               <div class="card-body">
                 {% with operator=user.display.display_operator %}
-                <p class="card-text">
-                    You spend <strong>${{ user.housing.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on housing.
-                </p>
+                  <p class="card-text">
+                      You spend <strong>${{ user.housing.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on housing.
+                  </p>
                 {% endwith %}
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <a href="{% url 'housing_update' user.housing.id %}" type="button" class="btn btn-sm btn-outline-secondary">Update Housing</a>
-                    <a href="{% url 'housing_details' user.housing.id %}" type="button" class="btn btn-sm btn-outline-secondary">Details</a>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -62,7 +66,7 @@
                 <h4 class="text-muted">Housing</h4>
                 <div class="card-body">
                   <p>You have not yet added your housing expense information. </p>
-                  <a href="{% url 'housing' %}" class="btn btn-warning">Complete the housing module.</a>
+                  <a href="{% url 'housing' %}" class="btn btn-success">Complete the housing module.</a>
                 </div>
               </div>
             </div>
@@ -73,19 +77,23 @@
         {% if user.utilities %}
         <div class="col-md-4">
           <div class="card mb-4 box-shadow">
+            <div class="card-header">
+              <ul class="nav nav-pills card-header-pills">
+                <li class="nav-item">
+                  <a class="nav-link active" href="{% url 'utilities_update' user.utilities.id %}">Update</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'utilities_details' user.utilities.id %}">Details</a>
+                </li>
+              </ul>
+            </div>
             <h4 class="text-muted">Utilities</h4>
             <div class="card-body">
               {% with operator=user.display.display_operator %}
-              <p class="card-text">
-                  You spend <strong>${{ user.utilities.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on your utilities.
-              </p>
+                <p class="card-text">
+                    You spend <strong>${{ user.utilities.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on your utilities.
+                </p>
               {% endwith %}
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <a href="{% url 'utilities_update' user.utilities.id %}" type="button" class="btn btn-sm btn-outline-secondary">Update Utilities</a>
-                  <a href="{% url 'utilities_details' user.utilities.id %}" type="button" class="btn btn-sm btn-outline-secondary">Details</a>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -95,7 +103,7 @@
             <h4 class="text-muted">Utilities</h4>
             <div class="card-body">
               <p>You have not yet added your utility expenses.</p>
-              <a href="{% url 'utilities' %}" class="btn btn-danger">Complete the utility expenses module.</a>
+              <a href="{% url 'utilities' %}" class="btn btn-success">Complete the utility expenses module.</a>
             </div>
           </div>
         </div>
@@ -108,19 +116,23 @@
         {% if user.food %}
         <div class="col-md-4">
           <div class="card mb-4 box-shadow">
+            <div class="card-header">
+              <ul class="nav nav-pills card-header-pills">
+                <li class="nav-item">
+                  <a class="nav-link active" href="{% url 'food_update' user.food.id %}">Update</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'food_details' user.food.id %}">Details</a>
+                </li>
+              </ul>
+            </div>
             <h4 class="text-muted">Food</h4>
             <div class="card-body">
               {% with operator=user.display.display_operator %}
-              <p class="card-text">
-                  You spend <strong>${{ user.food.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on your groceries and restaurant food.
-              </p>
+                <p class="card-text">
+                    You spend <strong>${{ user.food.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on your groceries and restaurant food.
+                </p>
               {% endwith %}
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <a href="{% url 'food_update' user.food.id %}" type="button" class="btn btn-sm btn-outline-secondary">Update Food</a>
-                  <a href="{% url 'food_details' user.food.id %}" type="button" class="btn btn-sm btn-outline-secondary">Details</a>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -130,7 +142,7 @@
             <h4 class="text-muted">Food</h4>
             <div class="card-body">
               <p>You have not yet entered your food expenses.</p>
-              <a href="{% url 'food' %}" class="btn btn-dark">Complete the food expenses module.</a>
+              <a href="{% url 'food' %}" class="btn btn-success">Complete the food expenses module.</a>
             </div>
           </div>
         </div>
@@ -140,19 +152,23 @@
           {% if user.car %}
               <div class="col-md-4">
                 <div class="card mb-4 box-shadow">
+                  <div class="card-header">
+                    <ul class="nav nav-pills card-header-pills">
+                      <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'car_update' user.car.id %}">Update</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'car_details' user.car.id %}">Details</a>
+                      </li>
+                    </ul>
+                  </div>
                   <h4 class="text-muted">Transportation</h4>
                   <div class="card-body">
                     {% with operator=user.display.display_operator %}
-                    <p class="card-text">
-                        You spend <strong>${{ user.car.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on your transportation.
-                    </p>
+                      <p class="card-text">
+                          You spend <strong>${{ user.car.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on your transportation.
+                      </p>
                     {% endwith %}
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="btn-group">
-                        <a href="{% url 'car_update' user.car.id %}" type="button" class="btn btn-sm btn-outline-secondary">Update Transportation</a>
-                        <a href="{% url 'car_details' user.car.id %}" type="button" class="btn btn-sm btn-outline-secondary">Details</a>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -162,7 +178,7 @@
                   <h4 class="text-muted">Transportation</h4>
                   <div class="card-body">
                     <p class="card-text">You have not yet added your transportation expenses.</p>
-                    <a href="{% url 'car' %}" class="btn btn-primary">Complete the transportation module.</a>
+                    <a href="{% url 'car' %}" class="btn btn-success">Complete the transportation module.</a>
                   </div>
                 </div>
               </div>
@@ -174,19 +190,23 @@
         {% if user.miscellaneous %}
         <div class="col-md-4">
           <div class="card mb-4 box-shadow">
+            <div class="card-header">
+              <ul class="nav nav-pills card-header-pills">
+                <li class="nav-item">
+                  <a class="nav-link active" href="{% url 'miscellaneous_update' user.miscellaneous.id %}">Update</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'miscellaneous_details' user.miscellaneous.id %}">Details</a>
+                </li>
+              </ul>
+            </div>
             <h4 class="text-muted">Miscellaneous</h4>
             <div class="card-body">
               {% with operator=user.display.display_operator %}
-              <p class="card-text">
-                  You spend <strong>${{ user.miscellaneous.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on your health insurance, life insurance, and clothing.
-              </p>
+                <p class="card-text">
+                    You spend <strong>${{ user.miscellaneous.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on your health insurance, life insurance, and clothing.
+                </p>
               {% endwith %}
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <a href="{% url 'miscellaneous_update' user.miscellaneous.id %}" type="button" class="btn btn-sm btn-block btn-outline-secondary">Update Miscellaneous</a>
-                  <a href="{% url 'miscellaneous_details' user.miscellaneous.id %}" type="button" class="btn btn-sm btn-block btn-outline-secondary">Details</a>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -196,7 +216,7 @@
             <h4 class="text-muted">Miscellaneous</h4>
             <div class="card-body">
               <p>You have not yet entered your miscellaneous expenses.</p>
-              <a href="{% url 'miscellaneous' %}" class="btn btn-info">Complete this module on miscellaneous expenses.</a>
+              <a href="{% url 'miscellaneous' %}" class="btn btn-success">Complete this module on miscellaneous expenses.</a>
             </div>
           </div>
         </div>
