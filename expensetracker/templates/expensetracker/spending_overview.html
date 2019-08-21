@@ -2,7 +2,7 @@
 
 {% block content %}
 
-  {% if user.expenditures %}
+  {% if user.expenditures is not None %}
 
     <h1>Spending Overview</h1>
 
