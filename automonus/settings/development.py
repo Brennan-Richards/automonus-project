@@ -30,8 +30,12 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'expensetracker.apps.ExpensetrackerConfig',
     'accounts.apps.AccountsConfig',
+    'expensetracker.apps.ExpensetrackerConfig',
+    'savings.apps.SavingsConfig',
+    'debts.apps.DebtsConfig',
+    'income.apps.IncomeConfig',
+    'investments.apps.InvestmentsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user.income %}
+
+<h1>Savings Overview</h1>
+
+{% else %}
+
+  <div class="row text-center">
+    <div class="col-sm-8 offset-sm-2">
+
+      {% include 'automonus/add_bank_account.html' %}
+
+      <p>To see an overview of your savings.</p>
+
+    </div>
+  </div>
+
+{% endif %}
+
+{% endblock %}

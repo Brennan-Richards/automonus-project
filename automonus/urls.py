@@ -7,10 +7,14 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.content, name='automonus_content'),
-    path('display/<int:pk>/update', views.UpdateDisplay.as_view(), name='display_update'),
+    path('', views.home, name='home'),
     path('accounts/', include('accounts.urls')),
+    path('income/', include('income.urls')),
     path('expensetracker/', include('expensetracker.urls')),
+    path('savings/', include('savings.urls')),
+    path('debts/', include('debts.urls')),
+    path('investments', include('investments.urls')),
+
 ]
 
 if settings.DEBUG:

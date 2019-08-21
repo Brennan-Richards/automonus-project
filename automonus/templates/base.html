@@ -32,7 +32,7 @@
 
   <a class="navbar-brand" href="#">
     {% if user.is_authenticated %}
-      <img src="{% static 'automonus-beta-light.png' %}" width="250">
+      <img src="{% static 'automonus-beta-light.png' %}" width="200">
     {% endif %}
   </a>
 
@@ -45,45 +45,49 @@
 
       {% if user.is_authenticated %}
 
-      <!-- Shows 'Account' dropdown for logged in users. -->
+        <!-- Shows 'Account' dropdown for logged in users. -->
 
-      <li class="nav-item">
-        <a class="nav-item nav-link mr-sm-2" href="{% url 'automonus_content' %}">Home</a>
-      </li>
+        <li class="nav-item">
+          <a class="nav-item nav-link mr-sm-2" href="{% url 'home' %}">Home</a>
+        </li>
 
-      <li class="nav-item dropdown">
-        <button class="nav-link dropdown-toggle btn btn-sm btn-outline-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Account
-        </button>
+        <li class="nav-item dropdown">
 
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="javascript:{document.getElementById('logout').submit()}">Log Out</a>
-          <a class="dropdown-item" href="#">Account Info</a>
+          <button class="nav-link dropdown-toggle btn btn-sm btn-outline-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Your Finances
+          </button>
 
-            <form id="logout" method="POST" action="{% url 'logout' %}">
-              {% csrf_token %}
-              <input type="hidden">
-            </form>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
-        </div>
-      </li>
+            <a class="dropdown-item" href="{% url 'income_overview' %}">Income</a>
 
+            <a class="dropdown-item" href="{% url 'spending_overview' %}">Spending</a>
 
-      {% else %}
+            <a class="dropdown-item" href="{% url 'savings_overview' %}">Savings</a>
 
-      <!-- Shows 'Account' dropdown info for users who are not logged in. -->
+            <a class="dropdown-item" href="{% url 'liabilities_overview' %}">Liabilities</a>
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle btn btn-sm btn-outline-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Account
-        </a>
+            <a class="dropdown-item" href="{% url 'investments_overview' %}">Investments</a>
 
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url 'login' %}">Log In</a>
-          <a class="dropdown-item" href="{% url 'signup' %}">Sign Up</a>
-        </div>
-      </li>
+          </div>
+        </li>
 
+        <li class="nav-item dropdown">
+          <button class="nav-link dropdown-toggle btn btn-sm btn-outline-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Account
+          </button>
+
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="javascript:{document.getElementById('logout').submit()}">Log Out</a>
+            <p class="dropdown-item">Your account: {{ user.username }}</p>
+
+              <form id="logout" method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <input type="hidden">
+              </form>
+
+          </div>
+        </li>
 
       {% endif %}
 
