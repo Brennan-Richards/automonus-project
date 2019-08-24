@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 class Income(models.Model):
 
-    name = "Savings"
+    name = "Income"
 
     def __str__(self):
         return self.NAME
