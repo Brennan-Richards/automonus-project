@@ -25,7 +25,7 @@ def signup(request):
 def login(request):
     if request.method == 'POST':
         user = auth.authenticate(username=request.POST['email'], password=request.POST['password'])
-        if user is not None:
+        if user  :
             auth.login(request, user)
             return redirect('home')
         else:

@@ -2,6 +2,7 @@
 <!-- 'Add Bank Account' Auth View from Plaid -->
 
     <button id="link-button" class="btn btn-success btn-lg">Link Account</button>
+    <form> {% csrf_token %}
     <script
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
     <script
@@ -34,7 +35,7 @@
           // The metadata object contains info about the institution the
           // user selected and the account ID or IDs, if the
           // Select Account view is enabled.
-          $.post('/get_access_token', {
+          $.post('get_access_token/', {
             public_token: public_token,
           });
         },
@@ -66,3 +67,4 @@
       });
     })(jQuery);
     </script>
+    </form>

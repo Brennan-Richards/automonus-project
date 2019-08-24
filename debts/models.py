@@ -13,4 +13,12 @@ class Debts(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    student_debt = models.DecimalField(max_digits=11, decimal_places=2, default=0)
+    outstanding_amount_principle = models.DecimalField(max_digits=11, decimal_places=2, default=0)
+    outstanding_amount_interest = models.DecimalField(max_digits=11, decimal_places=2, default=0)
+    minimum_payment_amount = models.DecimalField(max_digits=11, decimal_places=2, default=0)
+    last_payment_amount = models.DecimalField(max_digits=11, decimal_places=2, default=0)
+
+
+class DebtAverages(models.Model):
+
+    average_payment_amount = models.DecimalField(max_digits=11, decimal_places=2, default=0)

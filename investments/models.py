@@ -12,4 +12,4 @@ class Investments(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    investment_value = models.DecimalField(max_digits=11, decimal_places=2, default=0)
+    total_securities_value = models.DecimalField(max_digits=11, decimal_places=2, default=0)

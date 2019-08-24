@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9b1ab366a48582276fc9c78564a71d1b8b5895d3280493f6de8dd44cee2ff706"
+            "sha256": "1a6e9cdc0aebe3f9fe77336ded3bf1486d6c8673f6325a134331c5b182a4cef6"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -84,6 +84,13 @@
             ],
             "version": "==2.8"
         },
+        "ngrok": {
+            "hashes": [
+                "sha256:cda772fce123cc08fde1b83d82c1310e07daca6b37d8a583ba877935a66953de"
+            ],
+            "index": "pypi",
+            "version": "==0.0.1"
+        },
         "pillow": {
             "hashes": [
                 "sha256:0804f77cb1e9b6dbd37601cee11283bba39a8d44b9ddb053400c58e0c0d7d9de",
@@ -115,6 +122,13 @@
             ],
             "index": "pypi",
             "version": "==6.1.0"
+        },
+        "plaid-python": {
+            "hashes": [
+                "sha256:bbfad84b8c827a14bc5b0ab93e1e5c7117908e5fa4cdecaa44a037298a20b7de"
+            ],
+            "index": "pypi",
+            "version": "==3.4.0"
         },
         "psycopg2": {
             "hashes": [

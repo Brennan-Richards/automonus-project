@@ -13,7 +13,8 @@ urlpatterns = [
     path('expensetracker/', include('expensetracker.urls')),
     path('savings/', include('savings.urls')),
     path('debts/', include('debts.urls')),
-    path('investments', include('investments.urls')),
+    path('investments/', include('investments.urls')),
+    path('get_access_token/', views.get_access_token, name="get_access_token"),
 
 ]
 
