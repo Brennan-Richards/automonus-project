@@ -10,6 +10,10 @@ import urllib
 
 # Create your views here.
 
+def navigation(request):
+
+    return render(request, 'automonus/navigation.html')
+
 def content(request):
 
     displayform = DisplayForm(request.POST or None)
