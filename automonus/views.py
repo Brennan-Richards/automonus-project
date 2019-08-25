@@ -35,7 +35,6 @@ def get_access_token(request):
     user = request.user
     if request.method == 'POST':
         data = request.POST.copy()
-        print(data)
         public_token = data['public_token']
         #the public token is received from Plaid Link
         response = client.Item.public_token.exchange(public_token)
@@ -46,7 +45,8 @@ def get_access_token(request):
                                                                         defaults={"name": institution_name}
                                                                     )
         user_institution, created = UserInstitution.objects.update_or_create(user=user, institution=institution,
-                                                                    defaults={"access_token": access_token}
+                                                                        defaults={"access_token": access_token}
                                                                     )
-        user_institution.populate_accounts(access_token)
+        user_institution.populate_income_information()
+        user_institution.populate_accounts()
         return JsonResponse({"status": "success"})

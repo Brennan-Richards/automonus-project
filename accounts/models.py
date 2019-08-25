@@ -11,7 +11,7 @@ client = Client(client_id=settings.PLAID_CLIENT_ID,
 )
 
 
-class ModelBaseFields(models.Model):
+class ModelBaseFieldsAbstract(models.Model):
     name = models.CharField(max_length=128)
     is_active = models.BooleanField(default=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
@@ -25,11 +25,16 @@ class ModelBaseFields(models.Model):
         abstract = True
 
 
-class AccountType(ModelBaseFields):
+class AccountType(ModelBaseFieldsAbstract):
     pass
 
 
-class AccountSubType(ModelBaseFields):
+class AccountSubType(ModelBaseFieldsAbstract):
+    pass
+
+
+class Institution(ModelBaseFieldsAbstract):
+    plaid_id = models.CharField(max_length=64)
     pass
 
 
@@ -44,12 +49,7 @@ class Currency(models.Model):
         return "{}".format(self.code)
 
 
-class Institution(ModelBaseFields):
-    plaid_id = models.CharField(max_length=64)
-    pass
-
-
-class UserInstitution(ModelBaseFields):
+class UserInstitution(ModelBaseFieldsAbstract):
     institution = models.ForeignKey(Institution, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     user = models.ForeignKey(User, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     # this is needed to retrieve API data for instances related to this institution
@@ -58,14 +58,47 @@ class UserInstitution(ModelBaseFields):
     created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
-    def populate_accounts(self, access_token):
+    def __str__(self):
+        if self.user and self.institution:
+            return "{}: {}".format(self.user.username, self.institution.name)
+        else:
+            return "{}".format(self.id)
+
+    def populate_income_information(self):
+        from income.models import Income, IncomeStream
+        income_data = client.Income.get(self.access_token)
+        data = income_data["income"]
+        income_defaults_kwargs = {
+            "max_number_of_overlapping_income_streams": data["max_number_of_overlapping_income_streams"],
+            "number_of_income_streams": data["number_of_income_streams"],
+            "last_year_income_before_tax": data["last_year_income_before_tax"],
+            "last_year_income_minus_tax": data["last_year_income"],
+            "projected_yearly_income_before_tax": data["projected_yearly_income_before_tax"],
+            "projected_yearly_minus_tax": data["projected_yearly_income"],
+        }
+
+        income, created = Income.objects.update_or_create(user_institution=self, defaults=income_defaults_kwargs)
+        income_streams = data["income_streams"]
+        for income_stream in income_streams:
+            # ToDo: think about a way to define and deactivate income streams, which are not relevant anymore
+            name = income_stream["name"]
+            confidence = income_stream["confidence"]
+            days = income_stream["days"]
+            monthly_income = income_stream["monthly_income"]
+            IncomeStream.objects.update_or_create(income=income, name=name,
+                                                  defaults={"confidence": confidence, "days": days,
+                                                            "monthly_income": monthly_income})
+
+
+
+    def populate_accounts(self):
         """The code with getting stripe token:
-        stripe_response = client.Processor.stripeBankAccountTokenCreate(access_token, account_id)
+        stripe_response = client.Processor.stripeBankAccountTokenCreate(self.access_token, account_id)
         even if it is referenced in the plaid docs.
         Following information in this link https://stripe.com/docs/ach, such token is only needed in case
         of the need to make payments, using that account.
         """
-        bank_accounts_data = client.Accounts.get(access_token)
+        bank_accounts_data = client.Accounts.get(self.access_token)
         for account_data in bank_accounts_data["accounts"]:
             account_id = account_data["account_id"]
             type_name = account_data["type"]
