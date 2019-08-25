@@ -9,6 +9,8 @@
     src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
     <script type="text/javascript">
     (function($) {
+        csrf_token = "{{ csrf_token }}";
+        console.log(csrf_token);
       var handler = Plaid.create({
         clientName: 'Plaid Quickstart',
         // Optional, specify an array of ISO-3166-1 alpha-2 country
@@ -36,7 +38,9 @@
           // user selected and the account ID or IDs, if the
           // Select Account view is enabled.
           $.post('get_access_token/', {
+            csrfmiddlewaretoken: csrf_token,
             public_token: public_token,
+            metadata: metadata,
           });
         },
         onExit: function(err, metadata) {

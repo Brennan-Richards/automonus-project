@@ -1,52 +1,52 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib import auth
 from django.urls import reverse_lazy
 from django.views import generic
 from django.http import JsonResponse
-
 import requests
 from plaid import Client
 import json
 import os
+from django.contrib.auth.decorators import login_required
+from accounts.models import Institution, UserInstitution
+from django.conf import settings
 
-# Create your views here.
-
-PLAID_CLIENT_ID = '5d37fe8b737a4f001252bfd9'
-PLAID_SECRET = '176040b1d82a9d35dfc9aca8fe9943'
-PLAID_PUBLIC_KEY = '6c5492915411a3645fdd0368516aa9'
 # Use 'sandbox' to test with Plaid's Sandbox environment (username: user_good,
 # password: pass_good)
 # Use development to test with live users and credentials and production
 # to go live
-PLAID_ENV = os.getenv('PLAID_ENV', 'sandbox')
 
-client = Client(client_id=PLAID_CLIENT_ID,
-    secret=PLAID_SECRET,
-    public_key=PLAID_PUBLIC_KEY,
-    environment=PLAID_ENV
-    )
+client = Client(client_id=settings.PLAID_CLIENT_ID,
+    secret=settings.PLAID_SECRET,
+    public_key=settings.PLAID_PUBLIC_KEY,
+    environment=settings.PLAID_ENV
+)
 
-access_token = None
 
-public_token = None
-
+@login_required
 def home(request):
+    context = {'plaid_public_key': settings.PLAID_PUBLIC_KEY, 'plaid_environment': settings.PLAID_ENV}
+    return render(request, 'automonus/home.html', context)
 
-    return render(request, 'automonus/home.html', {'plaid_public_key':PLAID_PUBLIC_KEY, 'plaid_environment':PLAID_ENV})
 
+@login_required
 def get_access_token(request):
-
+    user = request.user
     if request.method == 'POST':
-        global access_token
-        public_token = request.form['public_token']
+        data = request.POST.copy()
+        print(data)
+        public_token = data['public_token']
         #the public token is received from Plaid Link
         response = client.Item.public_token.exchange(public_token)
         access_token = response['access_token']
-        print(access_token)
-        item = Item.objects.create(token=access_token)
-        item.save(commit=False)
-        item.user = request.user
-        item.save()
-
-        return json.response
+        institution_name = data["metadata[institution][name]"]
+        institution_id = data["metadata[institution][institution_id]"]
+        institution, created = Institution.objects.update_or_create(plaid_id=institution_id,
+                                                                        defaults={"name": institution_name}
+                                                                    )
+        user_institution, created = UserInstitution.objects.update_or_create(user=user, institution=institution,
+                                                                    defaults={"access_token": access_token}
+                                                                    )
+        user_institution.populate_accounts(access_token)
+        return JsonResponse({"status": "success"})

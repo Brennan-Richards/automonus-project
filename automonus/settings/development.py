@@ -44,6 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+     'users',
+
+    # external packages
     'mathfilters',
 ]
 
@@ -84,16 +88,17 @@ WSGI_APPLICATION = 'automonus.wsgi.application'
 DATABASES = {
 
     'default': {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'template1',
-    'USER': 'brennanrichards',
-    'PASSWORD': 'F00tb@ll#',
-    'HOST': 'localhost',
-    'PORT': '5432',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'template1',
+        'USER': 'brennanrichards',
+        'PASSWORD': 'F00tb@ll#',
+        'HOST': 'localhost',
+        'PORT': '5432',
      }
-
-
 }
+
+
+
 
 
 
@@ -144,3 +149,8 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+PLAID_ENV = os.getenv('PLAID_ENV', 'sandbox')
+PLAID_CLIENT_ID = '5d37fe8b737a4f001252bfd9'
+PLAID_SECRET = '176040b1d82a9d35dfc9aca8fe9943'
+PLAID_PUBLIC_KEY = '6c5492915411a3645fdd0368516aa9'

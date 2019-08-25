@@ -22,8 +22,8 @@ class Expenditures(models.Model):
     insurance = models.DecimalField(max_digits=11, decimal_places=2, default=0)
     other = models.DecimalField(max_digits=11, decimal_places=2, default=0)
 
-class ExpenseAverages(models.Model):
 
+class ExpenseAverages(models.Model):
     monthly_average_housing = models.DecimalField(max_digits=11, decimal_places=2, default=0)
     monthly_average_utilities = models.DecimalField(max_digits=11, decimal_places=2, default=0)
     monthly_average_transportation = models.DecimalField(max_digits=11, decimal_places=2, default=0)
