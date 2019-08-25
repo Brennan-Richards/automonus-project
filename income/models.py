@@ -41,8 +41,8 @@ class IncomeStream(models.Model):
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
     def __str__(self):
-        if self.income and self.income.user and self.name:
-            return "{}: {}".format(self.income.user.username, self.name)
+        if self.income.user_institution and self.income.user_institution.user and self.name:
+            return "{}: {}".format(self.income.user_institution.user.username, self.name)
         elif self.name:
             return "{}".format(self.name)
         else:
