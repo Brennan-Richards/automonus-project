@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-     'users',
+    'users',
+    'institutions',
 
     # external packages
     'mathfilters',

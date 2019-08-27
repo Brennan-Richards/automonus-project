@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
-from accounts.models import UserInstitution
+from institutions.models import UserInstitution
 
 
 class Income(models.Model):

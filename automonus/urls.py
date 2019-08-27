@@ -6,16 +6,16 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin', admin.site.urls),
     path('', views.home, name='home'),
-    path('accounts/', include('accounts.urls')),
     path('income/', include('income.urls')),
     path('expensetracker/', include('expensetracker.urls')),
     path('savings/', include('savings.urls')),
     path('debts/', include('debts.urls')),
     path('investments/', include('investments.urls')),
     path('get_access_token/', views.get_access_token, name="get_access_token"),
-
+    path('institutions/', include('institutions.urls')),
+    path('accounts/', include('users.urls')),
 ]
 
 if settings.DEBUG:

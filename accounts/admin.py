@@ -24,20 +24,6 @@ class CurrencyAdmin(admin.ModelAdmin):
 admin.site.register(Currency, CurrencyAdmin)
 
 
-class InstitutionAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Institution._meta.fields]
-
-
-admin.site.register(Institution, InstitutionAdmin)
-
-
-class UserInstitutionAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in UserInstitution._meta.fields]
-
-
-admin.site.register(UserInstitution, UserInstitutionAdmin)
-
-
 class AccountAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Account._meta.fields]
 

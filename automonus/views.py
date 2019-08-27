@@ -9,7 +9,7 @@ from plaid import Client
 import json
 import os
 from django.contrib.auth.decorators import login_required
-from accounts.models import Institution, UserInstitution
+from institutions.models import Institution, UserInstitution
 from django.conf import settings
 
 # Use 'sandbox' to test with Plaid's Sandbox environment (username: user_good,
