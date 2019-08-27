@@ -1,40 +1,9 @@
 {% load static %}
 {% load mathfilters %}
 
-<!-- Income Information -->
-<div class="row">
-{% if user.tax %}
-  <div class="col-md-4">
-    <div class="card mb-4 box-shadow">
-      <div class="card-header">
-        <ul class="nav nav-pills card-header-pills">
-          <li class="nav-item">
-            <a class="nav-link active" href="{% url 'tax_update' user.tax.id %}">Update</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'tax_details' user.tax.id %}">Details</a>
-          </li>
-        </ul>
-      </div>
-      <div class="card-body">
-        <p>Your <strong>yearly</strong> salary before taxes is: {{ user.tax.calc_income }}</p>
-      </div>
-    </div>
-  </div>
-{% else %}
-  <div class="col-md-4">
-    <div class="card mb-4 box-shadow">
-      <h4 class="text-muted">Income</h4>
-      <div class="card-body">
-        <p>You have not yet added sufficient income information.</p>
-        <a href="{% url 'income' %}" class="btn btn-success">Please enter your income information.</a>
-      </div>
-    </div>
-  </div>
-{% endif %}
 
 <!-- Tax Details -->
-
+  <div class="row">
   {% if user.tax %}
   <div class="col-md-4">
     <div class="card mb-4 box-shadow">

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+  {% load static %}
+  {% load mathfilters %}
+
+{% block content %}
+
+<title>Home</title>
+
+<div class="row">
+
+<div class="col-sm-10 offset-sm-1 text-center">
+
+  <!-- OVERVIEW -->
+
+  <h1><em>Horne's Calculator</em></h1>
+  <br>
+  <div class="text-left">
+    <p>This software tool outlines the living expenses that almost every adult has in common.</p>
+    <p>Complete all of the modules below to see how much your income needs to be to afford the life of your dreams.</p>
+  </div>
+  <br>
+  <hr>
+
+  <!-- MASTER -->
+
+    <h2 align="left">Your Dream Life Expenses</h2>
+    <br>
+
+    {% include 'hornescalculator/master.html' %}
+
+  <!-- NUMBERS -->
+
+    <h2 align="left">Important Metrics</h2>
+    <br>
+
+    {% include 'hornescalculator/metrics.html' %}
+
+
+    <!-- TAX INFO -->
+
+      <h2 align="left">Necessary Tax Information</h2>
+      <br>
+
+      {% include 'hornescalculator/income.html' %}
+
+
+  </div>
+</div>
+
+{% endblock %}

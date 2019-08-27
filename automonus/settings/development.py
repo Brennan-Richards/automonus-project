@@ -27,9 +27,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = '/marketing/'
+LOGIN_REDIRECT_URL = '/navigation/'
+
 # Application definition
 
 INSTALLED_APPS = [
+    'hornescalculator.apps.HornesCalculatorConfig',
     'expensetracker.apps.ExpensetrackerConfig',
     'accounts.apps.AccountsConfig',
     'django.contrib.admin',
@@ -88,8 +92,6 @@ DATABASES = {
 
 
 }
-
-
 
 
 # Password validation

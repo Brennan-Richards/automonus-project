@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="col-sm-8 offset-sm-2">
+
+<h3 align='center'>Update Utilities Expenses</h3>
+<br>
+<br>
+<form action="#" method="POST" role="form">
+    {% csrf_token %}
+    <p>Your electric bill costs you ${{ form.electricity }} per {{ form.electricity_pay_per }}.</p>
+    <p>Your heating/cooling bill costs you ${{ form.heating }} per {{ form.heating_pay_per }}.</p>
+    <p>Your phone bill costs you {{ form.phone }} per {{ form.phone_pay_per }}.</p>
+    <p>Your cable bill costs you {{ form.cable }} per {{ form.cable_pay_per }}.</p>
+    <p>Your internet bill costs you {{ form.internet }} per {{ form.internet_pay_per }}.</p>
+    <p>Your water bill costs you {{ form.water }} per {{ form.water_pay_per }}.</p>
+
+    <div class="text-center">
+      <input class="btn btn-primary" type="submit" value="Update" />
+    </div>
+    
+</form>
+
+</div>
+
+{% endblock %}

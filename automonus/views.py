@@ -1,33 +1,26 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from django.urls import reverse_lazy
 from django.views import generic
 from django.http import JsonResponse
-from expensetracker.forms import DisplayForm
-from expensetracker.models import Display, Income, Tax, Housing, Car, Utilities, Food, Miscellaneous
-import urllib
+from hornescalculator.forms import DisplayForm
+from hornescalculator.models import Display, Income, Tax, Housing, Car, Utilities, Food, Miscellaneous
 
 # Create your views here.
 
-def navigation(request):
+@login_required
+def about(request):
+    return render(request, 'automonus/about.html')
 
-    return render(request, 'automonus/navigation.html')
-
-def content(request):
-
-    displayform = DisplayForm(request.POST or None)
-
-    if displayform.is_valid():
-        display = displayform.save(commit=False)
-        display.user = request.user
-        display.save()
-        return redirect('automonus_content')
-
-    return render(request, 'automonus/automonus_content.html', {'form':displayform})
+def marketing(request):
+    if user.is_authenticated:
+        return redirect(request, 'automonus/hornescalculator.html')
+    return render(request, 'automonus/marketing.html')
 
 class UpdateDisplay(generic.UpdateView):
     model = Display
     template_name = 'automonus/update_display.html'
     fields = ['display']
-    success_url = reverse_lazy('automonus_content')
+    success_url = reverse_lazy('overview')

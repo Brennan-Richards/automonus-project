@@ -6,7 +6,7 @@ from decimal import *
 # Create your models here.
 
 
-#METHOD - Computes the yearly total of any expense field regardless of the pay period.
+# Computes the yearly total of any expense field regardless of the pay period.
 def calc_yearly_total(expense, expense_period_choice):
 
     yearly_total = 0
@@ -683,7 +683,7 @@ class Display(models.Model):
             return 1.00
 
     def cost_of_living_expenses(self):
-        
+
         user_id = self.user.id
 
         car = Car.objects.get(user=user_id).annual_cost
