@@ -25,8 +25,6 @@ class Income(models.Model):
 
     name = 'Income'
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=False)
-
     salary = models.DecimalField(max_digits=11, decimal_places=2, default=0)
 
     # Definitions for PAY_PERIOD_CHOICES below.
