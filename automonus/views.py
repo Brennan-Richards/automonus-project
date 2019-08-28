@@ -15,7 +15,7 @@ def about(request):
     return render(request, 'automonus/about.html')
 
 def marketing(request):
-    if user.is_authenticated:
+    if request.user.is_authenticated:
         return redirect(request, 'automonus/hornescalculator.html')
     return render(request, 'automonus/marketing.html')
 
