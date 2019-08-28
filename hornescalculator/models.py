@@ -3,7 +3,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from decimal import *
 
-# Create your models here.
 
 def calc_yearly_total(expense, expense_period_choice):
 
@@ -236,6 +235,7 @@ class Housing(models.Model):
                 total += exp_values[expense] * Decimal(1)
 
         return round(total, 2)
+
 
 class Car(models.Model):
     name = 'Car'

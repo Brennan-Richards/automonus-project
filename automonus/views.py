@@ -8,16 +8,18 @@ from django.http import JsonResponse
 from hornescalculator.forms import DisplayForm
 from hornescalculator.models import Display, Income, Tax, Housing, Car, Utilities, Food, Miscellaneous
 
-# Create your views here.
 
 @login_required
 def about(request):
     return render(request, 'automonus/about.html')
 
+
 def marketing(request):
-    if request.user.is_authenticated:
+    user = request.user
+    if user.is_authenticated:
         return redirect(request, 'automonus/hornescalculator.html')
     return render(request, 'automonus/marketing.html')
+
 
 class UpdateDisplay(generic.UpdateView):
     model = Display

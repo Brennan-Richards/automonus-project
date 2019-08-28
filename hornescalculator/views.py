@@ -25,6 +25,7 @@ def overview(request):
 
     return render(request, 'hornescalculator/overview.html', {'form':displayform})
 
+
 @login_required
 def tax(request):
     taxform = TaxForm(request.POST or None)
@@ -66,9 +67,11 @@ def tax(request):
 
     return render(request, 'hornescalculator/data/tax.html', {'form':taxform})
 
+
 class DetailTax(generic.DetailView):
     model = Tax
     template_name = 'hornescalculator/data/tax_details.html'
+
 
 class UpdateTax(generic.UpdateView):
     model = Tax
@@ -127,9 +130,11 @@ def housing(request):
 
     return render(request, 'hornescalculator/data/housing.html', {'form':housingform})
 
+
 class DetailHousing(generic.DetailView):
     model = Housing
     template_name = 'hornescalculator/data/housing_details.html'
+
 
 class UpdateHousing(generic.UpdateView):
     model = Housing
@@ -142,6 +147,7 @@ class UpdateHousing(generic.UpdateView):
         housing_upate.annual_cost = housing_update.yearly_total()
         form.save()
         return redirect('overview')
+
 
 @login_required
 def car(request):
@@ -157,9 +163,11 @@ def car(request):
 
     return render(request, 'hornescalculator/data/car.html', {'form':carform})
 
+
 class DetailCar(generic.DetailView):
     model = Car
     template_name = 'hornescalculator/data/car_details.html'
+
 
 class UpdateCar(generic.UpdateView):
     model = Car
@@ -174,6 +182,7 @@ class UpdateCar(generic.UpdateView):
         car_update.save()
         return redirect('overview')
 
+
 @login_required
 def utilities(request):
     utilitiesform = UtilitiesForm(request.POST or None)
@@ -187,9 +196,11 @@ def utilities(request):
 
     return render(request, 'hornescalculator/data/utilities.html', {'form':utilitiesform})
 
+
 class DetailUtilities(generic.DetailView):
     model = Utilities
     template_name = 'hornescalculator/data/utilities_details.html'
+
 
 class UpdateUtilities(generic.UpdateView):
     model = Utilities
@@ -220,6 +231,7 @@ class DetailFood(generic.DetailView):
     model = Food
     template_name = 'hornescalculator/data/food_details.html'
 
+
 class UpdateFood(generic.UpdateView):
     model = Food
     template_name = 'hornescalculator/data/food_update.html'
@@ -231,6 +243,7 @@ class UpdateFood(generic.UpdateView):
         food_upate.annual_cost = food_update.yearly_total()
         food_update.save()
         return redirect('overview')
+
 
 @login_required
 def miscellaneous(request):
@@ -245,9 +258,11 @@ def miscellaneous(request):
 
     return render(request, 'hornescalculator/data/miscellaneous.html', {'form':miscellaneousform})
 
+
 class DetailMiscellaneous(generic.DetailView):
     model = Miscellaneous
     template_name = 'hornescalculator/data/miscellaneous_details.html'
+
 
 class UpdateMiscellaneous(generic.UpdateView):
     model = Miscellaneous

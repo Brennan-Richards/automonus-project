@@ -9,6 +9,8 @@
     src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
     <script type="text/javascript">
     (function($) {
+        csrf_token = "{{ csrf_token }}";
+        console.log(csrf_token);
       var handler = Plaid.create({
         clientName: 'Plaid Quickstart',
         // Optional, specify an array of ISO-3166-1 alpha-2 country
@@ -18,15 +20,15 @@
         env: 'sandbox',
         // Replace with your public_key from the Dashboard
         key: '6c5492915411a3645fdd0368516aa9',
-        product: ['transactions'],
+        product: ['transactions', 'income'],
         // Optional, use webhooks to get transaction and error updates
-        webhook: 'https://requestb.in',
+        webhook: '{{ webhook_url }}',
         // Optional, specify a language to localize Link
         language: 'en',
         // Optional, specify userLegalName and userEmailAddress to
         // enable all Auth features
-        userLegalName: 'John Appleseed',
-        userEmailAddress: 'jappleseed@yourapp.com',
+        userLegalName: '{{ request.user.get_full_name }}',
+        userEmailAddress: '{{ request.user.email }}',
         onLoad: function() {
           // Optional, called when Link loads
         },
@@ -36,7 +38,9 @@
           // user selected and the account ID or IDs, if the
           // Select Account view is enabled.
           $.post('get_access_token/', {
+            csrfmiddlewaretoken: csrf_token,
             public_token: public_token,
+            metadata: metadata,
           });
         },
         onExit: function(err, metadata) {

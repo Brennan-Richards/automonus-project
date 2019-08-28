@@ -1,7 +1,52 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Item
+from .models import *
 
-#register your models here
 
-admin.site.register(Item)
+class AccountTypeAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in AccountType._meta.fields]
+
+
+admin.site.register(AccountType, AccountTypeAdmin)
+
+
+class AccountSubTypeAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in AccountSubType._meta.fields]
+
+
+admin.site.register(AccountSubType, AccountSubTypeAdmin)
+
+
+class CurrencyAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in Currency._meta.fields]
+
+
+admin.site.register(Currency, CurrencyAdmin)
+
+
+class AccountAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in Account._meta.fields]
+
+
+admin.site.register(Account, AccountAdmin)
+
+
+class TransactionCategoryAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in TransactionCategory._meta.fields]
+
+
+admin.site.register(TransactionCategory, TransactionCategoryAdmin)
+
+
+class TransactionTypeAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in TransactionType._meta.fields]
+
+
+admin.site.register(TransactionType, TransactionTypeAdmin)
+
+
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in Transaction._meta.fields]
+
+
+admin.site.register(Transaction, TransactionAdmin)

@@ -1,6 +1,7 @@
 from django import forms
 from .models import Display, Income, Tax, Housing, Car, Utilities, Food, Miscellaneous
 
+
 class IncomeForm(forms.ModelForm):
     class Meta:
         model = Income
@@ -17,11 +18,13 @@ class HousingForm(forms.ModelForm):
         fields = ['mortgage', 'mortgage_pay_per', 'home_property_tax', 'homeproptax_pay_per',
         'fire_tax', 'firetax_pay_per', 'homeowners_insurance','homeinsurance_pay_per']
 
+
 class CarForm(forms.ModelForm):
     class Meta:
         model = Car
         fields = ['miles_driven', 'miles_per', 'car_mpg', 'maintenance', 'maintenance_pay_per', 'car_insurance',
         'carinsurance_pay_per', 'car_property_tax', 'carproptax_pay_per']
+
 
 class UtilitiesForm(forms.ModelForm):
     class Meta:
@@ -40,6 +43,7 @@ class MiscellaneousForm(forms.ModelForm):
         model = Miscellaneous
         fields = ['health_insurance', 'healthinsurance_pay_per', 'life_insurance', 'lifeinsurance_pay_per',
         'clothing', 'clothing_pay_per']
+
 
 class DisplayForm(forms.ModelForm):
     class Meta:

@@ -6,14 +6,20 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin', admin.site.urls),
     path('', views.about, name='about'),
-    path('display/<int:pk>/update', views.UpdateDisplay.as_view(), name='display_update'),
     path('accounts/', include('accounts.urls')),
+    path('income/', include('income.urls')),
+    path('savings/', include('savings.urls')),
+    path('debts/', include('debts.urls')),
+    path('investments/', include('investments.urls')),
+    path('institutions/', include('institutions.urls')),
+    path('user-accounts/', include('users.urls')),
+    path('webhooks/', include('webhooks.urls')),
+
+    path('display/<int:pk>/update', views.UpdateDisplay.as_view(), name='display_update'),
     path('hornescalculator/', include('hornescalculator.urls')),
     path('marketing/', views.marketing, name='marketing'),
-
-
 ]
 
 if settings.DEBUG:

@@ -27,7 +27,7 @@ DEBUG = True
 
 APPEND_SLASH = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 LOGIN_URL = '/marketing/'
 LOGIN_REDIRECT_URL = '/navigation/'
@@ -37,6 +37,7 @@ LOGIN_REDIRECT_URL = '/navigation/'
 INSTALLED_APPS = [
     'hornescalculator.apps.HornesCalculatorConfig',
     'expensetracker.apps.ExpensetrackerConfig',
+
     'accounts.apps.AccountsConfig',
     'savings.apps.SavingsConfig',
     'debts.apps.DebtsConfig',
@@ -48,6 +49,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'users',
+    'institutions',
+    'webhooks',
+
+    # external packages
     'mathfilters',
 ]
 
@@ -85,19 +92,26 @@ WSGI_APPLICATION = 'automonus.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'template1',
+#         'USER': 'brennanrichards',
+#         'PASSWORD': 'F00tb@ll#',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#      }
+# }
+
 DATABASES = {
-
     'default': {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'template1',
-    'USER': 'brennanrichards',
-    'PASSWORD': 'F00tb@ll#',
-    'HOST': 'localhost',
-    'PORT': '5432',
-     }
-
-
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
+
+
+
 
 
 # Password validation
@@ -146,3 +160,11 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+PLAID_ENV = os.getenv('PLAID_ENV', 'sandbox')
+PLAID_CLIENT_ID = '5d37fe8b737a4f001252bfd9'
+PLAID_SECRET = '176040b1d82a9d35dfc9aca8fe9943'
+PLAID_PUBLIC_KEY = '6c5492915411a3645fdd0368516aa9'
+
+"""Replace ngrok server address (till "/accounts/webhook-handler/" with your server address"""
+PLAID_WEBHOOK_URL = 'https://f24727c3.ngrok.io/webhooks/webhook-handler/'
