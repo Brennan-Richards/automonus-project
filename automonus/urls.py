@@ -19,7 +19,7 @@ urlpatterns = [
 
     path('display/<int:pk>/update', views.UpdateDisplay.as_view(), name='display_update'),
     path('hornescalculator/', include('hornescalculator.urls')),
-    path('marketing', views.marketing, name='marketing'),
+    path('marketing/', views.marketing, name='marketing'),
 ]
 
 if settings.DEBUG:
