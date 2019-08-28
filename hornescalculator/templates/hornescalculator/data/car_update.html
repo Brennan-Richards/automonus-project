@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="col-sm-8 offset-md-2">
+<h3 align='center'>Update Car/Transportation Expenses</h3>
+<br>
+<form action="#" method="POST" role="form">
+    {% csrf_token %}
+
+    <p>You drive {{ form.miles_driven }} miles per {{ form.miles_per }}.</p>
+    <p>Your car gets {{ form.car_mpg }} miles/gallon.</p>
+    <p>You pay approximately ${{ form.maintenance }} each {{ form.maintenance_pay_per }} to maintain your vehicle.</p>
+    <p>Your car insurance costs you ${{ form.car_insurance }} per {{ form.carinsurance_pay_per }}. </p>
+    <p>Your car costs you ${{ form.car_property_tax }} in property tax and you pay for it {{ form.carproptax_pay_per }}.</p>
+
+    <div class="text-center">
+      <input class="btn btn-primary center" type="submit" value="Update" />
+    </div>
+</form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form class="form" action="#" method="POST">
+  {% csrf_token %}
+
+  <div class="form-group">
+    <p class="text-muted form-field"> Choose the period for displaying your expenses. </p>
+  </div>
+
+  <div class="form-group">
+        {{ form.display }}
+  </div>
+
+  <div class="form-group">
+    <div class="form-field">
+      <input class="btn btn-block btn-lg btn-primary" type="submit" value="Submit" />
+    </div>
+  </div>
+
+</form>
+
+{% endblock %}

@@ -32,65 +32,81 @@
 
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
 
-  <a class="navbar-brand" href="#">
-    {% if user.is_authenticated %}
-      <img src="{% static 'automonus-beta-light.png' %}" width="200">
-    {% endif %}
-  </a>
+  {% if user.is_authenticated %}
 
+
+    <a class="navbar-brand" href="#">
+
+      <a class="btn btn-sm btn-outline-secondary mr-sm-5" href="{% url 'about' %}">
+        <img src="{% static 'automonus-beta-light.png' %}" height="250">
+      </a>
+
+    </a>
+
+    <!-- Bootstrap navbar toggler -->
     <a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+      <span class="navbar-toggler-icon"></span>
     </a>
 
   <div class="collapse navbar-collapse" id="navbarsExample03">
     <ul class="navbar-nav mr-auto">
 
-      {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="{% url 'overview' %}">
+          <img src="{% static 'academy-automonus.png' %}" height=30 class="mr-sm-2">
+          Academy
+        </a>
+      </li>
 
-        <!-- Shows 'Account' dropdown for logged in users. -->
+      <li class="nav-item dropdown">
 
-        <li class="nav-item">
-          <a class="nav-item nav-link mr-sm-2" href="{% url 'home' %}">Home</a>
-        </li>
+        <button class="nav-link dropdown-toggle mr-sm-2 btn btn-sm btn-outline-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <img src="{% static 'analysis-automonus.png' %}" height=30 class="mr-sm-2">
+          Analysis
+        </button>
 
-        <li class="nav-item dropdown">
-
-          <button class="nav-link dropdown-toggle btn btn-sm btn-outline-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Your Finances
-          </button>
-
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
-            <a class="dropdown-item" href="{% url 'income_overview' %}">Income</a>
-
-            <a class="dropdown-item" href="{% url 'spending_overview' %}">Spending</a>
-
-            <a class="dropdown-item" href="{% url 'savings_overview' %}">Savings</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Income</a>
+          <a class="dropdown-item" href="#">Savings</a>
+          <a class="dropdown-item" href="#">Debts</a>
+          <a class="dropdown-item" href="#">Investments</a>
 
             <a class="dropdown-item" href="{% url 'liabilities_overview' %}">Liabilities</a>
 
-            <a class="dropdown-item" href="{% url 'investments_overview' %}">Investments</a>
+      <li class="nav-item">
+        <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="#">
+          <img src="{% static 'planning-automonus.png' %}" height=30 class="mr-sm-2">
+          Planning
+        </a>
+      </li>
 
-          </div>
-        </li>
+      <li class="nav-item">
+        <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="#">
+          <img src="{% static 'payments-automonus.png' %}" height=30 class="mr-sm-2">
+          Payments
+        </a>
+      </li>
 
-        <li class="nav-item dropdown">
-          <button class="nav-link dropdown-toggle btn btn-sm btn-outline-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Account
-          </button>
+      <li class="nav-item">
+        <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="#">Virtual Marketplace</a>
+      </li>
 
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="javascript:{document.getElementById('logout').submit()}">Log Out</a>
-            <p class="dropdown-item">Your account: {{ user.username }}</p>
+      <li class="nav-item dropdown">
+        <button class="nav-link dropdown-toggle btn btn-sm btn-outline-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Account
+        </button>
 
-              <form id="logout" method="POST" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <input type="hidden">
-              </form>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="javascript:{document.getElementById('logout').submit()}">Log Out</a>
+          <a class="dropdown-item">Your account name: {{ request.user }}</a>
 
-          </div>
-        </li>
+            <form id="logout" method="POST" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <input type="hidden">
+            </form>
 
+        </div>
+      </li>
       {% endif %}
 
     </ul>
@@ -105,14 +121,15 @@
 
 <body>
 
-  <div class="container">
+    <div class="container">
 
-    <!-- Website Content -->
+      <!-- Website Content -->
 
-    {% block content %}
-    {% endblock %}
+      {% block content %}
+      {% endblock %}
 
-  </div>
+    </div>
+
 
 </body>
 
@@ -123,7 +140,7 @@
 
   <hr>
 
-  <small class="text-muted"><em>©️ Automonus 2019</em></small>
+  <small class="text-muted"><em>©️ Automonus 10019</em></small>
 
   <br>
   <br>

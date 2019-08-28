@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+<div class="col-sm-8 offset-sm-2">
+  <h1>About the Automonus Project</h1>
+  <br>
+  <p>At Automonus, our goal is to teach the world how to handle its money, and how to acquire more of it.</p>
+  <p>We are a software-based company, and thus far we offer two software products:</p>
+  <br>
+  <br>
+  <h4>The Academy</h4>
+  <p>The academy is our tool for teaching people the basics of personal finance. The academy includes:
+     <ul>
+       <li>Horne's Calculator - A software program which tells you exactly how much money you have to make
+       to afford the lifestyle of your dreams.</li>
+       <li>Our Course on Life and Money - A comprehensive video and curriculum based course, developed
+       by our in-house math PhD and MENSA member, Nicholas Horne.</li>
+     </ul> </p>
+
+  <a href="{% url 'overview' %}" class="btn btn-block btn-primary">Check out the academy</a>
+  <br>
+  <br>
+
+  <h4>"Auto" Analysis</h4>
+  <p>The Automonus analysis tool allows you to connect your bank accounts from almost any
+  US financial institution. From there, we break down your finances to show you how much
+  <strong>money</strong> you earn, spend, save, and invest - as well as providing you with
+  an individual financial plan for success.</p>
+
+  <a href="#" class="btn btn-block btn-secondary">Go to "Auto" Analysis</a>
+  <br>
+  <br>
+
+  <h4>In the future. . .</h4>
+  <p>We hope to continue providing valuable software-based financial tools, and to continue
+  to teach the world how to make more money.</p>
+
+</div>
+</div>
+
+{% endblock %}

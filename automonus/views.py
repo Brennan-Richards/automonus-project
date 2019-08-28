@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+
 from django.contrib import auth
 from django.urls import reverse_lazy
 from django.views import generic
 from django.http import JsonResponse
+
 import requests
 from plaid import Client
 import json
@@ -11,6 +15,8 @@ import os
 from django.contrib.auth.decorators import login_required
 from institutions.models import Institution, UserInstitution
 from django.conf import settings
+from hornescalculator.forms import DisplayForm
+from hornescalculator.models import Display, Income, Tax, Housing, Car, Utilities, Food, Miscellaneous
 
 # Use 'sandbox' to test with Plaid's Sandbox environment (username: user_good,
 # password: pass_good)
@@ -65,3 +71,22 @@ def get_access_token(request):
         user_institution.populate_accounts()
         # user_institution.populate_transactions()  # this is triggered when the webhook call is received
         return JsonResponse({"status": "success"})
+
+
+@login_required
+def about(request):
+    return render(request, 'automonus/about.html')
+
+
+def marketing(request):
+    if user.is_authenticated:
+        return redirect(request, 'automonus/hornescalculator.html')
+    return render(request, 'automonus/marketing.html')
+
+
+class UpdateDisplay(generic.UpdateView):
+    model = Display
+    template_name = 'automonus/update_display.html'
+    fields = ['display']
+    success_url = reverse_lazy('overview')
+

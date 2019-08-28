@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="salary">
+
+  <h1 align='center'>Edit Income Expenses</h1>
+
+
+  <form action="#" method="POST" role="form">
+      {% csrf_token %}
+      <p>You get paid based on a {{ form.paycheck_period }} schedule and the value of your paycheck is:{{ form.salary }}</p>
+      <input type="submit" value="Update" />
+  </form>
+
+</div>
+
+{% endblock %}

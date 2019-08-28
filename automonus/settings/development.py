@@ -29,9 +29,14 @@ APPEND_SLASH = False
 
 ALLOWED_HOSTS = ["*"]
 
+LOGIN_URL = '/marketing/'
+LOGIN_REDIRECT_URL = '/navigation/'
+
 # Application definition
 
 INSTALLED_APPS = [
+    'hornescalculator.apps.HornesCalculatorConfig',
+    'expensetracker.apps.ExpensetrackerConfig',
     'accounts.apps.AccountsConfig',
     'expensetracker.apps.ExpensetrackerConfig',
     'savings.apps.SavingsConfig',
@@ -104,8 +109,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-
 
 
 

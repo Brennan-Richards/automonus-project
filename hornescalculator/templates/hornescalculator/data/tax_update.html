@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="col-sm-8 offset-md-2">
+
+<h4>Update Tax Information</h4>
+<h5 class="text-muted">Input the necessary information for us to calculate your income taxes and federal/state withholdings:</h5>
+
+<br>
+<br>
+
+<form class="form" action="#" method="post">
+{% csrf_token %}
+
+<p>You get paid ${{ form.pay_rate }} each paycheck and you <br> receive your paycheck: {{ form.periods }}.</p>
+
+<p>You have {{ form.dependents }} claimable dependents.</p>
+
+<p>What state do you live in? {{ form.state }} <span class="text-muted">(2 character abbreviation, ex: RI for Rhode Island)</span></p>
+
+<p>You are: {{ form.filing_status }}.</p>
+
+<div class="text-center">
+  <input class="btn btn-primary" type="submit" value="Update" />
+</div>
+
+</form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load mathfilters %}
+
+  <table class="table">
+
+    <tr>
+      <th></th>
+      <th>Daily</th>
+      <th>Weekly</th>
+      <th>Biweekly</th>
+      <th>Monthly</th>
+      <th>Yearly</th>
+    </tr>
+
+    <tr>
+      {% with mortgage=user.housing.mortgage_yt %}
+      <td><p>Mortgage</p></td>
+      <td> {{ mortgage|div:365 }} </td>
+      <td> {{ mortgage|div:52 }} </td>
+      <td> {{ mortgage|div:26 }} </td>
+      <td> {{ mortgage|div:12 }} </td>
+      <td> {{ mortgage }} </td>
+      {% endwith %}
+    </tr>
+
+    <tr>
+      <td><p>Home Property Tax</p></td>
+      <td> {{ user.housing.homeproptax_yt|div:365 }} </td>
+      <td> {{ user.housing.homeproptax_yt|div:52 }} </td>
+      <td> {{ user.housing.homeproptax_yt|div:26 }} </td>
+      <td> {{ user.housing.homeproptax_yt|div:12 }} </td>
+      <td> {{ user.housing.homeproptax_yt }} </td>
+    </tr>
+
+    <tr>
+      <td><p>Fire Tax</p></td>
+      <td> {{ user.housing.firetax_yt|div:365 }} </td>
+      <td> {{ user.housing.firetax_yt|div:52 }} </td>
+      <td> {{ user.housing.firetax_yt|div:26 }} </td>
+      <td> {{ user.housing.firetax_yt|div:12 }} </td>
+      <td> {{ user.housing.firetax_yt }} </td>
+    </tr>
+
+    <tr>
+      <td><p>Homeowner's Insurance</p></td>
+      <td> {{ user.housing.homeinsurance_yt|div:365 }} </td>
+      <td> {{ user.housing.homeinsurance_yt|div:52 }} </td>
+      <td> {{ user.housing.homeinsurance_yt|div:26 }} </td>
+      <td> {{ user.housing.homeinsurance_yt|div:12 }} </td>
+      <td> {{ user.housing.homeinsurance_yt }} </td>
+    </tr>
+
+  </table>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% load static %}
+{% load mathfilters %}
+
+<div class="row">
+  <div class="col-sm-8 offset-sm-2">
+
+    <ul class="text-left">
+
+      {% if user.tax %}
+      <li><p>After you pay taxes and FICA, your income must be equal to ${{ user.tax.calc_income|sub:user.tax.annual_cost }} per year to avoid this style of living.</p></li>
+      {% else %}
+      <li><p>Fill in the tax module to see what your income must be after paying taxes and FICA to afford this lifetyle.</p></li>
+      {% endif %}
+
+      {% if user.tax and user.housing and user.transportation and user.utilities and user.miscellaneous %}
+      <li><p>The total cost of your dream life is: ${{ user.display.cost_of_living_expenses }}. </p></li>
+      {% else %}
+      <li><p>Fill in all modules below to see the total cost of your dream life.</p></li>
+      {% endif %}
+
+    </ul>
+
+  </div>
+</div>
+
+<br>
+<br>
+<hr>
