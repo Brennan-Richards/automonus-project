@@ -36,8 +36,9 @@ LOGIN_REDIRECT_URL = '/navigation/'
 
 INSTALLED_APPS = [
     'hornescalculator.apps.HornesCalculatorConfig',
-    'accounts.apps.AccountsConfig',
     'expensetracker.apps.ExpensetrackerConfig',
+
+    'accounts.apps.AccountsConfig',
     'savings.apps.SavingsConfig',
     'debts.apps.DebtsConfig',
     'income.apps.IncomeConfig',

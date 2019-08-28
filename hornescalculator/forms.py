@@ -3,19 +3,17 @@ from .models import Display, Income, Tax, Housing, Car, Utilities, Food, Miscell
 
 
 class IncomeForm(forms.ModelForm):
-     class Meta:
+    class Meta:
         model = Income
         fields = ['salary', 'paycheck_period']
 
-
 class TaxForm(forms.ModelForm):
-     class Meta:
+    class Meta:
         model = Tax
         fields = ['dependents', 'state', 'filing_status', 'periods', 'pay_rate']
 
-
 class HousingForm(forms.ModelForm):
-     class Meta:
+    class Meta:
         model = Housing
         fields = ['mortgage', 'mortgage_pay_per', 'home_property_tax', 'homeproptax_pay_per',
         'fire_tax', 'firetax_pay_per', 'homeowners_insurance','homeinsurance_pay_per']

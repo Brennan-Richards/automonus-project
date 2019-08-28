@@ -17,6 +17,7 @@ dj-database-url = "*"
 whitenoise = "*"
 django-multiselectfield = "*"
 ngrok = "*"
+plaid-python = "*"
 
 [requires]
 python_version = "3.7"

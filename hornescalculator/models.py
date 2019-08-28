@@ -3,13 +3,10 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from decimal import *
 
-# Create your models here.
 
-class Expenditures(models.Model):
-    pass
-
-# Computes the yearly total of any expense field regardless of the pay period.
 def calc_yearly_total(expense, expense_period_choice):
+
+    # Computes the yearly total of any expense field regardless of the pay period.
 
     yearly_total = 0
 
@@ -70,8 +67,6 @@ class Income(models.Model):
 
         return yearly_income
 
-    #def deduct(self):
-    # Use Taxee API
 
 class Tax(models.Model):
     name = 'Tax'

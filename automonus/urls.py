@@ -6,7 +6,6 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-
     path('admin', admin.site.urls),
     path('', views.about, name='about'),
     path('accounts/', include('accounts.urls')),
