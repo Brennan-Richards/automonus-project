@@ -25,6 +25,8 @@ SECRET_KEY = 'kj8pmlp50a1_)2el%7hgynt5-u!rvzd2z$(b*@0#2n7^joq54h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+APPEND_SLASH = False
+
 ALLOWED_HOSTS = []
 
 LOGIN_URL = '/marketing/'
@@ -36,6 +38,11 @@ INSTALLED_APPS = [
     'hornescalculator.apps.HornesCalculatorConfig',
     'expensetracker.apps.ExpensetrackerConfig',
     'accounts.apps.AccountsConfig',
+    'expensetracker.apps.ExpensetrackerConfig',
+    'savings.apps.SavingsConfig',
+    'debts.apps.DebtsConfig',
+    'income.apps.IncomeConfig',
+    'investments.apps.InvestmentsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

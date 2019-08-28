@@ -5,6 +5,7 @@ from decimal import *
 
 # Create your models here.
 
+class Expenditures(models.Model):
 
 # Computes the yearly total of any expense field regardless of the pay period.
 def calc_yearly_total(expense, expense_period_choice):
@@ -520,41 +521,8 @@ class Food(models.Model):
     def __str__(self):
         return self.name
 
-    def groceries_yt(self):
-        groceries = self.groceries
-        groceries_period = self.groceries_pay_per
-
-        return calc_yearly_total(groceries, groceries_period)
-
-    def restaurant_yt(self):
-        restaurant = self.restaurant_food_costs
-        restaurant_period = self.restaurant_pay_per
-
-        return calc_yearly_total(restaurant, restaurant_period)
-
-    def yearly_total(self):
-        expenses = ['groceries', 'restaurant_food_costs']
-
-        exp_values = {'groceries':self.groceries, 'restaurant_food_costs': self.restaurant_food_costs}
-        choices = {'groceries':self.groceries_pay_per, 'restaurant_food_costs':self.restaurant_pay_per}
-
-        total = 0
-
-        for expense in expenses:
-
-            if choices[expense] == 'Daily':
-                total += exp_values[expense] * Decimal(365)
-            elif choices[expense] == 'Weekly':
-                total += exp_values[expense] * Decimal(52)
-            elif choices[expense] == 'Monthly':
-                total += exp_values[expense] * Decimal(12)
-            else:
-                total += exp_values[expense] * Decimal(1)
-
-        return round(total,2)
 
 class Miscellaneous(models.Model):
-    name = 'Miscellaneous'
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=False)
 
@@ -563,7 +531,6 @@ class Miscellaneous(models.Model):
     clothing = models.DecimalField(max_digits=11, decimal_places=2, default=0)
 
     annual_cost = models.DecimalField(max_digits=11, decimal_places=2, default=0)
-
 
     # Definitions for PAY_PERIOD_CHOICES below.
     DAILY = 'Daily'

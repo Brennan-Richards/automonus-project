@@ -11,6 +11,8 @@
   <!-- Load static files -->
   {% load static from staticfiles %}
 
+  <link rel="shortcut icon" type="image/png" href="{% static 'snake&brain.png' %}"/>
+
   <!-- Import Javascript and Jquery files. -->
 
   <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
@@ -68,8 +70,7 @@
           <a class="dropdown-item" href="#">Debts</a>
           <a class="dropdown-item" href="#">Investments</a>
 
-        </div>
-      </li>
+            <a class="dropdown-item" href="{% url 'liabilities_overview' %}">Liabilities</a>
 
       <li class="nav-item">
         <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="#">

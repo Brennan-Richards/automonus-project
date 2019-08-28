@@ -25,8 +25,9 @@ def overview(request):
 
     return render(request, 'hornescalculator/overview.html', {'form':displayform})
 
-# Income views.
+def spending_overview(request):
 
+<<<<<<< HEAD:hornescalculator/views.py
 @login_required
 def income(request):
     incomeform = IncomeForm(request.POST or None)
@@ -284,3 +285,6 @@ class UpdateMiscellaneous(generic.UpdateView):
         misc_upate.annual_cost = misc_update.yearly_total()
         misc_update.save()
         return redirect('overview')
+=======
+    return render(request, 'expensetracker/spending_overview.html')
+>>>>>>> upgrade:expensetracker/views.py
