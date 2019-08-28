@@ -64,7 +64,37 @@ class Account(models.Model):
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
     def __str__(self):
-        if self.user_institution and self.user_institution.user and self.name and self.type:
-            return "{}: {} ({})".format(self.user_institution.user.username, self.name, self.type.name)
+        if self.user_institution and self.user_institution and self.user_institution.user and self.name and self.type:
+            return "{} {}: {} ({})".format(self.user_institution.institution.name, self.user_institution.user.username,
+                                           self.name, self.type.name)
         else:
             return "{}".format(self.id)
+
+
+class TransactionCategory(ModelBaseFieldsAbstract):
+    plaid_id = models.CharField(max_length=38, default=None)
+
+
+class TransactionType(ModelBaseFieldsAbstract):
+    pass
+
+
+class Transaction(models.Model):
+    account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    name = models.CharField(max_length=256)
+    amount = models.DecimalField(max_digits=14, decimal_places=2, default=0)
+    currency = models.ForeignKey(Currency, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    date = models.DateField()
+    category = models.ForeignKey(TransactionCategory, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    type = models.ForeignKey(TransactionType, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    plaid_id = models.CharField(max_length=38)
+    is_pending = models.BooleanField(default=False)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    def __str__(self):
+        if self.name:
+            return "{}: {}{}".format(self.name, self.amount, self.currency.code)
+        else:
+            return "{}: {}{} ".format(self.id, self.amount, self.currency.code)

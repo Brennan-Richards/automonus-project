@@ -29,3 +29,24 @@ class AccountAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Account, AccountAdmin)
+
+
+class TransactionCategoryAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in TransactionCategory._meta.fields]
+
+
+admin.site.register(TransactionCategory, TransactionCategoryAdmin)
+
+
+class TransactionTypeAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in TransactionType._meta.fields]
+
+
+admin.site.register(TransactionType, TransactionTypeAdmin)
+
+
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in Transaction._meta.fields]
+
+
+admin.site.register(Transaction, TransactionAdmin)

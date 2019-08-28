@@ -27,7 +27,7 @@ DEBUG = True
 
 APPEND_SLASH = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     'users',
     'institutions',
+    'webhooks',
 
     # external packages
     'mathfilters',
@@ -161,3 +162,6 @@ PLAID_ENV = os.getenv('PLAID_ENV', 'sandbox')
 PLAID_CLIENT_ID = '5d37fe8b737a4f001252bfd9'
 PLAID_SECRET = '176040b1d82a9d35dfc9aca8fe9943'
 PLAID_PUBLIC_KEY = '6c5492915411a3645fdd0368516aa9'
+
+"""Replace ngrok server address (till "/accounts/webhook-handler/" with your server address"""
+PLAID_WEBHOOK_URL = 'https://f24727c3.ngrok.io/webhooks/webhook-handler/'

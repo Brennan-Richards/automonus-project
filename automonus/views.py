@@ -26,7 +26,9 @@ client = Client(client_id=settings.PLAID_CLIENT_ID,
 
 @login_required
 def home(request):
-    context = {'plaid_public_key': settings.PLAID_PUBLIC_KEY, 'plaid_environment': settings.PLAID_ENV}
+    webhook_url = settings.PLAID_WEBHOOK_URL
+    context = {'plaid_public_key': settings.PLAID_PUBLIC_KEY, 'plaid_environment': settings.PLAID_ENV,
+               "webhook_url": webhook_url}
     return render(request, 'automonus/home.html', context)
 
 
@@ -38,15 +40,28 @@ def get_access_token(request):
         public_token = data['public_token']
         #the public token is received from Plaid Link
         response = client.Item.public_token.exchange(public_token)
+        item_id = response["item_id"]  # unique id for combination of user + institution
         access_token = response['access_token']
         institution_name = data["metadata[institution][name]"]
         institution_id = data["metadata[institution][institution_id]"]
         institution, created = Institution.objects.update_or_create(plaid_id=institution_id,
                                                                         defaults={"name": institution_name}
                                                                     )
-        user_institution, created = UserInstitution.objects.update_or_create(user=user, institution=institution,
+        user_institution, created = UserInstitution.objects.update_or_create(plaid_id=item_id,
+                                                                             user=user, institution=institution,
                                                                         defaults={"access_token": access_token}
                                                                     )
+
+        """
+        Some products can be unavailable for the chosen institution, if they were not included on js side, like docs say
+        about this:
+        
+        'A list of Plaid product(s) you wish to use. 
+        Valid products are: transactions, auth, identity, income, assets, investments, and liabilities. 
+        Only institutions that support all requested products will be shown. 
+        In Production, you will be billed for each product that you specify when initializing Link.'
+        """
         user_institution.populate_income_information()
         user_institution.populate_accounts()
+        # user_institution.populate_transactions()  # this is triggered when the webhook call is received
         return JsonResponse({"status": "success"})
