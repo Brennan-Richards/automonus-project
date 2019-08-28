@@ -243,6 +243,7 @@ class Housing(models.Model):
 
         return round(total, 2)
 
+
 class Car(models.Model):
     name = 'Car'
 
@@ -522,15 +523,16 @@ class Food(models.Model):
     def __str__(self):
         return self.name
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    housing = models.DecimalField(max_digits=11, decimal_places=2, default=0)
-    utilities = models.DecimalField(max_digits=11, decimal_places=2, default=0)
-    transportation = models.DecimalField(max_digits=11, decimal_places=2, default=0)
-    food = models.DecimalField(max_digits=11, decimal_places=2, default=0)
+class Miscellaneous(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=False)
+
+    health_insurance = models.DecimalField(max_digits=11, decimal_places=2, default=0)
+    life_insurance = models.DecimalField(max_digits=11, decimal_places=2, default=0)
     clothing = models.DecimalField(max_digits=11, decimal_places=2, default=0)
-    annual_cost = models.DecimalField(max_digits=11, decimal_places=2, default=0)
 
+    annual_cost = models.DecimalField(max_digits=11, decimal_places=2, default=0)
 
     # Definitions for PAY_PERIOD_CHOICES below.
     DAILY = 'Daily'
@@ -667,4 +669,3 @@ class Display(models.Model):
             all_cost += total
 
         return round(all_cost,2)
-
