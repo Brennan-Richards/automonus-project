@@ -25,31 +25,6 @@ def overview(request):
 
     return render(request, 'hornescalculator/overview.html', {'form':displayform})
 
-def spending_overview(request):
-
-<<<<<<< HEAD:hornescalculator/views.py
-@login_required
-def income(request):
-    incomeform = IncomeForm(request.POST or None)
-
-    if incomeform.is_valid():
-        income = incomeform.save(commit=False)
-        income.user = request.user
-        income.save()
-        return redirect('overview')
-
-    return render(request, 'hornescalculator/data/income.html', {'form':incomeform})
-
-class DetailIncome(generic.DetailView):
-    model = Income
-    template_name = 'hornescalculator/data/income_details.html'
-
-class UpdateIncome(generic.UpdateView):
-    model = Income
-    template_name = 'hornescalculator/data/income_update.html'
-    fields = ['salary', 'paycheck_period']
-    success_url = reverse_lazy('overview')
-
 @login_required
 def tax(request):
     taxform = TaxForm(request.POST or None)
@@ -285,6 +260,3 @@ class UpdateMiscellaneous(generic.UpdateView):
         misc_upate.annual_cost = misc_update.yearly_total()
         misc_update.save()
         return redirect('overview')
-=======
-    return render(request, 'expensetracker/spending_overview.html')
->>>>>>> upgrade:expensetracker/views.py

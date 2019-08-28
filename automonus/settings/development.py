@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'hornescalculator.apps.HornesCalculatorConfig',
     'expensetracker.apps.ExpensetrackerConfig',
     'accounts.apps.AccountsConfig',
-    'expensetracker.apps.ExpensetrackerConfig',
     'savings.apps.SavingsConfig',
     'debts.apps.DebtsConfig',
     'income.apps.IncomeConfig',
