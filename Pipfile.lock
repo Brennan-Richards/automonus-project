@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9b1ab366a48582276fc9c78564a71d1b8b5895d3280493f6de8dd44cee2ff706"
+            "sha256": "0bd848fbbe3052b1693b02588c23beea789eba916648f03717870d0e540bdeba"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -83,6 +83,13 @@
                 "sha256:ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"
             ],
             "version": "==2.8"
+        },
+        "ngrok": {
+            "hashes": [
+                "sha256:cda772fce123cc08fde1b83d82c1310e07daca6b37d8a583ba877935a66953de"
+            ],
+            "index": "pypi",
+            "version": "==0.0.1"
         },
         "pillow": {
             "hashes": [
