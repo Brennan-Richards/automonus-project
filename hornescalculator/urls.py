@@ -10,12 +10,7 @@ urlpatterns = [
     path('food', views.food, name='food'),
     path('miscellaneous', views.miscellaneous, name='miscellaneous'),
 
-<<<<<<< HEAD
-    # Detail views for all expenses & income		     path('spending_overview', views.spending_overview, name='spending_overview'),
-    path('income/<int:pk>', views.DetailIncome.as_view(), name='income_details'),
-=======
     #Detail views for all expenses & income		     path('spending_overview', views.spending_overview, name='spending_overview'),
->>>>>>> master
     path('tax/<int:pk>', views.DetailTax.as_view(), name='tax_details'),
     path('housing/<int:pk>', views.DetailHousing.as_view(), name='housing_details'),
     path('car/<int:pk>', views.DetailCar.as_view(), name='car_details'),
