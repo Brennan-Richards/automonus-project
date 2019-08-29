@@ -29,14 +29,13 @@
 <header>
 
 <!-- Navbar -->
+{% if user.is_authenticated %}
 
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
 
-  {% if user.is_authenticated %}
-
     <a class="navbar-brand" href="#">
 
-      <a class="btn btn-sm btn-outline-secondary mr-sm-5" href="{% url 'about' %}">
+      <a href="{% url 'about' %}">
         <img src="{% static 'automonus-beta-light.png' %}" height="250">
       </a>
 
@@ -65,11 +64,14 @@
         </button>
 
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Income</a>
-          <a class="dropdown-item" href="#">Savings</a>
-          <a class="dropdown-item" href="#">Debts</a>
-          <a class="dropdown-item" href="#">Investments</a>
-          <a class="dropdown-item" href="#">Liabilities</a>
+          <a class="dropdown-item" href="{% url 'income_overview' %}">Income</a>
+          <a class="dropdown-item" href="{% url 'spending_overview' %}">Spending</a>
+          <a class="dropdown-item" href="{% url 'savings_overview' %}">Savings</a>
+          <a class="dropdown-item" href="{% url 'liabilities_overview' %}">Liabilities</a>
+          <a class="dropdown-item" href="{% url 'investments_overview' %}">Investments</a>
+        </div>
+
+      </li>
 
       <li class="nav-item">
         <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="#">
@@ -106,12 +108,11 @@
 
         </div>
       </li>
-      {% endif %}
-
     </ul>
-  </div>
 
 </nav>
+
+{% endif %}
 
 <br>
 <br>
@@ -139,7 +140,7 @@
 
   <hr>
 
-  <small class="text-muted"><em>©️ Automonus 10019</em></small>
+  <small class="text-muted"><em>©️ Automonus 2019</em></small>
 
   <br>
   <br>

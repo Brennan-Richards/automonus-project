@@ -2,21 +2,15 @@
 
 {% block content %}
 
-{% if user.income   %}
+  <h1>Income Overview</h1>
 
-<h1>Income Overview</h1>
+    <div class="row text-center">
+      <div class="col-sm-8 offset-sm-2">
 
-{% else %}
+        {% include 'automonus/link.html' %}
+        <p>To see an overview of your income and income taxes.</p>
 
-  <div class="row text-center">
-    <div class="col-sm-8 offset-sm-2">
-
-      <a href="{% url 'home' %}" class="btn btn-lg btn-outline-success">Link your account.</a>
-      <p>To see an overview of your income and income taxes.</p>
-
+      </div>
     </div>
-  </div>
-
-{% endif %}
 
 {% endblock %}

@@ -6,7 +6,7 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    path('overview/', views.income_overview, name='income_overview'),
+    path('spending_overview/', views.spending_overview, name='spending_overview'),
 ]
 
 if settings.DEBUG:

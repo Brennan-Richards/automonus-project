@@ -6,13 +6,16 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.http import JsonResponse
 from hornescalculator.forms import DisplayForm
-from hornescalculator.models import Display, Income, Tax, Housing, Car, Utilities, Food, Miscellaneous
+from hornescalculator.models import Display, Tax, Housing, Car, Utilities, Food, Miscellaneous
 
 
 @login_required
 def about(request):
     return render(request, 'automonus/about.html')
 
+# @login_required
+# def link(request):
+#     return render(request, 'automonus/link.html')
 
 def marketing(request):
     user = request.user

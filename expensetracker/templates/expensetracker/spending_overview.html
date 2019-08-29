@@ -2,21 +2,14 @@
 
 {% block content %}
 
-  {% if user.expenditures   %}
-
-    <h1>Spending Overview</h1>
-
-  {% else %}
-
   <div class="row text-center">
-    <div class="col-sm-8 offset-sm-2">
 
-      <a href="{% url 'home' %}" class="btn btn-lg btn-outline-success">Link your account.</a>
+    <div class="col-sm-8 offset-sm-2">
+      <h1>Spending Overview</h1>
+      {% include 'automonus/link.html' %}
       <p>To see an overview of your spending habits.</p>
 
     </div>
   </div>
-
-  {% endif %}
 
 {% endblock %}

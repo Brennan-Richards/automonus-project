@@ -21,50 +21,6 @@ def calc_yearly_total(expense, expense_period_choice):
 
     return round(yearly_total,2)
 
-class Income(models.Model):
-
-    name = 'Income'
-
-    salary = models.DecimalField(max_digits=11, decimal_places=2, default=0)
-
-    # Definitions for PAY_PERIOD_CHOICES below.
-    DAILY = 'Daily'
-    WEEKLY = 'Weekly'
-    BIWEEKLY = 'Biweekly'
-    MONTHLY = 'Monthly'
-    YEARLY = 'Yearly'
-
-    # Choices variables for pay_period.
-    PAY_PERIOD_CHOICES = [
-        (DAILY, 'Daily'),
-        (WEEKLY, 'Weekly'),
-        (BIWEEKLY, 'Biweekly'),
-        (MONTHLY, 'Monthly'),
-        (YEARLY, 'Yearly'),
-    ]
-
-    paycheck_period = models.CharField(
-        max_length=7,
-        choices=PAY_PERIOD_CHOICES,
-        default=WEEKLY,
-    )
-
-    def __str__(self):
-        return self.name
-
-    def calc_income(self):
-
-        if self.paycheck_period == 'Daily':
-            yearly_income = self.salary * 365
-        elif self.paycheck_period == 'Weekly':
-            yearly_income = self.salary * 52
-        elif self.paycheck_period == 'Biweekly':
-            yearly_income = self.salary * 26
-        elif self.paycheck_period == 'Monthly':
-            yearly_income = self.salary * 12
-
-        return yearly_income
-
 
 class Tax(models.Model):
     name = 'Tax'

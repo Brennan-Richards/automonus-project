@@ -13,9 +13,12 @@ urlpatterns = [
     path('savings/', include('savings.urls')),
     path('debts/', include('debts.urls')),
     path('investments/', include('investments.urls')),
+    path('spending/', include('expensetracker.urls')),
+
     path('institutions/', include('institutions.urls')),
     path('user-accounts/', include('users.urls')),
     path('webhooks/', include('webhooks.urls')),
+    # path('link/', views.link, name='link'),
 
     path('display/<int:pk>/update', views.UpdateDisplay.as_view(), name='display_update'),
     path('hornescalculator/', include('hornescalculator.urls')),
