@@ -5,6 +5,6 @@ from django.urls import reverse_lazy
 
 # Create your views here.
 
-def spending_overview(request):
+def home(request):
 
-    return render(request, 'expensetracker/spending_overview.html')
+    return render(request, 'academy/home.html')

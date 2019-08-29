@@ -8,20 +8,23 @@ from . import views
 urlpatterns = [
     path('admin', admin.site.urls),
     path('', views.about, name='about'),
-    path('accounts/', include('accounts.urls')),
-    path('income/', include('income.urls')),
-    path('savings/', include('savings.urls')),
-    path('debts/', include('debts.urls')),
-    path('investments/', include('investments.urls')),
-    path('spending/', include('expensetracker.urls')),
 
+    path('academy/', include('academy.urls')),
+    path('analysis/', include('analysis.urls')),
+    path('planning/', include('planner.urls')),
+
+    path('hornescalculator/', include('hornescalculator.urls')),
+    path('accounts/', include('accounts.urls')),
     path('institutions/', include('institutions.urls')),
     path('user-accounts/', include('users.urls')),
     path('webhooks/', include('webhooks.urls')),
+    path('income/', include('income.urls')),
+    path('savings/', include('savings.urls')),
+    path('investments/', include('investments.urls')),
+
     # path('link/', views.link, name='link'),
 
     path('display/<int:pk>/update', views.UpdateDisplay.as_view(), name='display_update'),
-    path('hornescalculator/', include('hornescalculator.urls')),
     path('marketing/', views.marketing, name='marketing'),
 ]
 

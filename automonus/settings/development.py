@@ -36,11 +36,12 @@ LOGIN_REDIRECT_URL = '/navigation/'
 
 INSTALLED_APPS = [
     'hornescalculator.apps.HornesCalculatorConfig',
-    'expensetracker.apps.ExpensetrackerConfig',
+    'academy.apps.AcademyConfig',
+    'analysis.apps.AnalysisConfig',
+    'planner.apps.PlanningConfig',
 
     'accounts.apps.AccountsConfig',
     'savings.apps.SavingsConfig',
-    'debts.apps.DebtsConfig',
     'income.apps.IncomeConfig',
     'investments.apps.InvestmentsConfig',
     'django.contrib.admin',

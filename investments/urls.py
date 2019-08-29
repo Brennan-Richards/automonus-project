@@ -7,8 +7,6 @@ from . import views
 
 urlpatterns = [
 
-    path('investments_overview', views.investments_overview, name='investments_overview'),
-
 ]
 
 if settings.DEBUG:

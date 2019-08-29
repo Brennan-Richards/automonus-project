@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-sm-6 offset-sm-3 text-center">
+    <img src="{% static 'academy-automonus.png' %}" height=150></>
+    <br>
+    <br>
+    <br>
+    <a href="#" class="btn btn-lg btn-block btn-primary">The Automonus Course on Money</a>
+    <a href="{% url 'overview' %}" class="btn btn-lg btn-block btn-secondary">Horne's Calculator</a>
+  </div>
+</div>
+
+{% endblock %}

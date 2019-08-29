@@ -6,7 +6,9 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    path('spending_overview/', views.spending_overview, name='spending_overview'),
+
+    path('home', views.home, name='academy_home'),
+
 ]
 
 if settings.DEBUG:

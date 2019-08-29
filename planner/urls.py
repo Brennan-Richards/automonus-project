@@ -7,7 +7,7 @@ from . import views
 
 urlpatterns = [
 
-    path('liabilities_overview', views.liabilities_overview, name='liabilities_overview'),
+    path('plan', views.plan, name='babylon_plan'),
 
 ]
 
