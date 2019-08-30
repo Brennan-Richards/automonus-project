@@ -14,7 +14,7 @@ def webhook_handler(request):
 
     'available_products': ['assets', 'auth', 'balance', 'credit_details', 'identity', 'investments', 'liabilities']
 
-    According to this doc, it looks like production environment of plaid needs some data to calcualte main items
+    According to this doc, it looks like production environment of plaid needs some data to calculate main items
     like income, assets etc. When item's data is ready, webhook is fired:
     https://support.plaid.com/hc/en-us/articles/360008413893-Income-webhooks
 
@@ -41,7 +41,7 @@ def webhook_handler(request):
             user_insitution.populate_transactions_loop_launch()
 
         elif data["webhook_code"] == "HISTORICAL_UPDATE":
-            """After the initial transaction pull is finished, Plaid will begin the historical transaction pull. 
+            """After the initial transaction pull is finished, Plaid will begin the historical transaction pull.
             Plaid fires the HISTORICAL_UPDATE webhook when the historical transaction pull for an Item is finished."""
             print("transactions historical update")
             user_insitution.populate_transactions_loop_launch()
@@ -52,7 +52,7 @@ def webhook_handler(request):
             user_insitution.populate_transactions_loop_launch()
 
         elif data["webhook_code"] == "TRANSACTIONS_REMOVED":
-            """Plaid sends a TRANSACTIONS_REMOVED webhook when pending or posted transactions have been removed 
+            """Plaid sends a TRANSACTIONS_REMOVED webhook when pending or posted transactions have been removed
             from our system."""
             """ToDo: it look like they will just delete a transaction from the list.
             Some functionality to make reverse comparing of transactions in the database and in plaid needs

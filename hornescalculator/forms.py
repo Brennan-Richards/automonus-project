@@ -1,11 +1,6 @@
 from django import forms
-from .models import Display, Income, Tax, Housing, Car, Utilities, Food, Miscellaneous
+from .models import Display, Tax, Housing, Car, Utilities, Food, Miscellaneous
 
-
-class IncomeForm(forms.ModelForm):
-    class Meta:
-        model = Income
-        fields = ['salary', 'paycheck_period']
 
 class TaxForm(forms.ModelForm):
     class Meta:

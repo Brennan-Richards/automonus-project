@@ -7,6 +7,8 @@ from . import views
 
 urlpatterns = [
 
+    path('plan', views.plan, name='babylon_plan'),
+
 ]
 
 if settings.DEBUG:

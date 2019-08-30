@@ -7,6 +7,8 @@ from . import views
 
 urlpatterns = [
 
+    path('home', views.home, name='academy_home'),
+
 ]
 
 if settings.DEBUG:

@@ -1,8 +1,11 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path, include
 from . import views
 
 urlpatterns = [
     path('overview', views.overview, name='overview'),
+
     path('tax', views.tax, name='tax'),
     path('housing', views.housing, name='housing'),
     path('car', views.car, name='car'),
@@ -10,7 +13,7 @@ urlpatterns = [
     path('food', views.food, name='food'),
     path('miscellaneous', views.miscellaneous, name='miscellaneous'),
 
-    #Detail views for all expenses & income		     path('spending_overview', views.spending_overview, name='spending_overview'),
+    #Detail views for all expenses & income
     path('tax/<int:pk>', views.DetailTax.as_view(), name='tax_details'),
     path('housing/<int:pk>', views.DetailHousing.as_view(), name='housing_details'),
     path('car/<int:pk>', views.DetailCar.as_view(), name='car_details'),
@@ -27,3 +30,6 @@ urlpatterns = [
     path('miscellaneous/<int:pk>/update', views.UpdateMiscellaneous.as_view(), name='miscellaneous_update'),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
