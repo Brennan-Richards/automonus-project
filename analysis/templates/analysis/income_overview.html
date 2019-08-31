@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
+
+{% load static %}
+
 {% block content %}
 
   <h1>Income Overview</h1>
@@ -11,6 +15,43 @@
         <p>To see an overview of your income and income taxes.</p>
 
       </div>
+    </div>
+
+    <div class="highcharts">
+
+        Highcharts.chart('container', {
+      chart: {
+          type: 'bar'
+      },
+      title: {
+          text: 'Income Overview'
+      },
+      xAxis: {
+          categories: ['Projected Income']
+      },
+      yAxis: {
+          min: 0,
+          title: {
+              text: '$ (USD)'
+          }
+      },
+      legend: {
+          reversed: true
+      },
+      plotOptions: {
+          series: {
+              stacking: 'normal'
+          }
+      },
+      series: [{
+          name: 'Income',
+          data: [{{ true_income }}]
+      }, {
+          name: 'Tax',
+          data: [{{ tax }}]
+      }]
+  });
+
     </div>
 
 {% endblock %}

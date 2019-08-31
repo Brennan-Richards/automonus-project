@@ -7,7 +7,12 @@ from django.urls import reverse_lazy
 
 def income_overview(request):
 
-    return render(request, 'analysis/income_overview.html')
+    user = request.user
+
+    # projected_income_after_tax = user.income.projected_yearly_minus_tax
+    # projected_yearly_taxes = user.income.projected_yearly_taxes
+
+    return render(request, 'analysis/income_overview.html', {'true_income':projected_yearly_after_tax, 'tax':projected_yearly_taxes})
 
 def spending_overview(request):
 
