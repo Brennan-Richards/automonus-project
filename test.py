@@ -36,10 +36,9 @@ for item in securities:
     security_id = item["security_id"]
     security, created = Security.objects.get_or_create(ticker_symbol=item["ticker_symbol"], name=item["name"],
                                                        isin=item["isin"], sedol=item["sedol"], cusip=item["cusip"],)
-    security_type, created = SecurityType.objects.get_or_create(name=item["type"])
+    security_type, created = SecurityType.objects.get_or_create(plaid_id=security_id, name=item["type"])
     currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
     kwargs = {
-        "plaid_id": security_id,
         "user_institution": user_institution,
         "security": security,
         "is_cash_equivalent": item["is_cash_equivalent"],
@@ -61,7 +60,7 @@ curity_id': 'd6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are', 'unofficial_currency_code':
 for item in holdings:
     security_id = item["security_id"]
     account = Account.objects.get(account_id=item["account_id"])
-    user_security, created = UserSecurity.objects.get_or_create(plaid_id=security_id,
+    user_security, created = UserSecurity.objects.get_or_create(security__plaid_id=security_id,
                                                                 user_institution=user_institution)
     currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
     kwargs = {

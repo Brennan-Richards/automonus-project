@@ -152,7 +152,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             account_id = transaction["account_id"]
             account = Account.objects.get(account_id=account_id)
 
-            user_security = UserSecurity.objects.get(user_institution=self, plaid_id=transaction["security_id"])
+            user_security = UserSecurity.objects.get(user_institution=self, security__plaid_id=transaction["security_id"])
 
             amount = transaction["amount"]
             fees = transaction["fees"] if transaction["fees"] else 0
@@ -218,11 +218,10 @@ class UserInstitution(ModelBaseFieldsAbstract):
             security_id = item["security_id"]
             security, created = Security.objects.get_or_create(ticker_symbol=item["ticker_symbol"], name=item["name"],
                                                                isin=item["isin"], sedol=item["sedol"],
-                                                               cusip=item["cusip"], )
+                                                               cusip=item["cusip"], plaid_id=security_id)
             security_type, created = SecurityType.objects.get_or_create(name=item["type"])
             currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
             kwargs = {
-                "plaid_id": security_id,
                 "user_institution": self,
                 "security": security,
                 "is_cash_equivalent": item["is_cash_equivalent"],
@@ -240,7 +239,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
         for item in holdings:
             security_id = item["security_id"]
             account = Account.objects.get(account_id=item["account_id"])
-            user_security, created = UserSecurity.objects.get_or_create(plaid_id=security_id,
+            user_security, created = UserSecurity.objects.get_or_create(security__plaid_id=security_id,
                                                                         user_institution=self)
             currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
             kwargs = {

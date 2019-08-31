@@ -9,6 +9,7 @@ class SecurityType(ModelBaseFieldsAbstract):
 
 
 class Security(models.Model):
+    plaid_id = models.CharField(max_length=38, blank=True, null=True, default=None)
     name = models.CharField(max_length=256, blank=True, null=True, default=None)
     ticker_symbol = models.CharField(max_length=12, blank=True, null=True, default=None)
     isin = models.CharField(max_length=38, blank=True, null=True, default=None)
@@ -28,10 +29,9 @@ class UserSecurity(models.Model):
     user_institution = models.ForeignKey("institutions.UserInstitution", blank=True, null=True, default=None,
                                          on_delete=models.SET_NULL)
 
-
     """Important: it looks like it unique only in terms of combination user_institution + plaid_id (security_id).
     But this needs to be double-checked"""
-    plaid_id = models.CharField(max_length=38, blank=True, null=True, default=None)
+
 
     """this should be stored in a separate model to prevent duplication of the same text data in this table for
     such fields as name and ticket_symbol"""
