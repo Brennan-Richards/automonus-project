@@ -18,6 +18,10 @@
 
       <h1>Your custom financial plan.</h1>
 
+        {% if request.user.is_authenticated %}
+            {% include 'automonus/add_bank_account.html' %}
+        {% endif %}
+
     {% else %}
 
       <h1>Add your bank account to receive a custom-tailored financial plan.</h1>

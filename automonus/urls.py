@@ -8,6 +8,7 @@ from . import views
 urlpatterns = [
     path('admin', admin.site.urls),
     path('', views.about, name='about'),
+    path('link/', views.link, name='link'),
 
     path('academy/', include('academy.urls')),
     path('analysis/', include('analysis.urls')),

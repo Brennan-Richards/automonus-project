@@ -7,15 +7,19 @@ from django.views import generic
 from django.http import JsonResponse
 from hornescalculator.forms import DisplayForm
 from hornescalculator.models import Display, Tax, Housing, Car, Utilities, Food, Miscellaneous
+from automonus.settings import development as settings
 
 
 @login_required
 def about(request):
     return render(request, 'automonus/about.html')
 
-# @login_required
-# def link(request):
-#     return render(request, 'automonus/link.html')
+
+@login_required
+def link(request):
+    context = {"webhook_url": settings.PLAID_WEBHOOK_URL}
+    return render(request, 'automonus/link.html', context=context)
+
 
 def marketing(request):
     user = request.user

@@ -4,19 +4,6 @@ import uuid
 from institutions.models import UserInstitution
 from accounts.models import Currency, ModelBaseFieldsAbstract
 
-# Create your models here.
-
-class Investments(models.Model):
-
-    name = "Investments"
-
-    def __str__(self):
-        return self.name
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-    total_securities_value = models.DecimalField(max_digits=11, decimal_places=2, default=0)
-
 
 class SecurityType(ModelBaseFieldsAbstract):
     pass
