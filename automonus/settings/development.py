@@ -168,4 +168,4 @@ PLAID_SECRET = '176040b1d82a9d35dfc9aca8fe9943'
 PLAID_PUBLIC_KEY = '6c5492915411a3645fdd0368516aa9'
 
 """Replace ngrok server address (till "/accounts/webhook-handler/" with your server address"""
-PLAID_WEBHOOK_URL = 'https://f24727c3.ngrok.io/webhooks/webhook-handler/'
+PLAID_WEBHOOK_URL = 'https://7875e549.ngrok.io/webhooks/webhook-handler/'

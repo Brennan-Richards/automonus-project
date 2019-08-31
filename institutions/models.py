@@ -12,6 +12,7 @@ client = Client(client_id=settings.PLAID_CLIENT_ID,
 from accounts.models import *
 from django.utils import timezone
 import datetime
+from investments.models import UserSecurity, InvestmentTransaction, InvestmentTransactionType, Security, Holding, SecurityType
 
 
 class ModelBaseFieldsAbstract(models.Model):
@@ -34,6 +35,9 @@ class Institution(ModelBaseFieldsAbstract):
 
 
 class UserInstitution(ModelBaseFieldsAbstract):
+    """Data object, which is stored in this model is called 'Item' in Plaid API docs:
+    it represents a combination of user and institution
+    """
     plaid_id = models.CharField(max_length=64, blank=True, null=True, default=None)
     institution = models.ForeignKey(Institution, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     user = models.ForeignKey(User, blank=True, null=True, default=None, on_delete=models.SET_NULL)
@@ -49,10 +53,15 @@ class UserInstitution(ModelBaseFieldsAbstract):
         else:
             return "{}".format(self.id)
 
-    def populate_transactions_loop_launch(self):
+    def populate_transactions_loop_launch(self, type=None):
         offset = 0
+        if not type:
+            type = "account_transaction"
         while True:
-            result = self.populate_transactions(offset=offset)
+            if type == "account_transaction":
+                result = self.populate_transactions(offset=offset)
+            else:
+                result = self.populate_investment_transactions(offset=offset)
             if not result:
                 break
             offset += 500  # 500 is the maximum value for count so it is the maximum step value for offset
@@ -68,7 +77,6 @@ class UserInstitution(ModelBaseFieldsAbstract):
         try:
             transactions_data = client.Transactions.get(access_token=self.access_token, start_date=start_date,
                                                         end_date=end_date, offset=offset, count=count)
-            print(transactions_data)
         except Exception as e:
             print(e)
             return False
@@ -117,6 +125,135 @@ class UserInstitution(ModelBaseFieldsAbstract):
             return False  # so future iterating should be finished
         else:
             return True
+
+    def populate_investment_transactions(self, start_date=None, offset=0, count=500):  # maximum
+        """
+        {'account_id': 'Z1l84PBBKaUzRw36KBqPsreoddXrk5FgLoJdb', 'amount': 7.7, 'cancel_transaction_id': None,
+        'date': '2019-08-31', 'fees': None, 'investment_
+        transaction_id': 'aWxBZ177aQfQwmy6vGAwu75oRrNjmVF7BABMy', 'iso_currency_code': 'USD',
+        'name': 'BUY DoubleLine Total Return Bond Fund', 'price': 10.42, 'quantity': 0.7388014749727547,
+        'security_id': 'NDVQrXQoqzt5v3bAe8qRt4A7mK7wvZCLEBBJk', 'type': 'buy', 'unofficial_currency_code': None},
+        """
+        now = timezone.now().date()
+        if not start_date:
+            days_nmb = 365 * 3
+            start_date = now - datetime.timedelta(days=days_nmb)
+        start_date = start_date.strftime("%Y-%m-%d")
+        end_date = now.strftime("%Y-%m-%d")
+        try:
+            transactions_data = client.InvestmentTransactions.get(access_token=self.access_token, start_date=start_date,
+                                                        end_date=end_date, offset=offset, count=count)
+        except Exception as e:
+            print(e)
+            return False
+        bulk_create_list = list()
+        for transaction in transactions_data["investment_transactions"]:
+            kwargs = dict()
+            account_id = transaction["account_id"]
+            account = Account.objects.get(account_id=account_id)
+
+            user_security = UserSecurity.objects.get(user_institution=self, plaid_id=transaction["security_id"])
+
+            amount = transaction["amount"]
+            fees = transaction["fees"] if transaction["fees"] else 0
+            transaction_date = transaction["date"]
+            quantity = transaction["quantity"]
+
+            iso_currency_code = transaction["iso_currency_code"]
+            currency, created = Currency.objects.get_or_create(code=iso_currency_code)
+
+            name = transaction["name"]
+            investment_transaction_id = transaction["investment_transaction_id"]
+            type = transaction["type"]
+            type, created = InvestmentTransactionType.objects.get_or_create(name=type)
+            cancel_transaction_id = transaction["cancel_transaction_id"]
+
+            kwargs["user_security"] = user_security
+            kwargs["account"] = account  #
+            kwargs["amount"] = amount  #
+            kwargs["quantity"] = quantity
+            kwargs["fees"] = fees
+            kwargs["currency"] = currency #
+            kwargs["name"] = name  #
+            kwargs["plaid_id"] = investment_transaction_id  #
+            kwargs["type"] = type  #
+            kwargs["date"] = transaction_date  #
+            kwargs["cancel_transaction_id"] = cancel_transaction_id  #
+            """Such approach will increase speed for populating large volumes of data"""
+            if not InvestmentTransaction.objects.filter(plaid_id=investment_transaction_id).exists():
+                """In test environment, transaction_id are changed every time for some reason, but
+                in production environment it should not be like this.
+                At the same time filtering by other fields are not relevant, because date has only date format
+                and not date time with miliseconds. Theoretically a few transactions can appear for the same
+                date with same other parameters except of transaction_id."""
+                bulk_create_list.append(InvestmentTransaction(**kwargs))
+        """create all objects at one transactions. 
+        This will not trigger save method on the model, because data is inserted
+        to the database directly"""
+        if bulk_create_list:
+            InvestmentTransaction.objects.bulk_create(bulk_create_list)
+
+        total_transactions = transactions_data["total_investment_transactions"]
+        if total_transactions < offset + count:
+            return False  # so future iterating should be finished
+        else:
+            return True
+
+    def populate_securities_and_holdings(self):
+        try:
+            data = client.Holdings.get(self.access_token)  # this returns both security and holding instances
+        except Exception as e:
+            return False
+
+        securities = data["securities"]
+        holdings = data["holdings"]
+        """
+        [{'close_price': 0.011, 'close_price_as_of': None, 'cusip': None
+        , 'institution_id': None, 'institution_security_id': None, 'is_cash_equivalent': False, 'isin': None, 
+        'iso_currency_code': 'USD', 'name': "Nflx Feb 01'18 $355 Call", 'proxy_security_
+        id': None, 'security_id': '8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb', 'sedol': None, 
+        'ticker_symbol': 'NFLX180201C00355000', 'type': 'derivative', 'unofficial_currency_code': None}, 
+        """
+        for item in securities:
+            security_id = item["security_id"]
+            security, created = Security.objects.get_or_create(ticker_symbol=item["ticker_symbol"], name=item["name"],
+                                                               isin=item["isin"], sedol=item["sedol"],
+                                                               cusip=item["cusip"], )
+            security_type, created = SecurityType.objects.get_or_create(name=item["type"])
+            currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
+            kwargs = {
+                "plaid_id": security_id,
+                "user_institution": self,
+                "security": security,
+                "is_cash_equivalent": item["is_cash_equivalent"],
+                "type": security_type,
+                "close_price": item["close_price"], "close_price_as_of": item["close_price_as_of"],
+                "currency": currency
+            }
+            UserSecurity.objects.get_or_create(**kwargs)
+        """
+        {'account_id': 'Z1l84PBBKaUzRw36
+        KBqPsreoddXrk5FgLoJdb', 'cost_basis': 1, 'institution_price': 1, 'institution_price_as_of': None, 
+        'institution_value': 12345.67, 'iso_currency_code': 'USD', 'quantity': 12345.67, 'se
+        curity_id': 'd6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are', 'unofficial_currency_code': None}
+        """
+        for item in holdings:
+            security_id = item["security_id"]
+            account = Account.objects.get(account_id=item["account_id"])
+            user_security, created = UserSecurity.objects.get_or_create(plaid_id=security_id,
+                                                                        user_institution=self)
+            currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
+            kwargs = {
+                "account": account,
+                "user_security": user_security,
+                "institution_value": item["institution_value"],
+                "institution_price": item["institution_price"],
+                "institution_price_as_of": item["institution_price_as_of"],
+                "cost_basis": item["cost_basis"],
+                "currency": currency,
+                "quantity": item["quantity"]
+            }
+            Holding.objects.get_or_create(**kwargs)
 
     def populate_income_information(self):
         from income.models import Income, IncomeStream

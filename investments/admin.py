@@ -9,18 +9,18 @@ class SecurityTypeAdmin(admin.ModelAdmin):
 admin.site.register(SecurityType, SecurityTypeAdmin)
 
 
-class SecurityItemAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in SecurityItem._meta.fields]
-
-
-admin.site.register(SecurityItem, SecurityItemAdmin)
-
-
 class SecurityAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Security._meta.fields]
 
 
 admin.site.register(Security, SecurityAdmin)
+
+
+class UserSecurityAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in UserSecurity._meta.fields]
+
+
+admin.site.register(UserSecurity, UserSecurityAdmin)
 
 
 class InvestmentTransactionAdmin(admin.ModelAdmin):
@@ -35,3 +35,10 @@ class HoldingAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Holding, HoldingAdmin)
+
+
+class InvestmentTransactionTypeAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in InvestmentTransactionType._meta.fields]
+
+
+admin.site.register(InvestmentTransactionType, InvestmentTransactionTypeAdmin)

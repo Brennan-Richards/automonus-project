@@ -20,7 +20,7 @@
         env: 'sandbox',
         // Replace with your public_key from the Dashboard
         key: '6c5492915411a3645fdd0368516aa9',
-        product: ['transactions', 'income', 'investments'],
+        product: ['transactions'],
         // Optional, use webhooks to get transaction and error updates
         webhook: '{{ webhook_url }}',
         // Optional, specify a language to localize Link
@@ -37,7 +37,7 @@
           // The metadata object contains info about the institution the
           // user selected and the account ID or IDs, if the
           // Select Account view is enabled.
-          $.post('get_access_token/', {
+          $.post('get-access-token/', {
             csrfmiddlewaretoken: csrf_token,
             public_token: public_token,
             metadata: metadata,
