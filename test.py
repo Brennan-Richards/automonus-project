@@ -35,7 +35,7 @@ id': None, 'security_id': '8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb', 'sedol': None
 for item in securities:
     security_id = item["security_id"]
     security, created = Security.objects.get_or_create(ticker_symbol=item["ticker_symbol"], name=item["name"],
-                                                       isin=item["isin"], sedol=item["sedol"], cusip=item["cusip"],)
+                                                       isin=item["isin"], sedol=item["sedol"], cusip=item["cusip"], plaid_id=security_id)
     security_type, created = SecurityType.objects.get_or_create(plaid_id=security_id, name=item["type"])
     currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
     kwargs = {
