@@ -35,7 +35,7 @@ class Profile(models.Model):
         income = Income.objects.filter(user_institution__user=self.user)\
             .aggregate(total=Sum("projected_yearly_income_before_tax"))
         print(income)
-        income = income["total"]
+        income = income.get("total", 0)
         return {
             "per_day": round(income/365, 2),
             "per_week": round(income/365/7, 2),

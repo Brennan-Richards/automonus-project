@@ -36,7 +36,7 @@ def savings_overview(request):
     user = request.user
     accounts = Account.objects.filter(user_institution__user=user, type__name="depository") \
         .aggregate(total=Sum("available_balance"))
-    available_balance = round(accounts["total"], 2)
+    available_balance = round(accounts.get("total", 0), 2)
 
     charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="savings")
     context = {"charts_data": charts_data, "available_balance": available_balance}
@@ -46,7 +46,7 @@ def savings_overview(request):
 def investments_overview(request):
     user = request.user
     user_holdings = Holding.objects.filter(account__user_institution__user=user).aggregate(total_amount=Sum("institution_value"))
-    total_investments = round(user_holdings["total_amount"], 2)
+    total_investments = round(user_holdings.get("total_amount", 0), 2)
     investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__user=user)[:100]
     charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="investments")
     context = {"charts_data": charts_data, "total_investments": total_investments,
