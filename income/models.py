@@ -30,6 +30,16 @@ class Income(models.Model):
         super(Income, self).save(*args, **kwargs)
 
 
+    def get_value_per_day(self):
+        return self.projected_yearly_income_before_tax/365
+
+    def get_value_per_week(self):
+        return self.projected_yearly_income_before_tax/365/7
+
+    def get_value_per_month(self):
+        return self.projected_yearly_income_before_tax/30
+
+
 class IncomeStream(models.Model):
     income = models.ForeignKey(Income, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     name = models.CharField(max_length=128, blank=True, null=True, default=None)

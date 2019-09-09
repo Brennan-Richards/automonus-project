@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+
+{% block header_stuff %}
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highcharts/7.1.3/css/highcharts.css"></link>
+{% endblock header_stuff %}
+
+
+{% block content %}
+
+  <div class="row text-center">
+
+    <div class="col-lg-10 mx-auto">
+      {% block page_content %}
+
+      {% endblock page_content %}
+    </div>
+  </div>
+
+{% endblock %}
+
+
+{% block js_stuff %}
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/7.1.3/highcharts.js"></script>
+
+    {{ block.super }}
+    <script>
+        {% for chart_data in charts_data %}
+            chart_container_id = "chart_container_{{ forloop.counter }}";
+            chart_container = "<div id='"+chart_container_id+"'></div>";
+            $("#charts_container").append(chart_container);
+            data = {{ chart_data|safe }};
+            console.log(data);
+            Highcharts.chart(chart_container_id, {
+              chart: {
+                  type: data["type"]
+              },
+              title: {
+                  text: data.title
+              },
+              credits: {
+                enabled: false
+              },
+              xAxis: {
+                  categories: data.categories
+              },
+              yAxis: {
+                  min: 0,
+                  title: {
+                      text: '$ (USD)'
+                  }
+              },
+              legend: {
+                  reversed: true
+              },
+
+              plotOptions: {
+
+                  series: {
+                      stacking: 'normal',
+                  },
+
+                   pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                       dataLabels: {
+                            distance: -30,
+                            color: 'white',
+                           format: '{point.percentage:.1f} %',
+                        },
+                        showInLegend: true
+                    }
+              },
+              series: data.chart_series
+          });
+        {% endfor %}
+    </script>
+{% endblock js_stuff %}

@@ -1,55 +1,61 @@
-{% extends 'analysis/base_overview.html' %}
-
+{% extends "analysis/base.html" %}
 
 {% block header_stuff %}
+    {{ block.super }}
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"></link>
 {% endblock header_stuff %}
 
-
-{% block content %}
-
-  <div class="row text-center">
-
-    <div class="col-sm-8 offset-sm-2">
-      <h1>Spending Overview</h1>
-      <p>To see an overview of your spending habits.</p>
-        <div id="chart_container"></div>
+{% block page_content %}
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <h1>Spending Overview</h1>
+            <p>To see an overview of your spending habits.</p>
+        </div>
     </div>
-  </div>
-
+    <div class="row">
+        <div class="col-lg-12">
+            <div id="charts_container"></div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-lg-12 text-center">
+            <div class="table-responsive">
+                <table id="transactions_table" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Transaction</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                            <tr>
+                                <td>
+                                    {{ transaction.date|date:"m/d/Y" }}
+                                </td>
+                                <td>
+                                    {{ transaction.name }}
+                                </td>
+                                <td>
+                                    {{ transaction.amount }} USD
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}
-
 
 {% block js_stuff %}
     {{ block.super }}
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
     <script>
-        data = {{ chart_data|safe }};
-        console.log(data);
-
-        Highcharts.chart('chart_container', {
-          chart: {
-              type: data["type"]
-          },
-          title: {
-              text: data.title
-          },
-          xAxis: {
-              categories: data.categories
-          },
-          yAxis: {
-              min: 0,
-              title: {
-                  text: '$ (USD)'
-              }
-          },
-          legend: {
-              reversed: true
-          },
-          plotOptions: {
-              series: {
-                  stacking: 'normal'
-              }
-          },
-          series: data.chart_series
-      });
+        $("#transactions_table").DataTable({
+            pageLength: 100
+        });
     </script>
 {% endblock js_stuff %}

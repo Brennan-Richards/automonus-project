@@ -162,6 +162,8 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
+USE_THOUSAND_SEPARATOR = True
+
 PLAID_ENV = os.getenv('PLAID_ENV', 'sandbox')
 PLAID_CLIENT_ID = '5d37fe8b737a4f001252bfd9'
 PLAID_SECRET = '176040b1d82a9d35dfc9aca8fe9943'

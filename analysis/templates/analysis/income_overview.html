@@ -1,57 +1,33 @@
-{% extends 'base.html' %}
+{% extends "analysis/base.html" %}
 
-<script src="https://code.highcharts.com/highcharts.src.js"></script>
 
-{% load static %}
-
-{% block content %}
-
-  <h1>Income Overview</h1>
-
-    <div class="row text-center">
-      <div class="col-sm-8 offset-sm-2">
-
-        {% include 'automonus/link.html' %}
-        <p>To see an overview of your income and income taxes.</p>
-
-      </div>
+{% block page_content %}
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <h1>Income Overview</h1>
+            <p>To see an overview of your spending habits.</p>
+        </div>
     </div>
-
-    <div class="highcharts">
-
-        Highcharts.chart('container', {
-      chart: {
-          type: 'bar'
-      },
-      title: {
-          text: 'Income Overview'
-      },
-      xAxis: {
-          categories: ['Projected Income']
-      },
-      yAxis: {
-          min: 0,
-          title: {
-              text: '$ (USD)'
-          }
-      },
-      legend: {
-          reversed: true
-      },
-      plotOptions: {
-          series: {
-              stacking: 'normal'
-          }
-      },
-      series: [{
-          name: 'Income',
-          data: [{{ true_income }}]
-      }, {
-          name: 'Tax',
-          data: [{{ tax }}]
-      }]
-  });
-
+    <div class="row">
+        <div class="col-lg-8">
+            <div id="charts_container"></div>
+        </div>
+        <div class="col-lg-4 text-left">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="h5">Average income per:</div>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        {% with request.user.profile.get_income as user_income %}
+                            <li>day: {{ user_income.per_day }} USD</li>
+                            <li>week: {{ user_income.per_week }} USD</li>
+                            <li>month: {{ user_income.per_month }} USD</li>
+                            <li>year: {{ user_income.total }} USD</li>
+                        {% endwith %}
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
-
-{% endblock %}
+{% endblock page_content %}
