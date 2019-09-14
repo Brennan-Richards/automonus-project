@@ -7,7 +7,7 @@ from django.views import generic
 from django.http import JsonResponse
 from hornescalculator.forms import DisplayForm
 from hornescalculator.models import Display, Tax, Housing, Car, Utilities, Food, Miscellaneous
-from automonus.settings import development as settings
+from django.conf import settings
 from django.http import JsonResponse
 import requests
 from plaid import Client
