@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
@@ -77,7 +77,7 @@ def get_access_token(request):
 def marketing(request):
     user = request.user
     if user.is_authenticated:
-        return redirect(request, 'automonus/hornescalculator.html')
+        return HttpResponseRedirect(reverse_lazy("overview"))
     return render(request, 'automonus/marketing.html')
 
 

@@ -8,21 +8,21 @@
 
    <div class="col-sm-4 offset-md-4 text-center">
 
-      <h2>The Automonus Project</h2>
+      <div class="h2">The Automonus Project</div>
       <br>
       <br>
 
        <small class="text-muted alert alert-primary">You are not logged in to Automonus.</small>
 
-       <img src="{% static 'snake&brain.png' %}" width=250>
+       <img src="{% static 'img/snake&brain.png' %}" width=250>
 
        <br>
        <br>
 
 
-       <a class="btn btn-lg btn-block btn-outline-success" href="{% url 'signup' %}">Create an account</a>
+       <a class="btn btn-lg btn-block btn-outline-success" href="{% url 'account_signup' %}">Create an account</a>
 
-       <a class="btn btn-lg btn-block btn-outline-primary" href="{% url 'login' %}">Log in</a>
+       <a class="btn btn-lg btn-block btn-outline-primary" href="{% url 'account_login' %}">Log in</a>
 
    </div>
 

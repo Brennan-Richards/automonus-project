@@ -11,7 +11,7 @@
   <!-- Load static files -->
   {% load static from staticfiles %}
 
-  <link rel="shortcut icon" type="image/png" href="{% static 'snake&brain.png' %}"/>
+  <link rel="shortcut icon" type="image/png" href="{% static 'img/snake&brain.png' %}"/>
 
   <!-- Import Javascript and Jquery files. -->
 
@@ -38,7 +38,7 @@
     <a class="navbar-brand" href="#">
 
       <a href="{% url 'about' %}">
-        <img src="{% static 'automonus-beta-light.png' %}" height="250">
+        <img src="{% static 'img/automonus-beta-light.png' %}" height="250">
       </a>
 
     </a>
@@ -53,7 +53,7 @@
 
       <li class="nav-item">
         <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="{% url 'academy_home' %}">
-          <img src="{% static 'academy-automonus.png' %}" height=30 class="mr-sm-2">
+          <img src="{% static 'img/academy-automonus.png' %}" height=30 class="mr-sm-2">
           Academy
         </a>
       </li>
@@ -61,7 +61,7 @@
       <li class="nav-item dropdown">
 
         <button class="nav-link dropdown-toggle mr-sm-2 btn btn-sm btn-outline-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <img src="{% static 'analysis-automonus.png' %}" height=30 class="mr-sm-2">
+          <img src="{% static 'img/analysis-automonus.png' %}" height=30 class="mr-sm-2">
           Analysis
         </button>
 
@@ -77,14 +77,14 @@
 
       <li class="nav-item">
         <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="{% url 'babylon_plan' %}">
-          <img src="{% static 'planning-automonus.png' %}" height=30 class="mr-sm-2">
+          <img src="{% static 'img/planning-automonus.png' %}" height=30 class="mr-sm-2">
           Planning
         </a>
       </li>
 
       <li class="nav-item">
         <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="#">
-          <img src="{% static 'payments-automonus.png' %}" height=30 class="mr-sm-2">
+          <img src="{% static 'img/payments-automonus.png' %}" height=30 class="mr-sm-2">
           Payments
         </a>
       </li>
@@ -95,23 +95,18 @@
 
       <li class="nav-item dropdown">
         <button class="nav-link dropdown-toggle btn btn-sm btn-outline-secondary"
-                href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Account
         </button>
 
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="javascript:{document.getElementById('logout').submit()}">Log Out</a>
           <a class="dropdown-item">Your account name: {{ request.user }}</a>
-
-            <form id="logout" method="POST" action="{% url 'logout' %}">
-              {% csrf_token %}
-              <input type="hidden">
-            </form>
-
+          <a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a>
         </div>
       </li>
     </ul>
-
+  </div>
 </nav>
 
 {% endif %}
@@ -138,7 +133,7 @@
 <br>
 <br>
 
-<footer align="center">
+<footer class="text-center">
 
   <hr>
 
@@ -151,5 +146,17 @@
 
     {% block js_stuff %}
     {% endblock js_stuff %}
+
+    <!--Toastr for messages showing-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/toastr_settings.js' %}"></script>
+
+    {% if messages %}
+        <script type="text/javascript">
+            {% for message in messages %}
+                toastr.{{ message.tags }}("{{ message|safe }}");
+            {% endfor %}
+        </script>
+    {% endif %}
 
 </html>
