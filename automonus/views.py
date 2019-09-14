@@ -64,7 +64,7 @@ def get_access_token(request):
         In Production, you will be billed for each product that you specify when initializing Link.'
         """
         user_institution.populate_income_information()
-        user_institution.populate_accounts()
+        user_institution.populate_or_update_accounts()
 
         # getting investments data
         user_institution.populate_securities_and_holdings()

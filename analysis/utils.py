@@ -72,6 +72,7 @@ class ChartData():
                 "type__name": "buy"
             }
 
+        # this does not include transaction with the amount below 0
         if not is_cumulative:
             kwargs["amount__gt"] = 0
 
@@ -104,7 +105,7 @@ class ChartData():
                     total_value += value
                     v_mod[key] = round(total_value, 2)
                 data[k] = v_mod
-        print(data)
+        # print(data)
         return data, transactions_qs
 
     def get_income_data(self, user, chart_name, chart_type):

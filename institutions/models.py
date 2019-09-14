@@ -43,6 +43,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
     user = models.ForeignKey(User, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     # this is needed to retrieve API data for instances related to this institution
     access_token = models.CharField(max_length=64, default=None)
+    is_active = models.BooleanField(default=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
@@ -283,7 +284,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
                                                   defaults={"confidence": confidence, "days": days,
                                                             "monthly_income": monthly_income})
 
-    def populate_accounts(self):
+    def populate_or_update_accounts(self):
         """The code with getting stripe token is not needed here:
         stripe_response = client.Processor.stripeBankAccountTokenCreate(self.access_token, account_id)
         even if it is referenced in the plaid docs.

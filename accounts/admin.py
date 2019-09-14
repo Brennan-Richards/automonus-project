@@ -50,3 +50,10 @@ class TransactionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Transaction, TransactionAdmin)
+
+
+class AccountSnapshotAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in AccountSnapshot._meta.fields]
+
+
+admin.site.register(AccountSnapshot, AccountSnapshotAdmin)

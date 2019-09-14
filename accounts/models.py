@@ -58,17 +58,18 @@ class Account(models.Model):
     current_balance = models.DecimalField(max_digits=18, decimal_places=2, default=0)
     limit_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0)
     currency = models.ForeignKey(Currency, blank=True, null=True, default=None, on_delete=models.SET_NULL)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
     def __str__(self):
         if self.user_institution and self.user_institution and self.user_institution.user and self.name and self.type:
-            return "{} {}: {} ({})".format(self.user_institution.institution.name, self.user_institution.user.username,
+            return "Id {}. {} {}: {} ({})".format(self.id, self.user_institution.institution.name, self.user_institution.user.username,
                                            self.name, self.type.name)
         else:
             return "{}".format(self.id)
+
 
 
 class TransactionCategory(ModelBaseFieldsAbstract):
@@ -98,3 +99,21 @@ class Transaction(models.Model):
             return "{}: {}{}".format(self.name, self.amount, self.currency.code)
         else:
             return "{}: {}{} ".format(self.id, self.amount, self.currency.code)
+
+
+class AccountSnapshot(models.Model):
+    """savings, investments and debts"""
+    account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    available_balance = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    current_balance = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    limit_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    date = models.DateField(blank=True, null=True, default=None)
+    created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    def __str__(self):
+        if self.account:
+            return "{}".format(self.account.id)
+        else:
+            return "{}".format(self.id)

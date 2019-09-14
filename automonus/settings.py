@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'crispy_forms',
     'captcha',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
@@ -188,6 +189,8 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 PLAID_ENV = env("PLAID_ENV", default="sandbox")
 PLAID_CLIENT_ID = env("PLAID_CLIENT_ID", default="5d37fe8b737a4f001252bfd9")
 PLAID_SECRET = env("PLAID_SECRET", default="176040b1d82a9d35dfc9aca8fe9943")
@@ -228,7 +231,17 @@ AXES_FAILURE_LIMIT = env("AXES_FAILURE_LIMIT", default=10)
 AXES_USERNAME_FORM_FIELD = 'username'
 AXES_RESET_ON_SUCCESS = True
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# for django-apscheduler
+SCHEDULER_CONFIG = {
+    "apscheduler.jobstores.default": {
+        "class": "django_apscheduler.jobstores:DjangoJobStore"
+    },
+    'apscheduler.executors.processpool': {
+        "type": "threadpool"
+    },
+}
+SCHEDULER_AUTOSTART = env.bool("SCHEDULER_AUTOSTART", default=False)
 
 if IS_ON_PROD:
     AXES_BEHIND_REVERSE_PROXY = True
