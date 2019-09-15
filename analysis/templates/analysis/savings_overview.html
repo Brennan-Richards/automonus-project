@@ -4,16 +4,16 @@
 {% block page_content %}
     <div class="row">
         <div class="col-lg-12 text-center">
-            <h1>Savings Overview</h1>
+            <div class="h1">Savings Overview</div>
             <p>To see an overview of your savings.</p>
         </div>
     </div>
     <div class="row">
         <div class="col-lg-12">
             <div>
-                Total: <b>{{ available_balance }} USD</b>
+                Total: <b>{{ total_balance }} USD</b>
             </div>
-            <div id="charts_container"></div>
+            <div id="charts_container" class="mt-3"></div>
         </div>
     </div>
 {% endblock %}

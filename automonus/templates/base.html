@@ -143,10 +143,6 @@
   <br>
 
 </footer>
-
-    {% block js_stuff %}
-    {% endblock js_stuff %}
-
     <!--Toastr for messages showing-->
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script type="text/javascript" src="{% static 'js/toastr_settings.js' %}"></script>
@@ -158,5 +154,8 @@
             {% endfor %}
         </script>
     {% endif %}
+
+    {% block js_stuff %}
+    {% endblock js_stuff %}
 
 </html>

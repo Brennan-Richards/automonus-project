@@ -322,5 +322,6 @@ class UserInstitution(ModelBaseFieldsAbstract):
                 "currency": currency
             }
             """Account information can be updated after initial creation of the instance"""
-            Account.objects.update_or_create(user_institution=self, account_id=account_id,
-                                             **bank_account_defaults_kwargs)
+            account, created = Account.objects.update_or_create(user_institution=self,
+                                                       account_id=account_id, **bank_account_defaults_kwargs)
+            account.create_account_snapshot()

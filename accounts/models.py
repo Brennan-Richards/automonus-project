@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from decimal import *
 import uuid
+from django.utils import timezone
 from plaid import Client
 client = Client(client_id=settings.PLAID_CLIENT_ID,
     secret=settings.PLAID_SECRET,
@@ -70,6 +71,14 @@ class Account(models.Model):
         else:
             return "{}".format(self.id)
 
+    def create_account_snapshot(self):
+        available_balance = self.available_balance
+        current_balance = self.current_balance
+        limit_amount = self.limit_amount
+        current_date = timezone.now().date()
+        AccountSnapshot.objects.get_or_create(account=self, date=current_date, defaults={"available_balance": available_balance,
+                                                        "current_balance": current_balance, "limit_amount": limit_amount
+                                                        })
 
 
 class TransactionCategory(ModelBaseFieldsAbstract):

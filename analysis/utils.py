@@ -1,5 +1,5 @@
 from django.db.models import Avg, Count, Min, Sum
-from accounts.models import Transaction
+from accounts.models import AccountSnapshot
 from income.models import Income
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -57,12 +57,12 @@ class ChartData():
                       "chart_series": chart_series}
         return chart_data
 
-    def get_transactions_data(self, user, chart_name, chart_type, account_type=None,
+    def get_transactions_data(self, user, chart_name, chart_type, account_types=None,
                               date_period_days=365, is_cumulative=False, model_name="Transaction"):
         if model_name == "Transaction":
             kwargs = {
                 "account__user_institution__user": user,
-                "account__type__name": account_type,
+                "account__type__name__in": account_types,
                 "date__gte": timezone.now()-timedelta(days=date_period_days)
             }
         else:  # InvestmentTransaction
@@ -77,9 +77,7 @@ class ChartData():
             kwargs["amount__gt"] = 0
 
         model = ContentType.objects.get(model=model_name.lower()).model_class()
-        print(model)
         transactions_qs = model.objects.filter(**kwargs)
-        print(transactions_qs)
         transactions = transactions_qs \
             .values('date', 'currency__code') \
             .annotate(amount=Sum('amount'))
@@ -123,17 +121,50 @@ class ChartData():
                 }
         return data, income_data
 
-    def get_spendings_data(self, user, chart_name, chart_type, qs_data):
+    def get_spendings_data(self, user, chart_name, chart_type, account_types):
         print("get_spendings_data")
+        data, transactions = self.get_transactions_data(user, chart_name, chart_type, account_types)
         data_dict = dict()
-        for item in qs_data.iterator():
+        for item in transactions.iterator():
             category = item.category.name
             if not category in data_dict:
                 data_dict[category] = 0
             data_dict[category] += float(abs(item.amount))
-        return data_dict, qs_data
+        return data_dict, transactions
 
-    def get_chart_data(self, user, chart_name, chart_type, qs_data=None):
+    def get_accounts_snapshots_data(self, user, chart_name, chart_type, account_types, date_period_days=365):
+        kwargs = {
+            "account__user_institution__user": user,
+            "date__gte": timezone.now() - timedelta(days=date_period_days),
+            "account__type__name__in": account_types
+        }
+        qs = AccountSnapshot.objects.filter(**kwargs).order_by("date")
+        transactions = qs \
+            .values('date', 'account__currency__code') \
+            .annotate(amount=Sum('current_balance'))
+        data = dict()
+        for item in transactions:
+            currency_code = item["account__currency__code"]
+            date = item["date"]
+            # date = item["date"].strftime("%m/%d/%Y")
+            amount = float(item["amount"])
+            if not currency_code in data:
+                data[currency_code] = dict()
+            if not date in data[currency_code]:
+                data[currency_code][date] = 0
+            data[currency_code][date] += amount
+
+        for k, v in data.items():
+            v_mod = dict(sorted(v.items()))
+            total_value = 0
+            for key, value in v_mod.items():
+                total_value += value
+                v_mod[key] = round(total_value, 2)
+            data[k] = v_mod
+        # print(data)
+        return data, qs
+
+    def get_chart_data(self, user, chart_name, chart_type, qs_data=None, account_types=None):
         """
         :param user:
         :param chart_name:
@@ -144,8 +175,14 @@ class ChartData():
             data, qs_data = self.get_income_data(user, chart_name, chart_type)
             chart_data = self.prepare_chart_data_pie_chart(data, user, chart_name, chart_type)
         elif chart_name == "Expenditure transaction categories":
-            data, qs_data = self.get_spendings_data(user, chart_name, chart_type, qs_data)
+            data, qs_data = self.get_spendings_data(user, chart_name, chart_type, account_types)
             chart_data = self.prepare_chart_data_pie_chart(data, user, chart_name, chart_type)
+        else:
+            data, qs_data = self.get_accounts_snapshots_data(user, chart_name, chart_type, account_types)
+            chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
+        """The code below is commented out, because getting data is switched to displaying data from
+        accounts snapshots"""
+        """
         elif chart_name == "Savings traction":
             data, qs_data = self.get_transactions_data(user, chart_name, chart_type,
                                                        account_type="depository", is_cumulative=True)
@@ -158,15 +195,17 @@ class ChartData():
             # line chart type by default
             data, qs_data = self.get_transactions_data(user, chart_name, chart_type, account_type="credit")
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
+        """
         return chart_data, qs_data
 
-    def get_charts_data(self, user, chart_type, category):
+    def get_charts_data(self, user, chart_type, category, account_types=None):
         charts_data = list()
         if category == "spending":
-            chart_data, qs_data = self.get_chart_data(user=user, chart_name="Spending Overview", chart_type=chart_type)
+            chart_data, qs_data = self.get_chart_data(user=user, chart_name="Spending Overview",
+                                                      chart_type=chart_type, account_types=account_types)
             charts_data.append(chart_data)
             chart_data, qs_data = self.get_chart_data(user=user, chart_name="Expenditure transaction categories",
-                                                    chart_type="pie", qs_data=qs_data)
+                                                    chart_type="pie", account_types=account_types)
             charts_data.append(chart_data)
         elif category == "income":
             print("income")
@@ -175,10 +214,17 @@ class ChartData():
             charts_data.append(chart_data)
         elif category == "savings":
             chart_name = "Savings traction"
-            chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type)
+            chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type,
+                                                      account_types=account_types)
+            charts_data.append(chart_data)
+        elif category == "liabilities":
+            chart_name = "Liabilities traction"
+            chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type,
+                                                      account_types=account_types)
             charts_data.append(chart_data)
         elif category == "investments":
             chart_name = "Investments traction"
-            chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type)
+            chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type,
+                                                      account_types=account_types)
             charts_data.append(chart_data)
         return charts_data

@@ -20,37 +20,50 @@ def income_overview(request):
 
 def spending_overview(request):
     user = request.user
-    charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="spending")
+    account_types = ["credit"]
+    charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="spending", account_types=account_types)
     transactions = Transaction.objects.filter(account__user_institution__user=user,
-                                              account__type__name="credit", amount__gt=0
+                                              account__type__name__in=account_types, amount__gt=0
                                               ).order_by("-id")[:100]
     context = {"charts_data": charts_data, "transactions": transactions}
     return render(request, 'analysis/spending_overview.html', context)
 
 
 def liabilities_overview(request):
-    return render(request, 'analysis/liabilities_overview.html')
+    user = request.user
+    account_types = ["credit", "loan"]
+    charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="liabilities", account_types=account_types)
+    transactions = Transaction.objects.filter(account__user_institution__user=user,
+                                              account__type__name__in=account_types, amount__gt=0
+                                              ).order_by("-id")[:100]
+    accounts = Account.objects.filter(user_institution__user=user, type__name__in=account_types) \
+        .aggregate(total=Sum("current_balance"))
+    total_balance = round(accounts["total"] if accounts.get("total") else 0, 2)
+    context = {"total_balance": total_balance, "charts_data": charts_data, "transactions": transactions}
+    return render(request, 'analysis/liabilities_overview.html', context)
 
 
 def savings_overview(request):
     user = request.user
-    accounts = Account.objects.filter(user_institution__user=user, type__name="depository") \
-        .aggregate(total=Sum("available_balance"))
-    total_balance = accounts["total"] if accounts.get("total") else 0
-    available_balance = round(total_balance, 2)
-
-    charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="savings")
-    context = {"charts_data": charts_data, "available_balance": available_balance}
+    account_types = ["depository"]
+    accounts = Account.objects.filter(user_institution__user=user, type__name__in=account_types) \
+        .aggregate(total=Sum("current_balance"))
+    total_balance = round(accounts["total"] if accounts.get("total") else 0, 2)
+    charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="savings", account_types=account_types)
+    context = {"charts_data": charts_data, "total_balance": total_balance}
     return render(request, 'analysis/savings_overview.html', context)
 
 
 def investments_overview(request):
     user = request.user
+    account_types = ["investment"]
+
     user_holdings = Holding.objects.filter(account__user_institution__user=user).aggregate(total_amount=Sum("institution_value"))
     total_amount = user_holdings["total_amount"] if user_holdings.get("total_amount") else 0
     total_investments = round(total_amount, 2)
+
     investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__user=user)[:100]
-    charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="investments")
+    charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="investments", account_types=account_types)
     context = {"charts_data": charts_data, "total_investments": total_investments,
                "investment_transactions": investment_transactions}
     return render(request, 'analysis/investments_overview.html', context)

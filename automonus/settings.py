@@ -174,12 +174,10 @@ USE_TZ = True
 #STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-    #'/var/www/static/',
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static', 'static_dev')]
+STATIC_ROOT = os.path.join(BASE_DIR, "static", "static_prod")
 
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+print(BASE_DIR)
 
 USE_THOUSAND_SEPARATOR = True
 
