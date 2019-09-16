@@ -33,9 +33,9 @@ print("IS_ON_PROD: {}".format(IS_ON_PROD))
 SECRET_KEY = env("SECRET_KEY", default="kj8pmlp50a1_)2el%7hgynt5-u!rvzd2z$(b*@0#2n7^joq54h")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", False)
 
-ALLOWED_HOSTS = env("ALLOWED_HOSTS", default=["*"])
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
 
 LOGIN_URL = '/marketing/'
@@ -111,27 +111,12 @@ WSGI_APPLICATION = 'automonus.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'template1',
-#         'USER': 'brennanrichards',
-#         'PASSWORD': 'F00tb@ll#',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#      }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-
-
 
 
 # Password validation
@@ -170,14 +155,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static', 'static_dev')]
 STATIC_ROOT = os.path.join(BASE_DIR, "static", "static_prod")
 
-print(BASE_DIR)
 
 USE_THOUSAND_SEPARATOR = True
 
@@ -245,7 +226,7 @@ if IS_ON_PROD:
     AXES_BEHIND_REVERSE_PROXY = True
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     ALLOWED_HOSTS = env("ALLOWED_HOSTS", default=['automonus-project.herokuapp.com'])
-    DEBUG = False
+    DEBUG = env.bool("DEBUG", True)
     DATABASES = {
         'default': dj_database_url.config()
     }
