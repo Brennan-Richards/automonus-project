@@ -195,7 +195,7 @@ PLAID_SECRET = env("PLAID_SECRET", default="176040b1d82a9d35dfc9aca8fe9943")
 PLAID_PUBLIC_KEY = env("PLAID_PUBLIC_KEY", default="6c5492915411a3645fdd0368516aa9")
 
 """Replace ngrok server address (it is the string till "/accounts/webhook-handler/" with your server address"""
-PLAID_WEBHOOK_URL = env("PLAID_WEBHOOK_URL", default="https://7875e549.ngrok.io/webhooks/webhook-handler/")
+PLAID_WEBHOOK_URL = env("PLAID_WEBHOOK_URL", default="https://443008cd.ngrok.io/webhooks/webhook-handler/")
 
 # google-recapcha
 RECAPTCHA_PUBLIC_KEY = env("RECAPTCHA_PUBLIC_KEY", default="")
