@@ -12,4 +12,4 @@ RECAPTCHA_PUBLIC_KEY  # from google captcha settings
 RECAPTCHA_PRIVATE_KEY  # from google captcha settings
 AXES_FAILURE_LIMIT  # limit of failed attempts login attempts before temporary blocking account (for django-axes package)
 SCHEDULER_AUTOSTART  # set to True if you need to switch on the scheduler
-POST_SERVER_ITEM_ACCESS_TOKEN  # set the value of token from rollbar
+ROLLBAR_TOKEN  # set the value of token from rollbar

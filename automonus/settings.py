@@ -232,10 +232,10 @@ if IS_ON_PROD:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
     # rollbar (for handling exceptions on prod)
-    POST_SERVER_ITEM_ACCESS_TOKEN = env("POST_SERVER_ITEM_ACCESS_TOKEN", default="")
+    ROLLBAR_TOKEN = env("ROLLBAR_TOKEN", default="")
     if POST_SERVER_ITEM_ACCESS_TOKEN:
         ROLLBAR = {
-            'access_token': POST_SERVER_ITEM_ACCESS_TOKEN,
+            'access_token': ROLLBAR_TOKEN,
             'environment': 'production',
             'branch': 'master',
         }
