@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import environ
-import rollbar
 import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -232,7 +231,7 @@ if IS_ON_PROD:
     }
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-    # rollback (for handling exceptions on prod)
+    # rollbar (for handling exceptions on prod)
     POST_SERVER_ITEM_ACCESS_TOKEN = env("POST_SERVER_ITEM_ACCESS_TOKEN", default="")
     if POST_SERVER_ITEM_ACCESS_TOKEN:
         ROLLBAR = {
