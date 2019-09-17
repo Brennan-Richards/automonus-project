@@ -225,7 +225,7 @@ if IS_ON_PROD:
     AXES_BEHIND_REVERSE_PROXY = True
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     ALLOWED_HOSTS = env("ALLOWED_HOSTS", default=['automonus-project.herokuapp.com'])
-    DEBUG = env.bool("DEBUG", True)
+    DEBUG = env.bool("DEBUG", False)
     DATABASES = {
         'default': dj_database_url.config()
     }
