@@ -233,7 +233,7 @@ if IS_ON_PROD:
 
     # rollbar (for handling exceptions on prod)
     ROLLBAR_TOKEN = env("ROLLBAR_TOKEN", default="")
-    if POST_SERVER_ITEM_ACCESS_TOKEN:
+    if ROLLBAR_TOKEN:
         ROLLBAR = {
             'access_token': ROLLBAR_TOKEN,
             'environment': 'production',
