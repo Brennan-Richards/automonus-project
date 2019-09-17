@@ -171,7 +171,7 @@ class ChartData():
         :param chart_type:  "line", "pie", "column"
         :return:
         """
-        if chart_name == "Income before and after taxes, cost of tax":
+        if chart_name == "Last year's income before and after taxes, cost of tax":
             data, qs_data = self.get_income_data(user, chart_name, chart_type)
             chart_data = self.prepare_chart_data_pie_chart(data, user, chart_name, chart_type)
         elif chart_name == "Expenditure transaction categories":
@@ -209,7 +209,7 @@ class ChartData():
             charts_data.append(chart_data)
         elif category == "income":
             print("income")
-            chart_name = "Income before and after taxes, cost of tax"
+            chart_name = "Last year's income before and after taxes, cost of tax"
             chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type)
             charts_data.append(chart_data)
         elif category == "savings":

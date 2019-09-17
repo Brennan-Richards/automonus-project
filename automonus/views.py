@@ -58,9 +58,9 @@ def get_access_token(request):
         Some products can be unavailable for the chosen institution, if they were not included on js side, like docs say
         about this:
 
-        'A list of Plaid product(s) you wish to use. 
-        Valid products are: transactions, auth, identity, income, assets, investments, and liabilities. 
-        Only institutions that support all requested products will be shown. 
+        'A list of Plaid product(s) you wish to use.
+        Valid products are: transactions, auth, identity, income, assets, investments, and liabilities.
+        Only institutions that support all requested products will be shown.
         In Production, you will be billed for each product that you specify when initializing Link.'
         """
         user_institution.populate_income_information()
@@ -77,7 +77,7 @@ def get_access_token(request):
 def marketing(request):
     user = request.user
     if user.is_authenticated:
-        return HttpResponseRedirect(reverse_lazy("overview"))
+        return HttpResponseRedirect(reverse_lazy("about"))
     return render(request, 'automonus/marketing.html')
 
 

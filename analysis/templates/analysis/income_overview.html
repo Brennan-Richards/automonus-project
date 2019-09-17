@@ -5,7 +5,8 @@
     <div class="row">
         <div class="col-lg-12 text-center">
             <div class="h1">Income Overview</div>
-            <p>To see an overview of your spending habits.</p>
+            <p>See your last year's income and taxes paid, plus your projected income and projected
+            taxes for the upcoming year.</p>
         </div>
     </div>
     <div class="row">
@@ -15,15 +16,15 @@
         <div class="col-lg-4 text-left">
             <div class="card card-primary">
                 <div class="card-header">
-                    <div class="h5">Average income per:</div>
+                    <div class="h5">Your projected income per:</div>
                 </div>
                 <div class="card-body">
                     <ul>
                         {% with request.user.profile.get_income as user_income %}
-                            <li>day: {{ user_income.per_day }} USD</li>
-                            <li>week: {{ user_income.per_week }} USD</li>
-                            <li>month: {{ user_income.per_month }} USD</li>
-                            <li>year: {{ user_income.total }} USD</li>
+                            <li>Day: {{ user_income.per_day }} USD</li>
+                            <li>Week: {{ user_income.per_week }} USD</li>
+                            <li>Month: {{ user_income.per_month }} USD</li>
+                            <li>Year: {{ user_income.total }} USD</li>
                         {% endwith %}
                     </ul>
                 </div>

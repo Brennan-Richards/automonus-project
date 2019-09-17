@@ -32,7 +32,7 @@ print("IS_ON_PROD: {}".format(IS_ON_PROD))
 SECRET_KEY = env("SECRET_KEY", default="kj8pmlp50a1_)2el%7hgynt5-u!rvzd2z$(b*@0#2n7^joq54h")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DEBUG", False)
+DEBUG = env.bool("DEBUG", True)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
@@ -156,7 +156,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static', 'static_dev')]
-STATIC_ROOT = os.path.join(BASE_DIR, "static", "static_prod")
+STATIC_ROOT = os.path.join(BASE_DIR, 'static', 'static_prod')
 
 
 USE_THOUSAND_SEPARATOR = True
@@ -174,7 +174,7 @@ PLAID_CLIENT_ID = env("PLAID_CLIENT_ID", default="5d37fe8b737a4f001252bfd9")
 PLAID_SECRET = env("PLAID_SECRET", default="176040b1d82a9d35dfc9aca8fe9943")
 PLAID_PUBLIC_KEY = env("PLAID_PUBLIC_KEY", default="6c5492915411a3645fdd0368516aa9")
 
-"""Replace ngrok server address (it is the string till "/accounts/webhook-handler/" with your server address"""
+"""Replace ngrok server address (it is the string till "/webhooks/webhook-handler/" with your server address"""
 PLAID_WEBHOOK_URL = env("PLAID_WEBHOOK_URL", default="https://443008cd.ngrok.io/webhooks/webhook-handler/")
 
 # google-recapcha
@@ -225,7 +225,7 @@ if IS_ON_PROD:
     AXES_BEHIND_REVERSE_PROXY = True
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     ALLOWED_HOSTS = env("ALLOWED_HOSTS", default=['automonus-project.herokuapp.com'])
-    DEBUG = env.bool("DEBUG", True)
+    DEBUG = env.bool("DEBUG", False)
     DATABASES = {
         'default': dj_database_url.config()
     }
