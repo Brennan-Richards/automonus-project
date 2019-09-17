@@ -32,7 +32,7 @@ print("IS_ON_PROD: {}".format(IS_ON_PROD))
 SECRET_KEY = env("SECRET_KEY", default="kj8pmlp50a1_)2el%7hgynt5-u!rvzd2z$(b*@0#2n7^joq54h")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DEBUG", False)
+DEBUG = env.bool("DEBUG", True)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
@@ -233,7 +233,7 @@ if IS_ON_PROD:
 
     # rollbar (for handling exceptions on prod)
     ROLLBAR_TOKEN = env("ROLLBAR_TOKEN", default="")
-    if POST_SERVER_ITEM_ACCESS_TOKEN:
+    if ROLLBAR_TOKEN:
         ROLLBAR = {
             'access_token': ROLLBAR_TOKEN,
             'environment': 'production',
