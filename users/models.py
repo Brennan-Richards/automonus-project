@@ -39,8 +39,7 @@ class Profile(models.Model):
         income = income["total"] if income.get("total") else 0
         return {
             "per_day": round(income/365, 2),
-            "per_week": round(income/365/7, 2),
-            "per_month": round(income/30, 2),
+            "per_week": round(income/52, 2),
+            "per_month": round(income/12, 2),
             "total": round(income, 2)
         }
-

@@ -33,7 +33,7 @@
 <!-- Navbar -->
 {% if user.is_authenticated %}
 
-<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+<nav class="navbar navbar-expand-sm navbar-light bg-light">
 
     <a class="navbar-brand" href="#">
 
@@ -52,7 +52,7 @@
     <ul class="navbar-nav mr-auto">
 
       <li class="nav-item">
-        <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="{% url 'academy_home' %}">
+        <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'academy_home' %}">
           <img src="{% static 'img/academy-automonus.png' %}" height=30 class="mr-sm-2">
           Academy
         </a>
@@ -60,7 +60,7 @@
 
       <li class="nav-item dropdown">
 
-        <button class="nav-link dropdown-toggle mr-sm-2 btn btn-sm btn-outline-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="nav-link dropdown-toggle mr-sm-2 btn btn-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <img src="{% static 'img/analysis-automonus.png' %}" height=30 class="mr-sm-2">
           Analysis
         </button>
@@ -75,7 +75,7 @@
 
       </li>
 
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="{% url 'babylon_plan' %}">
           <img src="{% static 'img/planning-automonus.png' %}" height=30 class="mr-sm-2">
           Planning
@@ -91,10 +91,10 @@
 
       <li class="nav-item">
         <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="#">Virtual Marketplace</a>
-      </li>
+      </li> -->
 
       <li class="nav-item dropdown">
-        <button class="nav-link dropdown-toggle btn btn-sm btn-outline-secondary"
+        <button class="nav-link dropdown-toggle btn btn-secondary"
                 id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Account
         </button>
