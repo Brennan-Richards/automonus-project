@@ -22,8 +22,6 @@ urlpatterns = [
 
     path('adminnewurl/', admin.site.urls),
     path('', views.about, name='about'),
-    path('link/', views.link, name='link'),
-    path('link/get-access-token/', views.get_access_token, name='get_access_token'),
 
     path('academy/', include('academy.urls')),
     path('analysis/', include('analysis.urls')),
