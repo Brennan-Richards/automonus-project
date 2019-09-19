@@ -46,5 +46,4 @@ class Profile(models.Model):
         }
 
     def get_user_institutions(self):
-        qs = self.user.userinstitution_set.filter(is_active=True)
-        return qs
+        return self.user.userinstitution_set.filter(is_active=True)
