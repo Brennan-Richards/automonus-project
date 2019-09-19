@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 import uuid
 from income.models import Income
+from institutions.models import UserInstitution
 from django.db.models import Sum
 
 
@@ -43,3 +44,6 @@ class Profile(models.Model):
             "per_month": round(income/12, 2),
             "total": round(income, 2)
         }
+
+    def get_user_institutions(self):
+        return self.user.userinstitution_set.filter(is_active=True)

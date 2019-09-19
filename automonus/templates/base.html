@@ -1,3 +1,5 @@
+{% load static %}
+
 <!doctype html>
 
 <html lang="en">
@@ -7,22 +9,12 @@
 
   <title>The Automonus Project</title>
   <meta name="description" content="The Automonus Project">
-
-  <!-- Load static files -->
-  {% load static %}
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" type="image/png" href="{% static 'img/snake&brain.png' %}"/>
 
-  <!-- Import Javascript and Jquery files. -->
-
-  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- CSS & Bootstrap CDN -->
-
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <!-- Load static files -->
+  <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 
   {% block header_stuff %}
   {% endblock header_stuff %}
@@ -32,82 +24,7 @@
 
 <!-- Navbar -->
 {% if user.is_authenticated %}
-
-<nav class="navbar navbar-expand-sm navbar-light bg-light">
-
-    <a class="navbar-brand" href="#">
-
-      <a href="{% url 'about' %}">
-        <img src="{% static 'img/automonus-beta-light.png' %}" height="250">
-      </a>
-
-    </a>
-
-    <!-- Bootstrap navbar toggler -->
-    <a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </a>
-
-  <div class="collapse navbar-collapse" id="navbarsExample03">
-    <ul class="navbar-nav mr-auto">
-
-      <!-- <li class="nav-item">
-        <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'academy_home' %}">
-          <img src="{% static 'img/academy-automonus.png' %}" height=30 class="mr-sm-2">
-          Academy
-        </a>
-      </li> -->
-
-      <li class="nav-item dropdown">
-
-        <button class="nav-link dropdown-toggle mr-sm-2 btn btn-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <img src="{% static 'img/analysis-automonus.png' %}" height=30 class="mr-sm-2">
-          Analysis
-        </button>
-
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url 'income_overview' %}">Income</a>
-          <a class="dropdown-item" href="{% url 'spending_overview' %}">Spending</a>
-          <a class="dropdown-item" href="{% url 'savings_overview' %}">Savings</a>
-          <a class="dropdown-item" href="{% url 'liabilities_overview' %}">Liabilities</a>
-          <a class="dropdown-item" href="{% url 'investments_overview' %}">Investments</a>
-        </div>
-
-      </li>
-
-      <!-- <li class="nav-item">
-        <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="{% url 'babylon_plan' %}">
-          <img src="{% static 'img/planning-automonus.png' %}" height=30 class="mr-sm-2">
-          Planning
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="#">
-          <img src="{% static 'img/payments-automonus.png' %}" height=30 class="mr-sm-2">
-          Payments
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="#">Virtual Marketplace</a>
-      </li> -->
-
-      <li class="nav-item dropdown">
-        <button class="nav-link dropdown-toggle btn btn-secondary"
-                id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Account
-        </button>
-
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item">Your account name: {{ request.user }}</a>
-          <a class="dropdown-item" href="{% url 'account_logout' %}">Log out</a>
-        </div>
-      </li>
-    </ul>
-  </div>
-</nav>
-
+    {% include "navbar.html" %}
 {% endif %}
 
 <br>
@@ -142,6 +59,11 @@
   <br>
 
 </footer>
+    <!-- Import Javascript and Jquery files. -->
+    <script src="//code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="//stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
     <!--Toastr for messages showing-->
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script type="text/javascript" src="{% static 'js/toastr_settings.js' %}"></script>

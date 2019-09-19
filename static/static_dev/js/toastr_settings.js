@@ -7,7 +7,7 @@ toastr.options = {
     "preventDuplicates": false,
     "positionClass": "toast-top-right",
     "onclick": null,
-    "showDuration": "800",
+    "showDuration": "5000",
     "hideDuration": "1200",
     "timeOut": "2000",
     "extendedTimeOut": "0",

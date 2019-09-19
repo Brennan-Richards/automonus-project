@@ -12,9 +12,17 @@
   <div class="row text-center">
 
     <div class="col-lg-10 mx-auto">
-      {% block page_content %}
 
-      {% endblock page_content %}
+      {% if request.user.profile.get_user_institutions %}
+          {% block page_content %}
+          {% endblock page_content %}
+      {% else %}
+          <div class="text-center">
+            <a type="button" class="btn btn-primary" href="{% url 'link_institution' %}">
+                Connect Your First Financial Institution
+            </a>
+          </div>
+      {% endif %}
     </div>
   </div>
 

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+
+{% block header_stuff %}
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highcharts/7.1.3/css/highcharts.css"></link>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"></link>
+{% endblock header_stuff %}
+
+
+{% block content %}
+
+  <div class="row text-center">
+
+    <div class="col-lg-10 mx-auto">
+        <div class="h3">Connected Institutions</div>
+        <div class="text-center">
+            <a type="button" class="btn btn-primary" href="{% url 'link_institution' %}">Connect New</a>
+        </div>
+        <div class="table-responsive">
+            <table id="table" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for object in object_list %}
+                        <tr>
+                            <td>{{ object.institution.name }}</td>
+                            <td>{% if object.is_active %}Connected{% endif %}
+                                <a class="btn btn-sm btn-danger" href="{% url 'disconnect_user_institution' object.uuid %}"
+                                data-toggle="tooltip" data-placement="top" title="Disconnect?">remove</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+
+{% block js_stuff %}
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        if($("#table").length>0){
+            $("#table").DataTable({
+                pageLength: 20
+            });
+        }
+    </script>
+{% endblock %}
