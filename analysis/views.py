@@ -20,18 +20,18 @@ def income_overview(request):
 
 def spending_overview(request):
     user = request.user
-    account_types = ["credit"]
+    account_types = ["depository", "credit"]
     charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="spending", account_types=account_types)
     transactions = Transaction.objects.filter(account__user_institution__user=user,
                                               account__type__name__in=account_types, amount__gt=0
-                                              ).order_by("-id")[:100]
+                                              ).order_by("-date")[:100]
     context = {"charts_data": charts_data, "transactions": transactions}
     return render(request, 'analysis/spending_overview.html', context)
 
 
 def liabilities_overview(request):
     user = request.user
-    account_types = ["credit", "loan"]
+    account_types = ["loan"]
     charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="liabilities", account_types=account_types)
     transactions = Transaction.objects.filter(account__user_institution__user=user,
                                               account__type__name__in=account_types, amount__gt=0

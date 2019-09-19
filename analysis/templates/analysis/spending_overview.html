@@ -26,6 +26,9 @@
                     <tbody>
                         {% for transaction in transactions %}
                             <tr>
+                                <!-- <td>
+                                  {{ transaction.id }}
+                                </td> -->
                                 <td>
                                     {{ transaction.date|date:"m/d/Y" }}
                                 </td>
@@ -33,7 +36,7 @@
                                     {{ transaction.name }}
                                 </td>
                                 <td>
-                                    {{ transaction.amount }} USD
+                                    ${{ transaction.amount }}
                                 </td>
                             </tr>
                         {% endfor %}

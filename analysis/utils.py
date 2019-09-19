@@ -58,7 +58,7 @@ class ChartData():
         return chart_data
 
     def get_transactions_data(self, user, chart_name, chart_type, account_types=None,
-                              date_period_days=365, is_cumulative=False, model_name="Transaction"):
+                              date_period_days=30, is_cumulative=False, model_name="Transaction"):
         if model_name == "Transaction":
             kwargs = {
                 "account__user_institution__user": user,
@@ -115,7 +115,7 @@ class ChartData():
             last_year_income_minus_tax=Sum("last_year_income_minus_tax"),
             last_year_taxes=Sum("last_year_taxes")
         )
-        data = {"Last year income before tax": round(float(income_data["last_year_income_before_tax"]),2),
+        data = {#"Last year income before tax": round(float(income_data["last_year_income_before_tax"]),2),
                 "Last year income minus tax": round(float(income_data["last_year_income_minus_tax"]), 2),
                 "Last year taxes": round(float(income_data["last_year_taxes"]), 2)
                 }
@@ -174,9 +174,13 @@ class ChartData():
         if chart_name == "Last year's income before and after taxes, cost of tax":
             data, qs_data = self.get_income_data(user, chart_name, chart_type)
             chart_data = self.prepare_chart_data_pie_chart(data, user, chart_name, chart_type)
-        elif chart_name == "Expenditure transaction categories":
+        elif chart_name == "Your past month's spending by expenditure category:":
             data, qs_data = self.get_spendings_data(user, chart_name, chart_type, account_types)
             chart_data = self.prepare_chart_data_pie_chart(data, user, chart_name, chart_type)
+        elif chart_name == "Your spending activity over the past quarter (90 days)":
+            # line chart type by default
+            data, qs_data = self.get_transactions_data(user, chart_name, chart_type, account_types, date_period_days=90)
+            chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
         else:
             data, qs_data = self.get_accounts_snapshots_data(user, chart_name, chart_type, account_types)
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
@@ -191,20 +195,17 @@ class ChartData():
             data, qs_data = self.get_transactions_data(user, chart_name, chart_type, is_cumulative=True,
                                                        model_name="InvestmentTransaction")
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
-        else:
-            # line chart type by default
-            data, qs_data = self.get_transactions_data(user, chart_name, chart_type, account_type="credit")
-            chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
+
         """
         return chart_data, qs_data
 
     def get_charts_data(self, user, chart_type, category, account_types=None):
         charts_data = list()
         if category == "spending":
-            chart_data, qs_data = self.get_chart_data(user=user, chart_name="Spending Overview",
+            chart_data, qs_data = self.get_chart_data(user=user, chart_name="Your spending activity over the past quarter (90 days)",
                                                       chart_type=chart_type, account_types=account_types)
             charts_data.append(chart_data)
-            chart_data, qs_data = self.get_chart_data(user=user, chart_name="Expenditure transaction categories",
+            chart_data, qs_data = self.get_chart_data(user=user, chart_name="Your past month's spending by expenditure category:",
                                                     chart_type="pie", account_types=account_types)
             charts_data.append(chart_data)
         elif category == "income":

@@ -34,7 +34,7 @@ class Profile(models.Model):
 
     def get_income(self):
         income = Income.objects.filter(user_institution__user=self.user)\
-            .aggregate(total=Sum("projected_yearly_income_before_tax"))
+            .aggregate(total=Sum("projected_yearly_minus_tax"))
         print(income)
         income = income["total"] if income.get("total") else 0
         return {

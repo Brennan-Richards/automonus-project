@@ -28,7 +28,8 @@
     <script>
         if($("#table").length>0){
             $("#table").DataTable({
-                pageLength: 100
+                pageLength: 100;
+                "aaSorting": [[1,'desc']];
             });
         }
     </script>
