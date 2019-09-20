@@ -15,7 +15,6 @@ client = Client(client_id=settings.PLAID_CLIENT_ID,
 )
 
 
-
 class UserInstitutions(LoginRequiredMixin, generic.ListView):
     template_name = 'institutions/user_institutions.html'
 
