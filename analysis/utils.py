@@ -1,6 +1,7 @@
 from django.db.models import Avg, Count, Min, Sum
 from accounts.models import AccountSnapshot
 from income.models import Income
+from accounts.models import Transaction
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.contrib.contenttypes.models import ContentType
@@ -105,6 +106,26 @@ class ChartData():
                 data[k] = v_mod
         # print(data)
         return data, transactions_qs
+
+    def get_transactions_sum(self, user, account_types=None, date_period_days=30):
+
+        kwargs = {
+            "account__user_institution__user": user,
+            "account__type__name__in": account_types,
+            "date__gte": timezone.now()-timedelta(days=date_period_days),
+            "amount__gt": 0
+        }
+
+        transactions = Transaction.objects.filter(**kwargs).values('date', 'currency__code') \
+        .annotate(amount=Sum('amount'))
+
+        sum_transactions = 0
+
+        for transaction in transactions:
+            sum_transactions += transaction["amount"]
+
+        return round(float(sum_transactions),2)
+
 
     def get_income_data(self, user, chart_name, chart_type):
         kwargs = {
@@ -214,17 +235,17 @@ class ChartData():
             chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type)
             charts_data.append(chart_data)
         elif category == "savings":
-            chart_name = "Savings traction"
+            chart_name = "Value of your savings over time"
             chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type,
                                                       account_types=account_types)
             charts_data.append(chart_data)
         elif category == "liabilities":
-            chart_name = "Liabilities traction"
+            chart_name = "Your debt total over time"
             chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type,
                                                       account_types=account_types)
             charts_data.append(chart_data)
         elif category == "investments":
-            chart_name = "Investments traction"
+            chart_name = "Progress of your invesments"
             chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type,
                                                       account_types=account_types)
             charts_data.append(chart_data)

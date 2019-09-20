@@ -1,6 +1,6 @@
 import os
 import sys
-os.environ['DJANGO_SETTINGS_MODULE'] = 'automonus.settings.development'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'automonus.settings'
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
 import django
 django.setup()
@@ -27,10 +27,10 @@ securities = data["securities"]
 holdings = data["holdings"]
 """
 [{'close_price': 0.011, 'close_price_as_of': None, 'cusip': None
-, 'institution_id': None, 'institution_security_id': None, 'is_cash_equivalent': False, 'isin': None, 
+, 'institution_id': None, 'institution_security_id': None, 'is_cash_equivalent': False, 'isin': None,
 'iso_currency_code': 'USD', 'name': "Nflx Feb 01'18 $355 Call", 'proxy_security_
-id': None, 'security_id': '8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb', 'sedol': None, 
-'ticker_symbol': 'NFLX180201C00355000', 'type': 'derivative', 'unofficial_currency_code': None}, 
+id': None, 'security_id': '8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb', 'sedol': None,
+'ticker_symbol': 'NFLX180201C00355000', 'type': 'derivative', 'unofficial_currency_code': None},
 """
 for item in securities:
     security_id = item["security_id"]
@@ -53,7 +53,7 @@ for item in securities:
 print(holdings)
 """
 {'account_id': 'Z1l84PBBKaUzRw36
-KBqPsreoddXrk5FgLoJdb', 'cost_basis': 1, 'institution_price': 1, 'institution_price_as_of': None, 
+KBqPsreoddXrk5FgLoJdb', 'cost_basis': 1, 'institution_price': 1, 'institution_price_as_of': None,
 'institution_value': 12345.67, 'iso_currency_code': 'USD', 'quantity': 12345.67, 'se
 curity_id': 'd6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are', 'unofficial_currency_code': None}
 """
@@ -88,6 +88,3 @@ transactions_data = client.InvestmentTransactions.get(access_token=access_token,
 print(transactions_data)
 """
 user_institution.populate_transactions_loop_launch(type="investment_transactions")
-
-
-

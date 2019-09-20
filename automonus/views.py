@@ -5,13 +5,12 @@ from django.contrib import auth
 from django.urls import reverse_lazy
 from django.views import generic
 from hornescalculator.forms import DisplayForm
-from hornescalculator.models import Display, Tax, Housing, Car, Utilities, Food, Miscellaneous
+from hornescalculator.models import Display
 from django.conf import settings
 from django.http import JsonResponse
 import requests
 import json
 from institutions.models import Institution, UserInstitution
-
 
 
 @login_required
@@ -24,7 +23,6 @@ def marketing(request):
     if user.is_authenticated:
         return HttpResponseRedirect(reverse_lazy("about"))
     return render(request, 'automonus/marketing.html')
-
 
 class UpdateDisplay(generic.UpdateView):
     model = Display
