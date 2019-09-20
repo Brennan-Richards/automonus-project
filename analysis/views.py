@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import generic
 from django.urls import reverse_lazy
+from django.utils import timezone
+from datetime import timedelta
 from accounts.models import Account, Transaction
 from django.db.models import Avg, Count, Min, Sum
 import json
@@ -26,12 +28,14 @@ def spending_overview(request):
     context = dict()
     user = request.user
     if user.profile.get_user_institutions():
-        account_types = ["credit"]
-        charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="spending", account_types=account_types)
+        account_types = ["depository", "credit"]
+        charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="spending",
+                                                  account_types=account_types)
         transactions = Transaction.objects.filter(account__user_institution__user=user,
                                                   account__type__name__in=account_types, amount__gt=0
-                                                  ).order_by("-id")[:100]
-        context = {"charts_data": charts_data, "transactions": transactions}
+                                                  ).order_by("-date")[:100]
+        transactions_total = ChartData().get_transactions_sum(user=user, account_types=account_types, )
+        context = {"charts_data": charts_data, "transactions": transactions, "transactions_total": transactions_total}
     return render(request, 'analysis/spending_overview.html', context)
 
 
@@ -40,8 +44,9 @@ def liabilities_overview(request):
     context = dict()
     user = request.user
     if user.profile.get_user_institutions():
-        account_types = ["credit", "loan"]
-        charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="liabilities", account_types=account_types)
+        account_types = ["loan"]
+        charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="liabilities",
+                                                  account_types=account_types)
         transactions = Transaction.objects.filter(account__user_institution__user=user,
                                                   account__type__name__in=account_types, amount__gt=0
                                                   ).order_by("-id")[:100]
@@ -61,8 +66,12 @@ def savings_overview(request):
         accounts = Account.objects.filter(user_institution__user=user, type__name__in=account_types) \
             .aggregate(total=Sum("current_balance"))
         total_balance = round(accounts["total"] if accounts.get("total") else 0, 2)
-        charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="savings", account_types=account_types)
-        context = {"charts_data": charts_data, "total_balance": total_balance}
+        charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="savings",
+                                                  account_types=account_types)
+        transactions = Transaction.objects.filter(account__user_institution__user=user,
+                                                  account__type__name__in=account_types, amount__lt=0
+                                                  ).order_by("-date")[:100]
+        context = {"charts_data": charts_data, "total_balance": total_balance, "transactions": transactions}
     return render(request, 'analysis/savings_overview.html', context)
 
 
