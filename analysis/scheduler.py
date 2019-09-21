@@ -1,6 +1,7 @@
 import logging
 
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 from django_apscheduler.jobstores import register_events, register_job
 from django.conf import settings
 # Create scheduler to run in a thread inside the application process

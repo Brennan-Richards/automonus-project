@@ -64,13 +64,15 @@ class ChartData():
             kwargs = {
                 "account__user_institution__user": user,
                 "account__type__name__in": account_types,
-                "date__gte": timezone.now()-timedelta(days=date_period_days)
+                "date__gte": timezone.now()-timedelta(days=date_period_days),
+                "account__user_institution__is_active": True
             }
         else:  # InvestmentTransaction
             kwargs = {
                 "account__user_institution__user": user,
                 "date__gte": timezone.now() - timedelta(days=date_period_days),
-                "type__name": "buy"
+                "type__name": "buy",
+                "account__user_institution__is_active": True
             }
 
         # this does not include transaction with the amount below 0
@@ -108,12 +110,13 @@ class ChartData():
         return data, transactions_qs
 
     def get_transactions_sum(self, user, account_types=None, date_period_days=30):
-
+        # Gets total value of transactions over a given time period.
         kwargs = {
             "account__user_institution__user": user,
             "account__type__name__in": account_types,
             "date__gte": timezone.now()-timedelta(days=date_period_days),
-            "amount__gt": 0
+            "amount__gt": 0,
+            "account__user_institution__is_active": True
         }
 
         transactions = Transaction.objects.filter(**kwargs).values('date', 'currency__code') \
@@ -130,6 +133,7 @@ class ChartData():
     def get_income_data(self, user, chart_name, chart_type):
         kwargs = {
             "user_institution__user": user,
+            "user_institution__is_active": True
         }
         income_data = Income.objects.filter(**kwargs).aggregate(
             last_year_income_before_tax=Sum("last_year_income_before_tax"),
@@ -157,7 +161,8 @@ class ChartData():
         kwargs = {
             "account__user_institution__user": user,
             "date__gte": timezone.now() - timedelta(days=date_period_days),
-            "account__type__name__in": account_types
+            "account__type__name__in": account_types,
+            "account__user_institution__is_active": True
         }
         qs = AccountSnapshot.objects.filter(**kwargs).order_by("date")
         transactions = qs \
