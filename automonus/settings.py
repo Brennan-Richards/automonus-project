@@ -177,6 +177,15 @@ PLAID_PUBLIC_KEY = env("PLAID_PUBLIC_KEY", default="6c5492915411a3645fdd0368516a
 """Replace ngrok server address (it is the string till "/webhooks/webhook-handler/" with your server address"""
 PLAID_WEBHOOK_URL = env("PLAID_WEBHOOK_URL", default="https://ffcc0def.ngrok.io/webhooks/webhook-handler/")
 
+# SendGrid for emails
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 # google-recapcha
 RECAPTCHA_PUBLIC_KEY = env("RECAPTCHA_PUBLIC_KEY", default="6LekwrkUAAAAAMS9Svgvyd3z14_7MPtWTdkbN-EB")
 RECAPTCHA_PRIVATE_KEY = env("RECAPTCHA_PRIVATE_KEY", default="6LekwrkUAAAAACDScUoq7VrZSMbmeJV3x8OP7mro")
