@@ -178,8 +178,8 @@ PLAID_PUBLIC_KEY = env("PLAID_PUBLIC_KEY", default="6c5492915411a3645fdd0368516a
 PLAID_WEBHOOK_URL = env("PLAID_WEBHOOK_URL", default="https://ffcc0def.ngrok.io/webhooks/webhook-handler/")
 
 # google-recapcha
-RECAPTCHA_PUBLIC_KEY = env("RECAPTCHA_PUBLIC_KEY", default="")
-RECAPTCHA_PRIVATE_KEY = env("RECAPTCHA_PRIVATE_KEY", default="")
+RECAPTCHA_PUBLIC_KEY = env("RECAPTCHA_PUBLIC_KEY", default="6LekwrkUAAAAAMS9Svgvyd3z14_7MPtWTdkbN-EB")
+RECAPTCHA_PRIVATE_KEY = env("RECAPTCHA_PRIVATE_KEY", default="6LekwrkUAAAAACDScUoq7VrZSMbmeJV3x8OP7mro")
 
 # django-crispy-forms
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
