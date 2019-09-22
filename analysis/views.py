@@ -53,7 +53,7 @@ def liabilities_overview(request):
                                                   account__user_institution__is_active=True
                                                   ).order_by("-id")[:100]
         accounts = Account.objects.filter(user_institution__user=user, type__name__in=account_types,
-                                            account__user_institution__is_active=True) \
+                                            user_institution__is_active=True) \
                                             .aggregate(total=Sum("current_balance"))
         total_balance = round(accounts["total"] if accounts.get("total") else 0, 2)
         context = {"total_balance": total_balance, "charts_data": charts_data, "transactions": transactions}

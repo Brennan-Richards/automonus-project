@@ -82,7 +82,9 @@ class UserInstitution(ModelBaseFieldsAbstract):
             print(e)
             return False
         bulk_create_list = list()
-        for transaction in transactions_data["transactions"]:
+        for transaction in reverse(transactions_data["transactions"]):
+            # Reverse method is used so that transactions with earlier dates will have lower IDs.
+
             kwargs = dict()
             account_id = transaction["account_id"]
             account = Account.objects.get(account_id=account_id)
@@ -115,7 +117,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
                 and not date time with miliseconds. Theoretically a few transactions can appear for the same
                 date with same other parameters except of transaction_id."""
                 bulk_create_list.append(Transaction(**kwargs))
-        """create all objects at one transactions. 
+        """create all objects at one transactions.
         This will not trigger save method on the model, because data is inserted
         to the database directly"""
         if bulk_create_list:
@@ -188,7 +190,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
                 and not date time with miliseconds. Theoretically a few transactions can appear for the same
                 date with same other parameters except of transaction_id."""
                 bulk_create_list.append(InvestmentTransaction(**kwargs))
-        """create all objects at one transactions. 
+        """create all objects at one transactions.
         This will not trigger save method on the model, because data is inserted
         to the database directly"""
         if bulk_create_list:
@@ -210,10 +212,10 @@ class UserInstitution(ModelBaseFieldsAbstract):
         holdings = data["holdings"]
         """
         [{'close_price': 0.011, 'close_price_as_of': None, 'cusip': None
-        , 'institution_id': None, 'institution_security_id': None, 'is_cash_equivalent': False, 'isin': None, 
+        , 'institution_id': None, 'institution_security_id': None, 'is_cash_equivalent': False, 'isin': None,
         'iso_currency_code': 'USD', 'name': "Nflx Feb 01'18 $355 Call", 'proxy_security_
-        id': None, 'security_id': '8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb', 'sedol': None, 
-        'ticker_symbol': 'NFLX180201C00355000', 'type': 'derivative', 'unofficial_currency_code': None}, 
+        id': None, 'security_id': '8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb', 'sedol': None,
+        'ticker_symbol': 'NFLX180201C00355000', 'type': 'derivative', 'unofficial_currency_code': None},
         """
         for item in securities:
             security_id = item["security_id"]
@@ -233,7 +235,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             UserSecurity.objects.get_or_create(**kwargs)
         """
         {'account_id': 'Z1l84PBBKaUzRw36
-        KBqPsreoddXrk5FgLoJdb', 'cost_basis': 1, 'institution_price': 1, 'institution_price_as_of': None, 
+        KBqPsreoddXrk5FgLoJdb', 'cost_basis': 1, 'institution_price': 1, 'institution_price_as_of': None,
         'institution_value': 12345.67, 'iso_currency_code': 'USD', 'quantity': 12345.67, 'se
         curity_id': 'd6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are', 'unofficial_currency_code': None}
         """
