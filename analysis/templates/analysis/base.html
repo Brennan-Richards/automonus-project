@@ -18,7 +18,7 @@
       {% if request.user.profile.get_user_institutions %}
           {% block page_content %}
           {% endblock page_content %}
-      {% elif request.user.profile.investments_capable_acc %}
+      {% else %}
           <div class="text-center">
             <a type="button" class="btn btn-primary" href="{% url 'link_institution' %}">
                 Connect Your First Financial Institution
