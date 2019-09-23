@@ -82,7 +82,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             print(e)
             return False
         bulk_create_list = list()
-        for transaction in reverse(transactions_data["transactions"]):
+        for transaction in reversed(transactions_data["transactions"]):
             # Reverse method is used so that transactions with earlier dates will have lower IDs.
 
             kwargs = dict()
@@ -146,6 +146,8 @@ class UserInstitution(ModelBaseFieldsAbstract):
         try:
             transactions_data = client.InvestmentTransactions.get(access_token=self.access_token, start_date=start_date,
                                                         end_date=end_date, offset=offset, count=count)
+            print("Getting investment transactions")                                            
+            print(transactions_data)
         except Exception as e:
             print(e)
             return False

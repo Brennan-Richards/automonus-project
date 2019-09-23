@@ -47,3 +47,5 @@ class Profile(models.Model):
 
     def get_user_institutions(self):
         return self.user.userinstitution_set.filter(is_active=True)
+
+    # def
