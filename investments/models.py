@@ -9,7 +9,7 @@ class SecurityType(ModelBaseFieldsAbstract):
 
 
 class Security(models.Model):
-    plaid_id = models.CharField(max_length=38, blank=True, null=True, default=None)
+    plaid_security_id = models.CharField(max_length=38, blank=True, null=True, default=None)
     name = models.CharField(max_length=256, blank=True, null=True, default=None)
     ticker_symbol = models.CharField(max_length=12, blank=True, null=True, default=None)
     isin = models.CharField(max_length=38, blank=True, null=True, default=None)
@@ -34,7 +34,7 @@ class UserSecurity(models.Model):
 
 
     """this should be stored in a separate model to prevent duplication of the same text data in this table for
-    such fields as name and ticket_symbol"""
+    such fields as name and ticker_symbol"""
     security = models.ForeignKey(Security, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     is_cash_equivalent = models.BooleanField(default=False)
     type = models.ForeignKey(SecurityType, blank=True, null=True, default=None, on_delete=models.SET_NULL)
@@ -86,7 +86,7 @@ class InvestmentTransaction(models.Model):
     account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     type = models.ForeignKey(InvestmentTransactionType, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     user_security = models.ForeignKey(UserSecurity, blank=True, null=True, default=None, on_delete=models.SET_NULL)
-    plaid_id = models.CharField(max_length=38)
+    plaid_inv_transaction_id = models.CharField(max_length=38)
     cancel_transaction_id = models.CharField(max_length=38, blank=True, null=True, default=None)
     date = models.DateField()
     name = models.CharField(max_length=128, blank=True, null=True, default=None)
@@ -100,7 +100,7 @@ class InvestmentTransaction(models.Model):
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
     def __str__(self):
-        if self.plaid_id:
-            return "{}".format(self.plaid_id)
+        if self.plaid_inv_transaction_id:
+            return "{}".format(self.plaid_inv_transaction_id)
         else:
             return "{}".format(self.id)

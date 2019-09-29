@@ -50,9 +50,9 @@ INSTALLED_APPS = [
     'planner.apps.PlanningConfig',
 
     'accounts.apps.AccountsConfig',
-    'savings.apps.SavingsConfig',
     'income.apps.IncomeConfig',
     'investments.apps.InvestmentsConfig',
+    'liabilities.apps.LiabilitiesConfig',
     'django.contrib.admin',
     'django.contrib.sites',
     'django.contrib.auth',

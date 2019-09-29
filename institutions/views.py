@@ -88,6 +88,11 @@ def get_access_token(request):
         user_institution.populate_income_information()
         user_institution.populate_or_update_accounts()
 
+        #getting liabilites data
+        user_institution.populate_liabilities_data()
+        user_institution.populate_credit_card_data()
+
+
         # getting investments data
         user_institution.populate_securities_and_holdings()
         user_institution.populate_transactions_loop_launch(type="investment_transactions")

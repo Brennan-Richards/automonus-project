@@ -8,28 +8,22 @@
     <link rel="stylesheet" href="{% static 'css/custom.css' %}"></link>
 {% endblock header_stuff %}
 
-
 {% block content %}
-
-  <div class="row text-center">
-
-    <div class="col-lg-10 mx-auto">
 
       {% if request.user.profile.get_user_institutions %}
           {% block page_content %}
           {% endblock page_content %}
       {% else %}
-          <div class="text-center">
-            <a type="button" class="btn btn-primary" href="{% url 'link_institution' %}">
-                Connect Your First Financial Institution
-            </a>
+        <div class="row text-center">
+          <div class="col-lg-10 mx-auto">
+              <a class="btn btn-lg btn-success" href="{% url 'link_institution' %}">
+                  Connect Your First Financial Institution
+              </a>
           </div>
+        </div>
       {% endif %}
-    </div>
-  </div>
 
 {% endblock %}
-
 
 {% block js_stuff %}
     <script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/7.1.3/highcharts.js"></script>

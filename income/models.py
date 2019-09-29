@@ -34,11 +34,10 @@ class Income(models.Model):
         return self.projected_yearly_income_before_tax/365
 
     def get_value_per_week(self):
-        return self.projected_yearly_income_before_tax/365/7
+        return self.projected_yearly_income_before_tax/52
 
     def get_value_per_month(self):
-        return self.projected_yearly_income_before_tax/30
-
+        return self.projected_yearly_income_before_tax/12
 
 class IncomeStream(models.Model):
     income = models.ForeignKey(Income, blank=True, null=True, default=None, on_delete=models.SET_NULL)
