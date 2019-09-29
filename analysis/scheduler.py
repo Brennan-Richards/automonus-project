@@ -9,7 +9,6 @@ scheduler = BackgroundScheduler(settings.SCHEDULER_CONFIG)
 
 
 def start():
-    print("scheduler was started")
     if settings.DEBUG:
         # Hook into the apscheduler logger
         logging.basicConfig()
@@ -23,7 +22,8 @@ def start():
     # - replace_existing in combination with the unique ID prevents duplicate copies of the job
     scheduler.add_job("analysis:scheduled_jobs.accounts_snapshot.CreateAccountSnapshot", "cron", id="create_accounts_snapshots",
                       day_of_week='*', hour='*', replace_existing=True)
-
+    scheduler.add_job("analysis:scheduled_jobs.user_sec_holding_snapshot.CreateUserSecurityHoldingSnapshot", "cron", id="create_user_security_snapshot",
+                      day_of_week='*', hour='*', replace_existing=True)
     # Add the scheduled jobs to the Django admin interface
     register_events(scheduler)
     scheduler.start()

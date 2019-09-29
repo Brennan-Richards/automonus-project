@@ -209,7 +209,6 @@ class UserInstitution(ModelBaseFieldsAbstract):
             data = client.Holdings.get(self.access_token)  # this returns both security and holding instances
         except Exception as e:
             return False
-
         securities = data["securities"]
         holdings = data["holdings"]
         """
@@ -227,14 +226,13 @@ class UserInstitution(ModelBaseFieldsAbstract):
             security_type, created = SecurityType.objects.get_or_create(name=item["type"])
             currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
             kwargs = {
-                "user_institution": self,
-                "security": security,
                 "is_cash_equivalent": item["is_cash_equivalent"],
                 "type": security_type,
                 "close_price": item["close_price"], "close_price_as_of": item["close_price_as_of"],
                 "currency": currency
             }
-            UserSecurity.objects.get_or_create(**kwargs)
+            user_security, created = UserSecurity.objects.update_or_create(user_institution=self, security=security, defaults=kwargs)
+            user_security.create_snapshot()
         """
         {'account_id': 'Z1l84PBBKaUzRw36
         KBqPsreoddXrk5FgLoJdb', 'cost_basis': 1, 'institution_price': 1, 'institution_price_as_of': None,
@@ -248,8 +246,6 @@ class UserInstitution(ModelBaseFieldsAbstract):
                                                                         user_institution=self)
             currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
             kwargs = {
-                "account": account,
-                "user_security": user_security,
                 "institution_value": item["institution_value"],
                 "institution_price": item["institution_price"],
                 "institution_price_as_of": item["institution_price_as_of"],
@@ -257,7 +253,10 @@ class UserInstitution(ModelBaseFieldsAbstract):
                 "currency": currency,
                 "quantity": item["quantity"]
             }
-            Holding.objects.get_or_create(**kwargs)
+            holding, created = Holding.objects.update_or_create(account=account,
+                                                                user_security=user_security,
+                                                                defaults=kwargs)
+            holding.create_snapshot()
 
     def populate_income_information(self):
         from income.models import Income, IncomeStream
@@ -327,5 +326,5 @@ class UserInstitution(ModelBaseFieldsAbstract):
             }
             """Account information can be updated after initial creation of the instance"""
             account, created = Account.objects.update_or_create(user_institution=self,
-                                                       account_id=account_id, **bank_account_defaults_kwargs)
+                                                                account_id=account_id, **bank_account_defaults_kwargs)
             account.create_account_snapshot()

@@ -1,6 +1,5 @@
 from institutions.models import UserInstitution
 
-
 class CreateAccountSnapshot():
     """This class is launched by scheduler"""
 
