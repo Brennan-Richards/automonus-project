@@ -24,6 +24,10 @@ def start():
                       day_of_week='*', hour='*', replace_existing=True)
     scheduler.add_job("analysis:scheduled_jobs.user_sec_holding_snapshot.CreateUserSecurityHoldingSnapshot", "cron", id="create_user_security_snapshot",
                       day_of_week='*', hour='*', replace_existing=True)
+    scheduler.add_job("analysis:scheduled_jobs.student_loan_snapshot.CreateStudentLoanSnapshot", "cron", id="create_student_loan_snapshot",
+                      day_of_week='*', hour='*', replace_existing=True)
+    scheduler.add_job("analysis:scheduled_jobs.credit_card_snapshot.CreateCreditCardSnapshot", "cron", id="create_credit_card_snapshot",
+                      day_of_week='*', hour='*', replace_existing=True)
     # Add the scheduled jobs to the Django admin interface
     register_events(scheduler)
     scheduler.start()

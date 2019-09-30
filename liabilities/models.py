@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from accounts.models import Account
 import uuid
-
+from django.utils import timezone
+from django.forms.models import model_to_dict
 # Create your models here.
 
 class StudentLoan(models.Model):
@@ -35,6 +36,79 @@ class StudentLoan(models.Model):
     ytd_interest_paid = models.DecimalField(max_digits=18, decimal_places=2, default=0)
     ytd_principal_paid = models.DecimalField(max_digits=18, decimal_places=2, default=0)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    def __str__(self):
+        return "{}: {}".format(self.user_institution.user.username, self.guarantor)
+
+    def create_snapshot(self):
+        StudentLoanSnapshot.objects.get_or_create(student_loan=self,
+                                                  date=timezone.now().date(),
+                                                  defaults={
+                                                    'account': self.account,
+                                                    'user_institution': self.user_institution,
+                                                    'account_number': self.account_number,
+                                                    'expected_payoff_date': self.expected_payoff_date,
+                                                    'guarantor': self.guarantor,
+                                                    'interest_rate_percentage': self.interest_rate_percentage,
+                                                    'is_overdue': self.is_overdue,
+                                                    'last_payment_amount': self.last_payment_amount,
+                                                    'last_payment_date': self.last_payment_date,
+                                                    'last_statement_balance': self.last_statement_balance,
+                                                    'last_statement_issue_date': self.last_statement_issue_date,
+                                                    'loan_name': self.loan_name,
+                                                    'end_date':self.end_date,
+                                                    'type': self.type,
+                                                    'minimum_payment_amount': self.minimum_payment_amount,
+                                                    'next_payment_due_date': self.next_payment_due_date,
+                                                    'origination_date': self.origination_date,
+                                                    'origination_principal_amount': self.origination_principal_amount,
+                                                    'outstanding_interest_amount': self.outstanding_interest_amount,
+                                                    'payment_reference_number': self.payment_reference_number,
+                                                    'estimated_pslf_eligibility_date': self.estimated_pslf_eligibility_date,
+                                                    'payments_made': self.payments_made,
+                                                    'pslf_payments_remaining': self.pslf_payments_remaining,
+                                                    'repayment_description': self.repayment_description,
+                                                    'repayment_type': self.repayment_type,
+                                                    'sequence_number': self.sequence_number,
+                                                    'ytd_interest_paid': self.ytd_interest_paid,
+                                                    'ytd_principal_paid': self.ytd_principal_paid
+                                                    }
+                                                )
+
+class StudentLoanSnapshot(models.Model):
+    student_loan = models.ForeignKey(StudentLoan, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    user_institution = models.ForeignKey("institutions.UserInstitution", blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    account_number = models.CharField(max_length=32, blank=True, null=True, default=None)
+    expected_payoff_date = models.DateField(blank=True, null=True, default=None)
+    guarantor = models.CharField(max_length=128, blank=True, null=True, default=None)
+    interest_rate_percentage = models.DecimalField(max_digits=4, decimal_places=2, default=0)
+    is_overdue = models.BooleanField(default=False)
+    last_payment_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    last_payment_date = models.DateField(blank=True, null=True, default=None)
+    last_statement_balance = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    last_statement_issue_date = models.DateField(blank=True, null=True, default=None)
+    loan_name = models.CharField(max_length=128, blank=True, null=True, default=None)
+    end_date = models.DateField(blank=True, null=True, default=None)
+    type = models.CharField(max_length=64, blank=True, null=True, default=None)
+    minimum_payment_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    next_payment_due_date = models.DateField(blank=True, null=True, default=None)
+    origination_date = models.DateField(blank=True, null=True, default=None)
+    origination_principal_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    outstanding_interest_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    payment_reference_number = models.CharField(max_length=64, blank=True, null=True, default=None)
+    estimated_pslf_eligibility_date = models.DateField(blank=True, null=True, default=None)
+    payments_made = models.IntegerField(default=0)
+    pslf_payments_remaining = models.IntegerField(default=0)
+    repayment_description = models.CharField(max_length=64, blank=True, null=True, default=None)
+    repayment_type = models.CharField(max_length=64, blank=True, null=True, default=None)
+    sequence_number = models.IntegerField(default=0)
+    ytd_interest_paid = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    ytd_principal_paid = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    date = models.DateField(blank=True, null=True, default=None)
     created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
@@ -78,6 +152,44 @@ class CreditCard(models.Model):
     next_payment_due_date = models.DateField(blank=True, null=True, default=None)
     credit_limit = models.DecimalField(max_digits=18, decimal_places=2, default=0)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    def __str__(self):
+        return "{}: {}".format(self.user_institution.user.username, self.user_institution.institution)
+
+    def create_snapshot(self):
+        CreditCardSnapshot.objects.get_or_create(credit_card=self,
+                                                  date=timezone.now().date(),
+                                                  defaults={
+                                                      'account': self.account,
+                                                      'user_institution': self.user_institution,
+                                                      'is_overdue': self.is_overdue,
+                                                      'last_payment_amount': self.last_payment_amount,
+                                                      'last_payment_date': self.last_payment_date,
+                                                      'last_statement_balance': self.last_statement_balance,
+                                                      'last_statement_issue_date': self.last_statement_issue_date,
+                                                      'late_fee_amount': self.late_fee_amount,
+                                                      'minimum_payment_amount': self.minimum_payment_amount,
+                                                      'next_payment_due_date': self.next_payment_due_date,
+                                                      'credit_limit': self.credit_limit
+                                                  })
+
+class CreditCardSnapshot(models.Model):
+    credit_card = models.ForeignKey(CreditCard, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    user_institution = models.ForeignKey("institutions.UserInstitution", blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    is_overdue = models.BooleanField(default=False)
+    last_payment_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    last_payment_date = models.DateField(blank=True, null=True, default=None)
+    last_statement_balance = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    last_statement_issue_date = models.DateField(blank=True, null=True, default=None)
+    late_fee_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    minimum_payment_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    next_payment_due_date = models.DateField(blank=True, null=True, default=None)
+    credit_limit = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    date = models.DateField(blank=True, null=True, default=None)
     created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 

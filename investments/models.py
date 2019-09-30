@@ -53,7 +53,7 @@ class UserSecurity(models.Model):
 
     def create_snapshot(self):
         UserSecuritySnapshot.objects.get_or_create(user_security=self,
-                                                   date=timezone.now().date() + timezone.timedelta(days=1),
+                                                   date=timezone.now().date(),
                                                    defaults={
                                                     'user_institution': self.user_institution,
                                                     'security': self.security,
@@ -62,7 +62,6 @@ class UserSecurity(models.Model):
                                                     'close_price': self.close_price,
                                                     'close_price_as_of':self.close_price_as_of,
                                                     'currency': self.currency,
-                                                    'uuid': self.uuid,
                                                    })
 
 class UserSecuritySnapshot(models.Model):
@@ -103,7 +102,7 @@ class Holding(models.Model):
 
     def create_snapshot(self):
         HoldingSnapshot.objects.get_or_create(holding=self,
-                                              date=timezone.now().date() + timezone.timedelta(days=1),
+                                              date=timezone.now().date(),
                                               defaults={
                                                 'account': self.account,
                                                 'user_security': self.user_security,
@@ -113,7 +112,6 @@ class Holding(models.Model):
                                                 'cost_basis': self.cost_basis,
                                                 'quantity': self.quantity,
                                                 'currency': self.currency,
-                                                'uuid': self.uuid
                                               })
 
     def __str__(self):

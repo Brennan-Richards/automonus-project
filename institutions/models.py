@@ -318,7 +318,8 @@ class UserInstitution(ModelBaseFieldsAbstract):
             }
             """Account information can be updated after initial creation of the instance"""
             account, created = Account.objects.update_or_create(user_institution=self,
-                                                                account_id=account_id, **bank_account_defaults_kwargs)
+                                                                account_id=account_id,
+                                                                defaults=bank_account_defaults_kwargs)
             account.create_account_snapshot()
 
     def populate_liabilities_data(self):
@@ -352,7 +353,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             "payment_reference_number": student_loans["payment_reference_number"],
             "estimated_pslf_eligibility_date": student_loans["pslf_status"]["estimated_eligibility_date"],
             "payments_made": student_loans["pslf_status"]["payments_made"],
-            "payments_remaining": student_loans["pslf_status"]["payments_remaining"],
+            "pslf_payments_remaining": student_loans["pslf_status"]["payments_remaining"],
             "repayment_description": student_loans["repayment_plan"]["description"],
             "repayment_type": student_loans["repayment_plan"]["type"],
             "sequence_number": student_loans["sequence_number"],
@@ -360,7 +361,9 @@ class UserInstitution(ModelBaseFieldsAbstract):
             "ytd_principal_paid": student_loans["ytd_principal_paid"],
             }
 
-        loan_instance, created = StudentLoan.objects.update_or_create(user_institution=self, **student_loan_kwargs)
+        loan_instance, created = StudentLoan.objects.update_or_create(user_institution=self, defaults=student_loan_kwargs)
+
+        loan_instance.create_snapshot()
 
         disbursement_dates = list()
         for date in student_loans["disbursement_dates"]:
@@ -376,7 +379,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             "street": student_loans["servicer_address"]["street"]
         }
 
-        ServicerAddress.objects.create(loan_instance=loan_instance, **servicer_address_kwargs)
+        ServicerAddress.objects.get_or_create(loan_instance=loan_instance, defaults=servicer_address_kwargs)
 
     def populate_credit_card_data(self):
         try:
@@ -401,8 +404,8 @@ class UserInstitution(ModelBaseFieldsAbstract):
             # "credit_limit":credit_data["credit_limit"] if credit_data["credit_limit"] else 0,
         }
 
-        credit_card, created = CreditCard.objects.update_or_create(user_institution=self, **credit_card_kwargs)
-
+        credit_card, created = CreditCard.objects.update_or_create(user_institution=self, defaults=credit_card_kwargs)
+        credit_card.create_snapshot()
 
         apr_data = credit_data["aprs"][0]
         apr_kwargs = {
@@ -412,4 +415,4 @@ class UserInstitution(ModelBaseFieldsAbstract):
             "interest_charge_amount":apr_data["interest_charge_amount"]
         }
 
-        APR.objects.update_or_create(credit_card=credit_card, **apr_kwargs)
+        APR.objects.update_or_create(credit_card=credit_card, defaults=apr_kwargs)
