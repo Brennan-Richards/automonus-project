@@ -1,8 +1,6 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
-from decimal import *
-import uuid
 from plaid import Client
 client = Client(client_id=settings.PLAID_CLIENT_ID,
     secret=settings.PLAID_SECRET,
@@ -13,7 +11,7 @@ from accounts.models import *
 from django.utils import timezone
 import datetime
 from investments.models import UserSecurity, InvestmentTransaction, InvestmentTransactionType, Security, Holding, SecurityType
-
+from liabilities.models import StudentLoan, DisbursementDate, ServicerAddress, CreditCard, APR
 
 class ModelBaseFieldsAbstract(models.Model):
     name = models.CharField(max_length=128)
@@ -83,7 +81,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             return False
         bulk_create_list = list()
         for transaction in reversed(transactions_data["transactions"]):
-            # Reverse method is used so that transactions with earlier dates will have lower IDs.
+            # Reverse method is used so that transactions with later dates will have larger ID #s.
 
             kwargs = dict()
             account_id = transaction["account_id"]
@@ -130,13 +128,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             return True
 
     def populate_investment_transactions(self, start_date=None, offset=0, count=500):  # maximum
-        """
-        {'account_id': 'Z1l84PBBKaUzRw36KBqPsreoddXrk5FgLoJdb', 'amount': 7.7, 'cancel_transaction_id': None,
-        'date': '2019-08-31', 'fees': None, 'investment_
-        transaction_id': 'aWxBZ177aQfQwmy6vGAwu75oRrNjmVF7BABMy', 'iso_currency_code': 'USD',
-        'name': 'BUY DoubleLine Total Return Bond Fund', 'price': 10.42, 'quantity': 0.7388014749727547,
-        'security_id': 'NDVQrXQoqzt5v3bAe8qRt4A7mK7wvZCLEBBJk', 'type': 'buy', 'unofficial_currency_code': None},
-        """
+        #investment transactions are linked a 'Security' model instance
         now = timezone.now().date()
         if not start_date:
             days_nmb = 365 * 3
@@ -146,8 +138,8 @@ class UserInstitution(ModelBaseFieldsAbstract):
         try:
             transactions_data = client.InvestmentTransactions.get(access_token=self.access_token, start_date=start_date,
                                                         end_date=end_date, offset=offset, count=count)
-            print("Getting investment transactions")                                            
-            print(transactions_data)
+            print("Getting investment transactions")
+            # print(transactions_data)
         except Exception as e:
             print(e)
             return False
@@ -157,7 +149,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             account_id = transaction["account_id"]
             account = Account.objects.get(account_id=account_id)
 
-            user_security = UserSecurity.objects.get(user_institution=self, security__plaid_id=transaction["security_id"])
+            user_security = UserSecurity.objects.get(user_institution=self, security__plaid_security_id=transaction["security_id"])
 
             amount = transaction["amount"]
             fees = transaction["fees"] if transaction["fees"] else 0
@@ -180,12 +172,12 @@ class UserInstitution(ModelBaseFieldsAbstract):
             kwargs["fees"] = fees
             kwargs["currency"] = currency #
             kwargs["name"] = name  #
-            kwargs["plaid_id"] = investment_transaction_id  #
+            kwargs["plaid_inv_transaction_id"] = investment_transaction_id  #
             kwargs["type"] = type  #
             kwargs["date"] = transaction_date  #
             kwargs["cancel_transaction_id"] = cancel_transaction_id  #
             """Such approach will increase speed for populating large volumes of data"""
-            if not InvestmentTransaction.objects.filter(plaid_id=investment_transaction_id).exists():
+            if not InvestmentTransaction.objects.filter(plaid_inv_transaction_id=investment_transaction_id).exists():
                 """In test environment, transaction_id are changed every time for some reason, but
                 in production environment it should not be like this.
                 At the same time filtering by other fields are not relevant, because date has only date format
@@ -222,7 +214,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             security_id = item["security_id"]
             security, created = Security.objects.get_or_create(ticker_symbol=item["ticker_symbol"], name=item["name"],
                                                                isin=item["isin"], sedol=item["sedol"],
-                                                               cusip=item["cusip"], plaid_id=security_id)
+                                                               cusip=item["cusip"], plaid_security_id=security_id)
             security_type, created = SecurityType.objects.get_or_create(name=item["type"])
             currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
             kwargs = {
@@ -242,7 +234,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
         for item in holdings:
             security_id = item["security_id"]
             account = Account.objects.get(account_id=item["account_id"])
-            user_security, created = UserSecurity.objects.get_or_create(security__plaid_id=security_id,
+            user_security, created = UserSecurity.objects.get_or_create(security__plaid_security_id=security_id,
                                                                         user_institution=self)
             currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
             kwargs = {
@@ -328,3 +320,96 @@ class UserInstitution(ModelBaseFieldsAbstract):
             account, created = Account.objects.update_or_create(user_institution=self,
                                                                 account_id=account_id, **bank_account_defaults_kwargs)
             account.create_account_snapshot()
+
+    def populate_liabilities_data(self):
+        try:
+            response = client.Liabilities.get(self.access_token)
+            student_loans = response["liabilities"]["student"][0]
+            account = Account.objects.get(account_id=student_loans["account_id"])
+            print("populating student loan data")
+        except Exception as e:
+            print(e)
+            return False
+        student_loan_kwargs = {
+            "account": account,
+            "account_number": student_loans["account_number"],
+            "expected_payoff_date": student_loans["expected_payoff_date"],
+            "guarantor": student_loans["guarantor"],
+            "interest_rate_percentage": student_loans["interest_rate_percentage"],
+            "is_overdue": student_loans["is_overdue"],
+            "last_payment_amount": student_loans["last_payment_amount"],
+            "last_payment_date": student_loans["last_payment_date"],
+            "last_statement_balance": student_loans["last_statement_balance"],
+            "last_statement_issue_date": student_loans["last_statement_issue_date"],
+            "loan_name": student_loans["loan_name"],
+            "end_date": student_loans["loan_status"]["end_date"],
+            "type": student_loans["loan_status"]["type"],
+            "minimum_payment_amount": student_loans["minimum_payment_amount"],
+            "next_payment_due_date": student_loans["next_payment_due_date"],
+            "origination_date": student_loans["origination_date"],
+            "origination_principal_amount": student_loans["origination_principal_amount"],
+            "outstanding_interest_amount": student_loans["outstanding_interest_amount"],
+            "payment_reference_number": student_loans["payment_reference_number"],
+            "estimated_pslf_eligibility_date": student_loans["pslf_status"]["estimated_eligibility_date"],
+            "payments_made": student_loans["pslf_status"]["payments_made"],
+            "payments_remaining": student_loans["pslf_status"]["payments_remaining"],
+            "repayment_description": student_loans["repayment_plan"]["description"],
+            "repayment_type": student_loans["repayment_plan"]["type"],
+            "sequence_number": student_loans["sequence_number"],
+            "ytd_interest_paid": student_loans["ytd_interest_paid"],
+            "ytd_principal_paid": student_loans["ytd_principal_paid"],
+            }
+
+        loan_instance, created = StudentLoan.objects.update_or_create(user_institution=self, **student_loan_kwargs)
+
+        disbursement_dates = list()
+        for date in student_loans["disbursement_dates"]:
+            disbursement_dates.append(date)
+            for date in disbursement_dates:
+                DisbursementDate.objects.update_or_create(loan_instance=loan_instance, date_of_disbursement=date)
+
+        servicer_address_kwargs = {
+            "city": student_loans["servicer_address"]["city"],
+            "country": student_loans["servicer_address"]["country"],
+            "postal_code": student_loans["servicer_address"]["postal_code"],
+            "region": student_loans["servicer_address"]["region"],
+            "street": student_loans["servicer_address"]["street"]
+        }
+
+        ServicerAddress.objects.create(loan_instance=loan_instance, **servicer_address_kwargs)
+
+    def populate_credit_card_data(self):
+        try:
+            response = client.Liabilities.get(self.access_token)
+            credit_data = response["liabilities"]["credit"][0]
+            account = Account.objects.get(account_id=credit_data["account_id"])
+            print("populating credit card data")
+        except Exception as e:
+            print(e)
+            return False
+
+        credit_card_kwargs = {
+            "account":account,
+            "is_overdue":credit_data["is_overdue"],
+            "last_payment_amount":credit_data["last_payment_amount"],
+            "last_payment_date":credit_data["last_payment_date"],
+            "last_statement_balance":credit_data["last_statement_balance"],
+            "last_statement_issue_date":credit_data["last_statement_issue_date"],
+            # "late_fee_amount":credit_data["late_fee_amount"] if credit_data["late_fee_amount"] else 0,
+            "minimum_payment_amount":credit_data["minimum_payment_amount"] if credit_data["minimum_payment_amount"] else 0,
+            "next_payment_due_date":credit_data["next_payment_due_date"],
+            # "credit_limit":credit_data["credit_limit"] if credit_data["credit_limit"] else 0,
+        }
+
+        credit_card, created = CreditCard.objects.update_or_create(user_institution=self, **credit_card_kwargs)
+
+
+        apr_data = credit_data["aprs"][0]
+        apr_kwargs = {
+            "apr_type":apr_data["apr_type"],
+            "apr_percentage":apr_data["apr_percentage"],
+            "balance_subject_to_apr":apr_data["balance_subject_to_apr"],
+            "interest_charge_amount":apr_data["interest_charge_amount"]
+        }
+
+        APR.objects.update_or_create(credit_card=credit_card, **apr_kwargs)

@@ -207,6 +207,7 @@ class ChartData():
             # line chart type by default
             data, qs_data = self.get_transactions_data(user, chart_name, chart_type, account_types, date_period_days=90)
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
+        # elif chart_name == ""
         else:
             data, qs_data = self.get_accounts_snapshots_data(user, chart_name, chart_type, account_types)
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
@@ -232,7 +233,7 @@ class ChartData():
                                                       chart_type=chart_type, account_types=account_types)
             charts_data.append(chart_data)
             chart_data, qs_data = self.get_chart_data(user=user, chart_name="Your past month's spending by expenditure category:",
-                                                    chart_type="pie", account_types=account_types)
+                                                      chart_type="pie", account_types=account_types)
             charts_data.append(chart_data)
         elif category == "income":
             print("income")
@@ -245,10 +246,12 @@ class ChartData():
                                                       account_types=account_types)
             charts_data.append(chart_data)
         elif category == "liabilities":
-            chart_name = "Your debt total over time"
-            chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type,
+          chart_data, qs_data = self.get_chart_data(user=user, chart_name="Your student loan debt total over time", chart_type=chart_type,
                                                       account_types=account_types)
-            charts_data.append(chart_data)
+          charts_data.append(chart_data)
+        #   chart_data, qs_data = self.get_chart_data(user=user, chart_name="Your credit card debt", chart_type=chart_type,
+        #                                               account_types=account_types)
+        #   charts_data.append(chart_data)
         elif category == "investments":
             chart_name = "Progress of your invesments"
             chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type,

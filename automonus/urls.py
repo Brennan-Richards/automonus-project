@@ -33,7 +33,6 @@ urlpatterns = [
     path('user-accounts/', include('users.urls')),
     path('webhooks/', include('webhooks.urls')),
     path('income/', include('income.urls')),
-    path('savings/', include('savings.urls')),
     path('investments/', include('investments.urls')),
 
     # path('link/', views.link, name='link'),

@@ -96,6 +96,7 @@ def investments_overview(request):
         investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__user=user,
                                                                         account__user_institution__is_active=True)[:100]
         charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="investments", account_types=account_types)
+        products = user.profile.has_investments()
         context = {"charts_data": charts_data, "total_investments": total_investments,
-                   "investment_transactions": investment_transactions}
+                   "investment_transactions": investment_transactions, "products":products}
     return render(request, 'analysis/investments_overview.html', context)

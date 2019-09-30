@@ -2,13 +2,15 @@
 
 
 {% block page_content %}
+
+{% if request.user.profile.has_savings %}
     <div class="row">
         <div class="col-lg-12 text-center">
             <div class="h1">Savings Overview</div>
             <p>To see an overview of your savings.</p>
         </div>
     </div>
-    <div class="row">
+    <div class="row text-center">
         <div class="col-lg-12">
             <div>
                 Total: <b>{{ total_balance }} USD</b>
@@ -49,4 +51,5 @@
             </div>
         </div>
     </div>
-{% endblock %}
+{% endif %}
+{% endblock page_content %}
