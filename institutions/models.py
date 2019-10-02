@@ -353,7 +353,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             "payment_reference_number": student_loans["payment_reference_number"],
             "estimated_pslf_eligibility_date": student_loans["pslf_status"]["estimated_eligibility_date"],
             "payments_made": student_loans["pslf_status"]["payments_made"],
-            "payments_remaining": student_loans["pslf_status"]["payments_remaining"],
+            "pslf_payments_remaining": student_loans["pslf_status"]["payments_remaining"],
             "repayment_description": student_loans["repayment_plan"]["description"],
             "repayment_type": student_loans["repayment_plan"]["type"],
             "sequence_number": student_loans["sequence_number"],

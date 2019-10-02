@@ -52,15 +52,14 @@ class Profile(models.Model):
         return self.user.userinstitution_set.filter(is_active=True)
 
     def get_user_products(self):
-        """ This method returns true when the product in question is either
-        used or available to be used based on connected UserInstitutions(Items). """
+        """ This method returns a list of billed Plaid products from
+            ALL connected Items (We call them: 'UserInstitutions'). """
         from plaid import Client
         client = Client(client_id=settings.PLAID_CLIENT_ID,
             secret=settings.PLAID_SECRET,
             public_key=settings.PLAID_PUBLIC_KEY,
             environment=settings.PLAID_ENV
         )
-        #below will retrieve the available and billed products for all connected institutions
         items = self.get_user_institutions().iterator()
         products_in_use = list()
         for item in items:
@@ -73,24 +72,30 @@ class Profile(models.Model):
 
         return products_in_use
 
-    def has_income(self):
+    #The following methods check if any of the user's connected institution supports the specific product mentioned.
 
+    def has_income(self):
         products = self.get_user_products()
         if "income" in products:
             return True
 
     def has_transactions(self):
-
         products = self.get_user_products()
         if "transactions" in products:
             return True
 
     def has_investments(self):
-
         products = self.get_user_products()
         print(products)
         if "investments" in products:
             return True
+
+    def has_liabilities(self):
+        products = self.get_user_products()
+        if "liabilities" in products:
+            return True
+
+    #Methods below check not for products in particular, but for specific data that the user does not always have.
 
     def has_investment_transactions(self):
         investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__user=self.user)
