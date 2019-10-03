@@ -131,19 +131,30 @@ class ChartData():
 
 
     def get_income_data(self, user, chart_name, chart_type):
+
         kwargs = {
             "user_institution__user": user,
             "user_institution__is_active": True
         }
-        income_data = Income.objects.filter(**kwargs).aggregate(
-            last_year_income_before_tax=Sum("last_year_income_before_tax"),
-            last_year_income_minus_tax=Sum("last_year_income_minus_tax"),
-            last_year_taxes=Sum("last_year_taxes")
-        )
-        data = {#"Last year income before tax": round(float(income_data["last_year_income_before_tax"]),2),
-                "Last year income minus tax": round(float(income_data["last_year_income_minus_tax"]), 2),
-                "Last year taxes": round(float(income_data["last_year_taxes"]), 2)
-                }
+
+        if chart_name == "Last year's income before and after taxes, cost of tax":
+            income_data = Income.objects.filter(**kwargs).aggregate(
+                last_year_income_minus_tax=Sum("last_year_income_minus_tax"),
+                last_year_taxes=Sum("last_year_taxes")
+            )
+            data = {
+                    "Last year income minus tax": round(float(income_data["last_year_income_minus_tax"]), 2),
+                    "Last year taxes": round(float(income_data["last_year_taxes"]), 2)
+                    }
+        elif chart_name == "Projected income before and after taxes":
+            income_data = Income.objects.filter(**kwargs).aggregate(
+                projected_yearly_minus_tax=Sum("projected_yearly_minus_tax"),
+                projected_yearly_taxes=Sum("projected_yearly_taxes")
+            )
+            data = {
+                    "Projected yearly income minus tax": round(float(income_data["projected_yearly_minus_tax"]), 2),
+                    "Projected yearly taxes": round(float(income_data["projected_yearly_taxes"]), 2)
+                    }
         return data, income_data
 
     def get_spendings_data(self, user, chart_name, chart_type, account_types):
@@ -200,6 +211,9 @@ class ChartData():
         if chart_name == "Last year's income before and after taxes, cost of tax":
             data, qs_data = self.get_income_data(user, chart_name, chart_type)
             chart_data = self.prepare_chart_data_pie_chart(data, user, chart_name, chart_type)
+        elif chart_name == "Projected income before and after taxes":
+            data, qs_data = self.get_income_data(user, chart_name, chart_type)
+            chart_data = self.prepare_chart_data_pie_chart(data, user, chart_name, chart_type)
         elif chart_name == "Your past month's spending by expenditure category:":
             data, qs_data = self.get_spendings_data(user, chart_name, chart_type, account_types)
             chart_data = self.prepare_chart_data_pie_chart(data, user, chart_name, chart_type)
@@ -237,9 +251,12 @@ class ChartData():
             charts_data.append(chart_data)
         elif category == "income":
             print("income")
-            chart_name = "Last year's income before and after taxes, cost of tax"
-            chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type)
+            chart_data, qs_data = self.get_chart_data(user=user, chart_name="Last year's income before and after taxes, cost of tax", chart_type=chart_type)
             charts_data.append(chart_data)
+
+            chart_data, qs_data = self.get_chart_data(user=user, chart_name="Projected income before and after taxes", chart_type=chart_type)
+            charts_data.append(chart_data)
+
         elif category == "savings":
             chart_name = "Value of your savings over time"
             chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type,

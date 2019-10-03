@@ -4,12 +4,18 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 import uuid
-from income.models import Income
+from income.models import Income, IncomeStream
 from institutions.models import UserInstitution
 from accounts.models import Transaction, Account
 from investments.models import InvestmentTransaction
 from django.db.models import Sum
 from django.conf import settings
+from plaid import Client
+client = Client(client_id=settings.PLAID_CLIENT_ID,
+    secret=settings.PLAID_SECRET,
+    public_key=settings.PLAID_PUBLIC_KEY,
+    environment=settings.PLAID_ENV
+)
 
 
 @receiver(user_logged_in)
@@ -36,17 +42,29 @@ class Profile(models.Model):
     def __str__(self):
         return "{}".format(self.user.username)
 
+    def get_categories(self):
+        response = client.Categories.get()
+        return response
+
     def get_income(self):
         income = Income.objects.filter(user_institution__user=self.user, user_institution__is_active=True)\
             .aggregate(total=Sum("projected_yearly_minus_tax"))
+        last_year_income = Income.objects.filter(user_institution__user=self.user, user_institution__is_active=True)\
+            .aggregate(total=Sum("last_year_income_minus_tax"))
         print(income)
         income = income["total"] if income.get("total") else 0
+        last_year_income = last_year_income["total"] if last_year_income.get("total") else 0
         return {
             "per_day": round(income/365, 2),
             "per_week": round(income/52, 2),
             "per_month": round(income/12, 2),
-            "total": round(income, 2)
+            "total": round(income, 2),
+            "last_year_per_day": round(last_year_income/365, 2),
+            "last_year_per_week": round(last_year_income/52, 2),
+            "last_year_per_month": round(last_year_income/12, 2),
+            "last_year": round(last_year_income, 2)
         }
+
 
     def get_user_institutions(self):
         return self.user.userinstitution_set.filter(is_active=True)
@@ -54,12 +72,7 @@ class Profile(models.Model):
     def get_user_products(self):
         """ This method returns true when the product in question is either
         used or available to be used based on connected UserInstitutions(Items). """
-        from plaid import Client
-        client = Client(client_id=settings.PLAID_CLIENT_ID,
-            secret=settings.PLAID_SECRET,
-            public_key=settings.PLAID_PUBLIC_KEY,
-            environment=settings.PLAID_ENV
-        )
+
         #below will retrieve the available and billed products for all connected institutions
         items = self.get_user_institutions().iterator()
         products_in_use = list()

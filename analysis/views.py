@@ -9,6 +9,7 @@ from django.db.models import Avg, Count, Min, Sum
 import json
 from .utils import ChartData
 from users.models import Profile
+from income.models import IncomeStream
 from investments.models import Holding, InvestmentTransaction
 from django.contrib.auth.decorators import login_required
 
@@ -17,9 +18,12 @@ from django.contrib.auth.decorators import login_required
 def income_overview(request):
     context = dict()
     user = request.user
+    print(user.profile.get_categories())
     if user.profile.get_user_institutions():
         charts_data = ChartData().get_charts_data(user=user, chart_type="pie", category="income")
-        context = {"charts_data": charts_data}
+        income_streams = IncomeStream.objects.filter(income__user_institution__user=user,
+                                                     income__user_institution__is_active=True)
+        context = {"charts_data": charts_data, "income_streams":income_streams}
     return render(request, 'analysis/income_overview.html', context)
 
 
