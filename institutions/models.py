@@ -52,6 +52,11 @@ class UserInstitution(ModelBaseFieldsAbstract):
         else:
             return "{}".format(self.id)
 
+    # def get_transaction_categories(self):
+    #     categories = client.Categories.get()
+    #     for category in categories:
+    #         if TransactionCategory.objects.get(category_id)
+
     def populate_transactions_loop_launch(self, type=None):
         offset = 0
         if not type:
@@ -90,21 +95,30 @@ class UserInstitution(ModelBaseFieldsAbstract):
             transaction_date = transaction["date"]
             category_name = transaction["category"][0]
             category_id = transaction["category_id"]
-            category, created = TransactionCategory.objects.get_or_create(name=category_name, plaid_id=category_id)
+            group = transaction["transaction_type"]
+
+            hierarchy = transaction["category"]
+            categories = {"sub_category_1":hierarchy[0],}
+            if len(hierarchy) > 1:
+                categories["sub_category_2"] = hierarchy[1]
+
+            if len(hierarchy) > 2:
+                categories["sub_category_3"] = hierarchy[2]
+
+            category, created = TransactionCategory.objects.get_or_create(plaid_category_id=category_id, group=group,
+                                                                          defaults=categories)
             iso_currency_code = transaction["iso_currency_code"]
             currency, created = Currency.objects.get_or_create(code=iso_currency_code)
             name = transaction["name"]
             pending = transaction["pending"]
             transaction_id = transaction["transaction_id"]
             transaction_type_name = transaction["transaction_type"]
-            type, created = TransactionType.objects.get_or_create(name=transaction_type_name)
             kwargs["account"] = account
             kwargs["amount"] = amount
             kwargs["currency"] = currency
             kwargs["name"] = name
             kwargs["is_pending"] = pending
             kwargs["plaid_id"] = transaction_id
-            kwargs["type"] = type
             kwargs["category"] = category
             kwargs["date"] = transaction_date
             """Such approach will increase speed for populating large volumes of data"""
@@ -353,7 +367,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             "payment_reference_number": student_loans["payment_reference_number"],
             "estimated_pslf_eligibility_date": student_loans["pslf_status"]["estimated_eligibility_date"],
             "payments_made": student_loans["pslf_status"]["payments_made"],
-            "payments_remaining": student_loans["pslf_status"]["payments_remaining"],
+            "pslf_payments_remaining": student_loans["pslf_status"]["payments_remaining"],
             "repayment_description": student_loans["repayment_plan"]["description"],
             "repayment_type": student_loans["repayment_plan"]["type"],
             "sequence_number": student_loans["sequence_number"],

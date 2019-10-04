@@ -120,10 +120,9 @@ class ChartData():
         }
 
         transactions = Transaction.objects.filter(**kwargs).values('date', 'currency__code') \
-        .annotate(amount=Sum('amount'))
+                                                  .annotate(amount=Sum('amount'))
 
         sum_transactions = 0
-
         for transaction in transactions:
             sum_transactions += transaction["amount"]
 
@@ -162,10 +161,18 @@ class ChartData():
         data, transactions = self.get_transactions_data(user, chart_name, chart_type, account_types)
         data_dict = dict()
         for item in transactions.iterator():
-            category = item.category.name
+            if ((item.category.sub_category_1 == "Payment") or (item.category.sub_category_1 == "Transfer")) and item.category.sub_category_2:
+                category = item.category.sub_category_2
+                print(category)
+            else:
+                category = item.category.sub_category_1
+
             if not category in data_dict:
                 data_dict[category] = 0
-            data_dict[category] += float(abs(item.amount))
+
+            if item.amount > 0: #checks to see if transaction is outgoing, excludes incoming transactions of negative amounts
+                data_dict[category] += float(item.amount)
+
         return data_dict, transactions
 
     def get_accounts_snapshots_data(self, user, chart_name, chart_type, account_types, date_period_days=365):
@@ -198,7 +205,7 @@ class ChartData():
                 total_value += value
                 v_mod[key] = round(total_value, 2)
             data[k] = v_mod
-        # print(data)
+
         return data, qs
 
     def get_chart_data(self, user, chart_name, chart_type, qs_data=None, account_types=None):

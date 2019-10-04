@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import login_required
 def income_overview(request):
     context = dict()
     user = request.user
-    print(user.profile.get_categories())
+    # print(user.profile.get_categories())
     if user.profile.get_user_institutions():
         charts_data = ChartData().get_charts_data(user=user, chart_type="pie", category="income")
         income_streams = IncomeStream.objects.filter(income__user_institution__user=user,

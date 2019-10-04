@@ -81,13 +81,17 @@ class Account(models.Model):
                                                         })
 
 
-class TransactionCategory(ModelBaseFieldsAbstract):
-    plaid_id = models.CharField(max_length=38, default=None)
+class TransactionCategory(models.Model):
+    plaid_category_id = models.CharField(max_length=38, default=None)
+    group = models.CharField(max_length=32, default=None)
+    sub_category_1 = models.CharField(max_length=64, default=None)
+    sub_category_2 = models.CharField(max_length=64, blank=True, null=True, default=None)
+    sub_category_3 = models.CharField(max_length=64, blank=True, null=True, default=None)
+    created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
-
-class TransactionType(ModelBaseFieldsAbstract):
-    pass
-
+    def __str__(self):
+        return "ID:{} - {}".format(self.plaid_category_id, self.sub_category_1)
 
 class Transaction(models.Model):
     account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL)
@@ -96,7 +100,6 @@ class Transaction(models.Model):
     currency = models.ForeignKey(Currency, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     date = models.DateField()
     category = models.ForeignKey(TransactionCategory, blank=True, null=True, default=None, on_delete=models.SET_NULL)
-    type = models.ForeignKey(TransactionType, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     plaid_id = models.CharField(max_length=38)
     is_pending = models.BooleanField(default=False)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)

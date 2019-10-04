@@ -42,9 +42,9 @@ class Profile(models.Model):
     def __str__(self):
         return "{}".format(self.user.username)
 
-    def get_categories(self):
-        response = client.Categories.get()
-        return response
+    # def get_categories(self):
+    #     response = client.Categories.get()
+    #     return response
 
     def get_income(self):
         income = Income.objects.filter(user_institution__user=self.user, user_institution__is_active=True)\
