@@ -22,6 +22,11 @@ class UserSecurityAdmin(admin.ModelAdmin):
 
 admin.site.register(UserSecurity, UserSecurityAdmin)
 
+class UserSecuritySnapshotAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in UserSecuritySnapshot._meta.fields]
+
+admin.site.register(UserSecuritySnapshot, UserSecuritySnapshotAdmin)
+
 
 class InvestmentTransactionAdmin(admin.ModelAdmin):
     list_display = [field.name for field in InvestmentTransaction._meta.fields]
@@ -36,6 +41,12 @@ class HoldingAdmin(admin.ModelAdmin):
 
 admin.site.register(Holding, HoldingAdmin)
 
+
+class HoldingSnapshotAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in HoldingSnapshot._meta.fields]
+
+
+admin.site.register(HoldingSnapshot, HoldingSnapshotAdmin)
 
 class InvestmentTransactionTypeAdmin(admin.ModelAdmin):
     list_display = [field.name for field in InvestmentTransactionType._meta.fields]
