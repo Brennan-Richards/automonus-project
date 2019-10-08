@@ -52,11 +52,6 @@ class UserInstitution(ModelBaseFieldsAbstract):
         else:
             return "{}".format(self.id)
 
-    # def get_transaction_categories(self):
-    #     categories = client.Categories.get()
-    #     for category in categories:
-    #         if TransactionCategory.objects.get(category_id)
-
     def populate_transactions_loop_launch(self, type=None):
         offset = 0
         if not type:

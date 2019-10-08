@@ -114,6 +114,23 @@ class Holding(models.Model):
                                                 'currency': self.currency,
                                               })
 
+    def get_purchase_price(self):
+        purchase_price = self.cost_basis / self.quantity
+        return round(purchase_price, 3)
+
+    def get_current_price(self):
+        return round(self.institution_price, 3)
+
+    def get_profit_or_loss_current(self):
+        profit_or_loss = self.institution_value - self.cost_basis
+        return round(profit_or_loss, 3)
+
+    def is_profitable(self):
+        if self.get_profit_or_loss_current() < 0:
+            return False
+        else:
+            return True
+
     def __str__(self):
         return "{}".format(self.id)
 

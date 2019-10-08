@@ -8,6 +8,7 @@ from income.models import Income, IncomeStream
 from institutions.models import UserInstitution
 from accounts.models import Transaction, Account
 from investments.models import InvestmentTransaction
+from liabilities.models import StudentLoan, CreditCard
 from django.db.models import Sum
 from django.conf import settings
 from plaid import Client
@@ -42,10 +43,6 @@ class Profile(models.Model):
     def __str__(self):
         return "{}".format(self.user.username)
 
-    # def get_categories(self):
-    #     response = client.Categories.get()
-    #     return response
-
     def get_income(self):
         income = Income.objects.filter(user_institution__user=self.user, user_institution__is_active=True)\
             .aggregate(total=Sum("projected_yearly_minus_tax"))
@@ -70,9 +67,6 @@ class Profile(models.Model):
         return self.user.userinstitution_set.filter(is_active=True)
 
     def get_user_products(self):
-        """ This method returns true when the product in question is either
-        used or available to be used based on connected UserInstitutions(Items). """
-
         #below will retrieve the available and billed products for all connected institutions
         items = self.get_user_institutions().iterator()
         products_in_use = list()
@@ -87,36 +81,48 @@ class Profile(models.Model):
         return products_in_use
 
     def has_income(self):
-
         products = self.get_user_products()
         if "income" in products:
             return True
 
     def has_transactions(self):
-
         products = self.get_user_products()
         if "transactions" in products:
             return True
 
     def has_investments(self):
-
         products = self.get_user_products()
         print(products)
         if "investments" in products:
             return True
 
     def has_investment_transactions(self):
-        investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__user=self.user)
+        investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user)
         if investment_transactions:
              return True
 
+    def has_liabilities(self):
+        products = self.get_user_products()
+        if "liabilities" in products:
+            return True
+
     def has_transactions_for_liabilities(self):
         account_types = ["loan"]
-        liabilities_transactions = Transaction.objects.filter(account__user_institution__user=self.user,
+        liabilities_transactions = Transaction.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user,
                                                               account__type__name__in=account_types)
         if liabilities_transactions:
             return True
 
-    def has_savings(self):
+    def has_student_loans_data(self):
+        student_loan = StudentLoan.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user)
+        if student_loan:
+            return True
+
+    def has_credit_card_data(self):
+        credit_card = CreditCard.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user)
+        if credit_card:
+            return True
+
+    def has_savings_data(self):
         account_subtypes = ["savings"]
-        return Account.objects.filter(subtype__name__in=account_subtypes, user_institution__user=self.user)
+        return Account.objects.filter(user_institution__is_active=True, subtype__name__in=account_subtypes, user_institution__user=self.user)

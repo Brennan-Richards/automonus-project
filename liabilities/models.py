@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from accounts.models import Account
 import uuid
 from django.utils import timezone
+from datetime import datetime, date
 from django.forms.models import model_to_dict
 # Create your models here.
 
@@ -41,6 +42,34 @@ class StudentLoan(models.Model):
 
     def __str__(self):
         return "{}: {}".format(self.user_institution.user.username, self.guarantor)
+
+    # def get_payment_period(self):
+    #     if self.next_payment_due_date and self.last_statement_issue_date:
+    #         timedelta = self.next_payment_due_date - self.last_statement_issue_date
+    #     #print(timedelta)
+    #     if timedelta.days >= 28:
+    #         period = "month"
+    #     elif timedelta.days == 14:
+    #         period = "biweek"
+    #     elif timedelta.days == 7:
+    #         period = "week"
+    #     elif timedelta.days == 1:
+    #         period = "day"
+    #     #print(period)
+    #     return period
+    #
+    # def get_current_balance(self):
+    #     #get number of months between end date and now (a.k.a number of payments)
+    #     remaining_loan_term = date(self.end_date).days - date(self.last_statement_issue_date).days #returns remaining term of loan
+    #     payment_period = self.get_payment_period()
+    #     print(remaining_loan_term)
+    #     remaining_years_loan_term = remaining_loan_term / 12
+    #     print(remaining_years_loan_term)
+    #     if payment_period == "month":
+    #         remaining_payments = remaining_loan_term.days / 12
+    #     elif payment_period == "biweek":
+    #         remaining_payments = remaining_loan_term / 24
+
 
     def create_snapshot(self):
         StudentLoanSnapshot.objects.get_or_create(student_loan=self,
@@ -147,10 +176,10 @@ class CreditCard(models.Model):
     last_payment_date = models.DateField(blank=True, null=True, default=None)
     last_statement_balance = models.DecimalField(max_digits=18, decimal_places=2, default=0)
     last_statement_issue_date = models.DateField(blank=True, null=True, default=None)
-    late_fee_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    late_fee_amount = models.DecimalField(max_digits=18, decimal_places=2, default=None)
     minimum_payment_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0)
     next_payment_due_date = models.DateField(blank=True, null=True, default=None)
-    credit_limit = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    credit_limit = models.DecimalField(max_digits=18, decimal_places=2, default=None)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)

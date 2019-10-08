@@ -97,7 +97,7 @@ class ChartData():
             if is_cumulative:
                 data[currency_code][date] += amount
             else:
-                data[currency_code][date] += abs(amount)
+                data[currency_code][date] += amount
         if is_cumulative:
             for k, v in data.items():
                 v_mod = dict(sorted(v.items()))
@@ -208,7 +208,7 @@ class ChartData():
 
         return data, qs
 
-    def get_chart_data(self, user, chart_name, chart_type, qs_data=None, account_types=None):
+    def get_data_by_chart_name(self, user, chart_name, chart_type, qs_data=None, account_types=None):
         """
         :param user:
         :param chart_name:
@@ -228,7 +228,16 @@ class ChartData():
             # line chart type by default
             data, qs_data = self.get_transactions_data(user, chart_name, chart_type, account_types, date_period_days=90)
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
-        # elif chart_name == ""
+
+        #
+        # elif chart_name == "Your student loan debt total over time":
+        #     data, qs_data = self.get_student_loan_snapshots_data(user, chart_name, chart_type, account_types)
+        #     chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
+        # elif chart_name == "Your credit card debt over time":
+        #     data, qs_data = self.get_credit_card_snapshots_data(user, chart_name, chart_type, account_types)
+        #     chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
+        #
+        #
         else:
             data, qs_data = self.get_accounts_snapshots_data(user, chart_name, chart_type, account_types)
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
@@ -250,35 +259,35 @@ class ChartData():
     def get_charts_data(self, user, chart_type, category, account_types=None):
         charts_data = list()
         if category == "spending":
-            chart_data, qs_data = self.get_chart_data(user=user, chart_name="Your spending activity over the past quarter (90 days)",
+            chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your spending activity over the past quarter (90 days)",
                                                       chart_type=chart_type, account_types=account_types)
             charts_data.append(chart_data)
-            chart_data, qs_data = self.get_chart_data(user=user, chart_name="Your past month's spending by expenditure category:",
+            chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your past month's spending by expenditure category:",
                                                       chart_type="pie", account_types=account_types)
             charts_data.append(chart_data)
         elif category == "income":
             print("income")
-            chart_data, qs_data = self.get_chart_data(user=user, chart_name="Last year's income before and after taxes, cost of tax", chart_type=chart_type)
+            chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Last year's income before and after taxes, cost of tax", chart_type=chart_type)
             charts_data.append(chart_data)
 
-            chart_data, qs_data = self.get_chart_data(user=user, chart_name="Projected income before and after taxes", chart_type=chart_type)
+            chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Projected income before and after taxes", chart_type=chart_type)
             charts_data.append(chart_data)
 
         elif category == "savings":
             chart_name = "Value of your savings over time"
-            chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type,
+            chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name=chart_name, chart_type=chart_type,
                                                       account_types=account_types)
             charts_data.append(chart_data)
         elif category == "liabilities":
-          chart_data, qs_data = self.get_chart_data(user=user, chart_name="Your student loan debt total over time", chart_type=chart_type,
+          chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your student loan debt total over time", chart_type=chart_type,
                                                       account_types=account_types)
           charts_data.append(chart_data)
-        #   chart_data, qs_data = self.get_chart_data(user=user, chart_name="Your credit card debt", chart_type=chart_type,
-        #                                               account_types=account_types)
-        #   charts_data.append(chart_data)
+          chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your credit card debt", chart_type=chart_type,
+                                                      account_types=account_types)
+          charts_data.append(chart_data)
         elif category == "investments":
             chart_name = "Progress of your invesments"
-            chart_data, qs_data = self.get_chart_data(user=user, chart_name=chart_name, chart_type=chart_type,
+            chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name=chart_name, chart_type=chart_type,
                                                       account_types=account_types)
             charts_data.append(chart_data)
         return charts_data

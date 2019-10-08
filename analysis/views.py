@@ -9,6 +9,7 @@ from django.db.models import Avg, Count, Min, Sum
 import json
 from .utils import ChartData
 from users.models import Profile
+from liabilities.models import StudentLoan
 from income.models import IncomeStream
 from investments.models import Holding, InvestmentTransaction
 from django.contrib.auth.decorators import login_required
@@ -18,7 +19,6 @@ from django.contrib.auth.decorators import login_required
 def income_overview(request):
     context = dict()
     user = request.user
-    # print(user.profile.get_categories())
     if user.profile.get_user_institutions():
         charts_data = ChartData().get_charts_data(user=user, chart_type="pie", category="income")
         income_streams = IncomeStream.objects.filter(income__user_institution__user=user,
@@ -93,14 +93,19 @@ def investments_overview(request):
                                                 account__user_institution__is_active=True).aggregate(total_amount=Sum("institution_value"))
         investment_accounts = Account.objects.filter(user_institution__user=user, type__name__in=account_types,
                                                     user_institution__is_active=True).aggregate(total_amount=Sum("current_balance"))
-
         total_amount = user_holdings["total_amount"] if user_holdings.get("total_amount") else investment_accounts["total_amount"]
         total_investments = round(total_amount, 2)
+
+        holdings = Holding.objects.filter(account__user_institution__user=user,
+                                                account__user_institution__is_active=True)
 
         investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__user=user,
                                                                         account__user_institution__is_active=True)[:100]
         charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="investments", account_types=account_types)
         products = user.profile.has_investments()
-        context = {"charts_data": charts_data, "total_investments": total_investments,
-                   "investment_transactions": investment_transactions, "products":products}
+        context = {
+                   "charts_data": charts_data, "total_investments": total_investments,
+                   "investment_transactions": investment_transactions, "products":products,
+                   "holdings":holdings
+                   }
     return render(request, 'analysis/investments_overview.html', context)
