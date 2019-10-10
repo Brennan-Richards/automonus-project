@@ -288,6 +288,9 @@ class UserInstitution(ModelBaseFieldsAbstract):
                                                   defaults={"confidence": confidence, "days": days,
                                                             "monthly_income": monthly_income})
 
+    def check_client(self):
+        return client
+
     def populate_or_update_accounts(self):
         """The code with getting stripe token is not needed here:
         stripe_response = client.Processor.stripeBankAccountTokenCreate(self.access_token, account_id)
@@ -300,6 +303,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
         except Exception as e:
             print(e)
             return False
+        print('bank_accounts_data', bank_accounts_data)
         for account_data in bank_accounts_data["accounts"]:
             account_id = account_data["account_id"]
             type_name = account_data["type"]

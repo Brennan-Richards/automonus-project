@@ -1,6 +1,6 @@
 import os
 import sys
-os.environ['DJANGO_SETTINGS_MODULE'] = 'automonus.settings.development'
+# os.environ['DJANGO_SETTINGS_MODULE'] = 'automonus.settings.development'
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
 import django
 django.setup()

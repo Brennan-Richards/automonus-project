@@ -93,5 +93,6 @@ db.sqlite3-journal
 .DS_Store
 venv
 ngrok
+.vscode/
 
 
