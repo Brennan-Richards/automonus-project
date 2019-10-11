@@ -303,7 +303,6 @@ class UserInstitution(ModelBaseFieldsAbstract):
         except Exception as e:
             print(e)
             return False
-        print('bank_accounts_data', bank_accounts_data)
         for account_data in bank_accounts_data["accounts"]:
             account_id = account_data["account_id"]
             type_name = account_data["type"]
@@ -325,7 +324,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
                 "type": account_type,
                 "subtype": account_subtype,
                 "available_balance": account_data["balances"]["available"] if account_data["balances"]["available"] else 0,
-                "current_balance": account_data["balances"]["current"] if account_data["balances"]["current"] else 0,
+                "current_balance": account_data["balances"].get('current', 0),
                 "limit_amount": account_data["balances"]["limit"] if account_data["balances"]["limit"] else 0,
                 "currency": currency
             }
