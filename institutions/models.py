@@ -1,17 +1,18 @@
+from liabilities.models import StudentLoan, DisbursementDate, ServicerAddress, CreditCard, APR
+from investments.models import UserSecurity, InvestmentTransaction, InvestmentTransactionType, Security, Holding, SecurityType
+import datetime
+from django.utils import timezone
+from accounts.models import *
+import os
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
 from plaid import Client
 client = Client(client_id=settings.PLAID_CLIENT_ID,
-    secret=settings.PLAID_SECRET,
-    public_key=settings.PLAID_PUBLIC_KEY,
-    environment=settings.PLAID_ENV
-)
-from accounts.models import *
-from django.utils import timezone
-import datetime
-from investments.models import UserSecurity, InvestmentTransaction, InvestmentTransactionType, Security, Holding, SecurityType
-from liabilities.models import StudentLoan, DisbursementDate, ServicerAddress, CreditCard, APR
+                secret=settings.PLAID_SECRET,
+                public_key=settings.PLAID_PUBLIC_KEY,
+                environment=settings.PLAID_ENV
+                )
 
 class ModelBaseFieldsAbstract(models.Model):
     name = models.CharField(max_length=128)
@@ -93,7 +94,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             group = transaction["transaction_type"]
 
             hierarchy = transaction["category"]
-            categories = {"sub_category_1":hierarchy[0],}
+            categories = {"sub_category_1": hierarchy[0], }
             if len(hierarchy) > 1:
                 categories["sub_category_2"] = hierarchy[1]
 
@@ -146,9 +147,8 @@ class UserInstitution(ModelBaseFieldsAbstract):
         end_date = now.strftime("%Y-%m-%d")
         try:
             transactions_data = client.InvestmentTransactions.get(access_token=self.access_token, start_date=start_date,
-                                                        end_date=end_date, offset=offset, count=count)
+                                                                  end_date=end_date, offset=offset, count=count)
             print("Getting investment transactions")
-            # print(transactions_data)
         except Exception as e:
             print(e)
             return False
@@ -207,7 +207,8 @@ class UserInstitution(ModelBaseFieldsAbstract):
 
     def populate_securities_and_holdings(self):
         try:
-            data = client.Holdings.get(self.access_token)  # this returns both security and holding instances
+            # this returns both security and holding instances
+            data = client.Holdings.get(self.access_token)
         except Exception as e:
             return False
         securities = data["securities"]
@@ -371,7 +372,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             "sequence_number": student_loans["sequence_number"],
             "ytd_interest_paid": student_loans["ytd_interest_paid"],
             "ytd_principal_paid": student_loans["ytd_principal_paid"],
-            }
+        }
 
         loan_instance, created = StudentLoan.objects.update_or_create(user_institution=self, defaults=student_loan_kwargs)
 
@@ -404,15 +405,15 @@ class UserInstitution(ModelBaseFieldsAbstract):
             return False
 
         credit_card_kwargs = {
-            "account":account,
-            "is_overdue":credit_data["is_overdue"],
-            "last_payment_amount":credit_data["last_payment_amount"],
-            "last_payment_date":credit_data["last_payment_date"],
-            "last_statement_balance":credit_data["last_statement_balance"],
-            "last_statement_issue_date":credit_data["last_statement_issue_date"],
+            "account": account,
+            "is_overdue": credit_data["is_overdue"],
+            "last_payment_amount": credit_data["last_payment_amount"],
+            "last_payment_date": credit_data["last_payment_date"],
+            "last_statement_balance": credit_data["last_statement_balance"],
+            "last_statement_issue_date": credit_data["last_statement_issue_date"],
             # "late_fee_amount":credit_data["late_fee_amount"] if credit_data["late_fee_amount"] else 0,
-            "minimum_payment_amount":credit_data["minimum_payment_amount"] if credit_data["minimum_payment_amount"] else 0,
-            "next_payment_due_date":credit_data["next_payment_due_date"],
+            "minimum_payment_amount": credit_data["minimum_payment_amount"] if credit_data["minimum_payment_amount"] else 0,
+            "next_payment_due_date": credit_data["next_payment_due_date"],
             # "credit_limit":credit_data["credit_limit"] if credit_data["credit_limit"] else 0,
         }
 
@@ -421,10 +422,10 @@ class UserInstitution(ModelBaseFieldsAbstract):
 
         apr_data = credit_data["aprs"][0]
         apr_kwargs = {
-            "apr_type":apr_data["apr_type"],
-            "apr_percentage":apr_data["apr_percentage"],
-            "balance_subject_to_apr":apr_data["balance_subject_to_apr"],
-            "interest_charge_amount":apr_data["interest_charge_amount"]
+            "apr_type": apr_data["apr_type"],
+            "apr_percentage": apr_data["apr_percentage"],
+            "balance_subject_to_apr": apr_data["balance_subject_to_apr"],
+            "interest_charge_amount": apr_data["interest_charge_amount"]
         }
 
         APR.objects.update_or_create(credit_card=credit_card, defaults=apr_kwargs)
