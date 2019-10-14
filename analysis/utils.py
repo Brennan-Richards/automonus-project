@@ -208,7 +208,7 @@ class ChartData():
 
         return data, qs
 
-    def get_credit_card_snapshots_data(self, user, chart_name, chart_type,  date_period_days=365):
+    def get_credit_card_snapshots_data(self, user, chart_name, chart_type, date_period_days=365):
         kwargs = {
             "account__user_institution__user": user,
             "date__gte": timezone.now() - timedelta(days=date_period_days),
@@ -240,6 +240,38 @@ class ChartData():
 
         return data, qs
 
+    def get_student_loan_snapshots_data(self, user, chart_name, chart_type, date_period_days=365):
+        print(date_period_days)
+        kwargs = {
+            "account__user_institution__user": user,
+            "date__gte": timezone.now() - timedelta(days=date_period_days),
+            "account__user_institution__is_active": True
+        }
+        qs = StudentLoanSnapshot.objects.filter(**kwargs).order_by("date")
+        transactions = qs \
+            .values('date', 'account__currency__code', 'account__current_balance')
+        data = dict()
+        for item in transactions:
+            currency_code = item["account__currency__code"]
+            date = item["date"]
+            # date = item["date"].strftime("%m/%d/%Y")
+            balance = float(item["account__current_balance"])
+            if not currency_code in data:
+                data[currency_code] = dict()
+            if not date in data[currency_code]:
+                data[currency_code][date] = 0
+            data[currency_code][date] += balance
+
+        for k, v in data.items():
+            v_mod = dict(sorted(v.items()))
+            total_value = 0
+            for key, value in v_mod.items():
+                total_value += value
+                v_mod[key] = round(total_value, 2)
+            data[k] = v_mod
+
+        return data, qs
+
     def get_data_by_chart_name(self, user, chart_name, chart_type, qs_data=None, account_types=None):
         """
         :param user:
@@ -250,52 +282,42 @@ class ChartData():
         if chart_name == "Last year's income before and after taxes, cost of tax":
             data, qs_data = self.get_income_data(user, chart_name, chart_type)
             chart_data = self.prepare_chart_data_pie_chart(data, user, chart_name, chart_type)
+
         elif chart_name == "Projected income before and after taxes":
             data, qs_data = self.get_income_data(user, chart_name, chart_type)
             chart_data = self.prepare_chart_data_pie_chart(data, user, chart_name, chart_type)
+
         elif chart_name == "Your past month's spending by expenditure category:":
             data, qs_data = self.get_spendings_data(user, chart_name, chart_type, account_types)
             chart_data = self.prepare_chart_data_pie_chart(data, user, chart_name, chart_type)
+
         elif chart_name == "Your spending activity over the past quarter (90 days)":
             # line chart type by default
             data, qs_data = self.get_transactions_data(user, chart_name, chart_type, account_types, date_period_days=90)
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
 
-        #
-        # elif chart_name == "Your student loan debt total over time":
-        #     data, qs_data = self.get_student_loan_snapshots_data(user, chart_name, chart_type, account_types)
-        #     chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
+        elif chart_name == "Your student loan debt total over time":
+            data, qs_data = self.get_student_loan_snapshots_data(user, chart_name, chart_type)
+            chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
+
         elif chart_name == "Your credit card balance over time":
             data, qs_data = self.get_credit_card_snapshots_data(user, chart_name, chart_type)
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
 
-
         else:
             data, qs_data = self.get_accounts_snapshots_data(user, chart_name, chart_type, account_types)
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
-        """The code below is commented out, because getting data is switched to displaying data from
-        accounts snapshots"""
-        """
-        elif chart_name == "Savings traction":
-            data, qs_data = self.get_transactions_data(user, chart_name, chart_type,
-                                                       account_type="depository", is_cumulative=True)
-            chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
-        elif chart_name == "Investments traction":
-            data, qs_data = self.get_transactions_data(user, chart_name, chart_type, is_cumulative=True,
-                                                       model_name="InvestmentTransaction")
-            chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
 
-        """
         return chart_data, qs_data
 
-    def get_charts_data(self, user, chart_type, category, account_types=None):
+    def get_charts_data_by_module(self, user, chart_type, category, account_types=None):
         charts_data = list()
         if category == "spending":
             chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your spending activity over the past quarter (90 days)",
-                                                      chart_type=chart_type, account_types=account_types)
+                                                              chart_type=chart_type, account_types=account_types)
             charts_data.append(chart_data)
             chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your past month's spending by expenditure category:",
-                                                      chart_type="pie", account_types=account_types)
+                                                              chart_type="pie", account_types=account_types)
             charts_data.append(chart_data)
         elif category == "income":
             print("income")
@@ -305,21 +327,19 @@ class ChartData():
             chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Projected income before and after taxes", chart_type=chart_type)
             charts_data.append(chart_data)
 
-        elif category == "savings":
-            chart_name = "Value of your savings over time"
-            chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name=chart_name, chart_type=chart_type,
-                                                      account_types=account_types)
+            chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Value of your savings over time", chart_type="line",
+                                                              account_types=account_types)
             charts_data.append(chart_data)
         elif category == "liabilities":
-          # chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your student loan debt total over time", chart_type=chart_type,
-          #                                             account_types=account_types)
-          # charts_data.append(chart_data)
+          chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your student loan debt total over time", chart_type=chart_type,
+                                                            account_types=account_types)
+          charts_data.append(chart_data)
           chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your credit card balance over time", chart_type=chart_type,
-                                                      account_types=account_types)
+                                                            account_types=account_types)
           charts_data.append(chart_data)
         elif category == "investments":
             chart_name = "Progress of your invesments"
             chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name=chart_name, chart_type=chart_type,
-                                                      account_types=account_types)
+                                                              account_types=account_types)
             charts_data.append(chart_data)
         return charts_data
