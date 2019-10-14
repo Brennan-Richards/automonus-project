@@ -1,17 +1,18 @@
+from liabilities.models import StudentLoan, DisbursementDate, ServicerAddress, CreditCard, APR
+from investments.models import UserSecurity, InvestmentTransaction, InvestmentTransactionType, Security, Holding, SecurityType
+import datetime
+from django.utils import timezone
+from accounts.models import *
+import os
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
 from plaid import Client
 client = Client(client_id=settings.PLAID_CLIENT_ID,
-    secret=settings.PLAID_SECRET,
-    public_key=settings.PLAID_PUBLIC_KEY,
-    environment=settings.PLAID_ENV
-)
-from accounts.models import *
-from django.utils import timezone
-import datetime
-from investments.models import UserSecurity, InvestmentTransaction, InvestmentTransactionType, Security, Holding, SecurityType
-from liabilities.models import StudentLoan, DisbursementDate, ServicerAddress, CreditCard, APR
+                secret=settings.PLAID_SECRET,
+                public_key=settings.PLAID_PUBLIC_KEY,
+                environment=settings.PLAID_ENV
+                )
 
 class ModelBaseFieldsAbstract(models.Model):
     name = models.CharField(max_length=128)
@@ -90,21 +91,30 @@ class UserInstitution(ModelBaseFieldsAbstract):
             transaction_date = transaction["date"]
             category_name = transaction["category"][0]
             category_id = transaction["category_id"]
-            category, created = TransactionCategory.objects.get_or_create(name=category_name, plaid_id=category_id)
+            group = transaction["transaction_type"]
+
+            hierarchy = transaction["category"]
+            categories = {"sub_category_1": hierarchy[0], }
+            if len(hierarchy) > 1:
+                categories["sub_category_2"] = hierarchy[1]
+
+            if len(hierarchy) > 2:
+                categories["sub_category_3"] = hierarchy[2]
+
+            category, created = TransactionCategory.objects.get_or_create(plaid_category_id=category_id, group=group,
+                                                                          defaults=categories)
             iso_currency_code = transaction["iso_currency_code"]
             currency, created = Currency.objects.get_or_create(code=iso_currency_code)
             name = transaction["name"]
             pending = transaction["pending"]
             transaction_id = transaction["transaction_id"]
             transaction_type_name = transaction["transaction_type"]
-            type, created = TransactionType.objects.get_or_create(name=transaction_type_name)
             kwargs["account"] = account
             kwargs["amount"] = amount
             kwargs["currency"] = currency
             kwargs["name"] = name
             kwargs["is_pending"] = pending
             kwargs["plaid_id"] = transaction_id
-            kwargs["type"] = type
             kwargs["category"] = category
             kwargs["date"] = transaction_date
             """Such approach will increase speed for populating large volumes of data"""
@@ -137,9 +147,8 @@ class UserInstitution(ModelBaseFieldsAbstract):
         end_date = now.strftime("%Y-%m-%d")
         try:
             transactions_data = client.InvestmentTransactions.get(access_token=self.access_token, start_date=start_date,
-                                                        end_date=end_date, offset=offset, count=count)
+                                                                  end_date=end_date, offset=offset, count=count)
             print("Getting investment transactions")
-            # print(transactions_data)
         except Exception as e:
             print(e)
             return False
@@ -198,10 +207,10 @@ class UserInstitution(ModelBaseFieldsAbstract):
 
     def populate_securities_and_holdings(self):
         try:
-            data = client.Holdings.get(self.access_token)  # this returns both security and holding instances
+            # this returns both security and holding instances
+            data = client.Holdings.get(self.access_token)
         except Exception as e:
             return False
-
         securities = data["securities"]
         holdings = data["holdings"]
         """
@@ -219,14 +228,13 @@ class UserInstitution(ModelBaseFieldsAbstract):
             security_type, created = SecurityType.objects.get_or_create(name=item["type"])
             currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
             kwargs = {
-                "user_institution": self,
-                "security": security,
                 "is_cash_equivalent": item["is_cash_equivalent"],
                 "type": security_type,
                 "close_price": item["close_price"], "close_price_as_of": item["close_price_as_of"],
                 "currency": currency
             }
-            UserSecurity.objects.get_or_create(**kwargs)
+            user_security, created = UserSecurity.objects.update_or_create(user_institution=self, security=security, defaults=kwargs)
+            user_security.create_snapshot()
         """
         {'account_id': 'Z1l84PBBKaUzRw36
         KBqPsreoddXrk5FgLoJdb', 'cost_basis': 1, 'institution_price': 1, 'institution_price_as_of': None,
@@ -240,8 +248,6 @@ class UserInstitution(ModelBaseFieldsAbstract):
                                                                         user_institution=self)
             currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
             kwargs = {
-                "account": account,
-                "user_security": user_security,
                 "institution_value": item["institution_value"],
                 "institution_price": item["institution_price"],
                 "institution_price_as_of": item["institution_price_as_of"],
@@ -249,7 +255,10 @@ class UserInstitution(ModelBaseFieldsAbstract):
                 "currency": currency,
                 "quantity": item["quantity"]
             }
-            Holding.objects.get_or_create(**kwargs)
+            holding, created = Holding.objects.update_or_create(account=account,
+                                                                user_security=user_security,
+                                                                defaults=kwargs)
+            holding.create_snapshot()
 
     def populate_income_information(self):
         from income.models import Income, IncomeStream
@@ -279,6 +288,9 @@ class UserInstitution(ModelBaseFieldsAbstract):
             IncomeStream.objects.update_or_create(income=income, name=name,
                                                   defaults={"confidence": confidence, "days": days,
                                                             "monthly_income": monthly_income})
+
+    def check_client(self):
+        return client
 
     def populate_or_update_accounts(self):
         """The code with getting stripe token is not needed here:
@@ -313,13 +325,14 @@ class UserInstitution(ModelBaseFieldsAbstract):
                 "type": account_type,
                 "subtype": account_subtype,
                 "available_balance": account_data["balances"]["available"] if account_data["balances"]["available"] else 0,
-                "current_balance": account_data["balances"]["current"] if account_data["balances"]["current"] else 0,
+                "current_balance": account_data["balances"].get('current', 0),
                 "limit_amount": account_data["balances"]["limit"] if account_data["balances"]["limit"] else 0,
                 "currency": currency
             }
             """Account information can be updated after initial creation of the instance"""
             account, created = Account.objects.update_or_create(user_institution=self,
-                                                       account_id=account_id, **bank_account_defaults_kwargs)
+                                                                account_id=account_id,
+                                                                defaults=bank_account_defaults_kwargs)
             account.create_account_snapshot()
 
     def populate_liabilities_data(self):
@@ -359,9 +372,11 @@ class UserInstitution(ModelBaseFieldsAbstract):
             "sequence_number": student_loans["sequence_number"],
             "ytd_interest_paid": student_loans["ytd_interest_paid"],
             "ytd_principal_paid": student_loans["ytd_principal_paid"],
-            }
+        }
 
-        loan_instance, created = StudentLoan.objects.update_or_create(user_institution=self, **student_loan_kwargs)
+        loan_instance, created = StudentLoan.objects.update_or_create(user_institution=self, defaults=student_loan_kwargs)
+
+        loan_instance.create_snapshot()
 
         disbursement_dates = list()
         for date in student_loans["disbursement_dates"]:
@@ -377,7 +392,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             "street": student_loans["servicer_address"]["street"]
         }
 
-        ServicerAddress.objects.create(loan_instance=loan_instance, **servicer_address_kwargs)
+        ServicerAddress.objects.get_or_create(loan_instance=loan_instance, defaults=servicer_address_kwargs)
 
     def populate_credit_card_data(self):
         try:
@@ -390,27 +405,27 @@ class UserInstitution(ModelBaseFieldsAbstract):
             return False
 
         credit_card_kwargs = {
-            "account":account,
-            "is_overdue":credit_data["is_overdue"],
-            "last_payment_amount":credit_data["last_payment_amount"],
-            "last_payment_date":credit_data["last_payment_date"],
-            "last_statement_balance":credit_data["last_statement_balance"],
-            "last_statement_issue_date":credit_data["last_statement_issue_date"],
+            "account": account,
+            "is_overdue": credit_data["is_overdue"],
+            "last_payment_amount": credit_data["last_payment_amount"],
+            "last_payment_date": credit_data["last_payment_date"],
+            "last_statement_balance": credit_data["last_statement_balance"],
+            "last_statement_issue_date": credit_data["last_statement_issue_date"],
             # "late_fee_amount":credit_data["late_fee_amount"] if credit_data["late_fee_amount"] else 0,
-            "minimum_payment_amount":credit_data["minimum_payment_amount"] if credit_data["minimum_payment_amount"] else 0,
-            "next_payment_due_date":credit_data["next_payment_due_date"],
+            "minimum_payment_amount": credit_data["minimum_payment_amount"] if credit_data["minimum_payment_amount"] else 0,
+            "next_payment_due_date": credit_data["next_payment_due_date"],
             # "credit_limit":credit_data["credit_limit"] if credit_data["credit_limit"] else 0,
         }
 
-        credit_card, created = CreditCard.objects.update_or_create(user_institution=self, **credit_card_kwargs)
-
+        credit_card, created = CreditCard.objects.update_or_create(user_institution=self, defaults=credit_card_kwargs)
+        credit_card.create_snapshot()
 
         apr_data = credit_data["aprs"][0]
         apr_kwargs = {
-            "apr_type":apr_data["apr_type"],
-            "apr_percentage":apr_data["apr_percentage"],
-            "balance_subject_to_apr":apr_data["balance_subject_to_apr"],
-            "interest_charge_amount":apr_data["interest_charge_amount"]
+            "apr_type": apr_data["apr_type"],
+            "apr_percentage": apr_data["apr_percentage"],
+            "balance_subject_to_apr": apr_data["balance_subject_to_apr"],
+            "interest_charge_amount": apr_data["interest_charge_amount"]
         }
 
-        APR.objects.update_or_create(credit_card=credit_card, **apr_kwargs)
+        APR.objects.update_or_create(credit_card=credit_card, defaults=apr_kwargs)

@@ -5,20 +5,68 @@
 
     <div class="row">
         <div class="col-lg-12 text-center">
-            <div class="h1">Investments Overview</div>
+            <div class="h1">Investments</div>
         </div>
     </div>
     <div class="row text-center">
         <div class="col-lg-12">
-            <div>
-                Total: <b>{{ total_investments }} USD</b>
-            </div>
             <div id="charts_container" class="mt-3"></div>
         </div>
     </div>
+
+    <br>
+    <br>
+
+    <div class="row text-center">
+      <div class="col-sm-6 offset-sm-3">
+        <h2>Your Investment Portfolio</h2>
+        <div>
+            Total amount invested: $<b>{{ total_investments }}</b>
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <br>
+
+
+    {% for holding in holdings %}
+      {% if forloop.first %} <div class="row">{% endif %}
+        <div class="col-lg-4">
+          {% if holding.is_profitable %}
+            <div class="card border-success mt-3 text-center" style="width: 18rem;">
+              <h3 class="card-header border-success">({{ holding.user_security.security }})</h3>
+              <h5 class="card-header border-success">{{ holding.user_security }}</h5>
+              <div class="card-body">
+                <p><strong>Total Profit: ${{ holding.get_profit_or_loss_current }}</strong></p>
+                <p>Purchase Price/Share: ${{ holding.get_purchase_price }}</p>
+                <p>Purchase Cost: ${{ holding.cost_basis }}</p>
+                <p>Current Price/Share: ${{ holding.get_current_price }}</p>
+                <p>Total Value: ${{ holding.institution_value }}</p>
+              </div>
+            </div>
+          {% else %}
+            <div class="card border-danger mt-3 text-center" style="width: 18rem;">
+              <h3 class="card-header border-danger">({{ holding.user_security.security }})</h3>
+              <h5 class="card-header border-danger">{{ holding.user_security }}</h5>
+              <div class="card-body">
+                <p class="card-text"><strong>Total Loss: {{ holding.get_profit_or_loss_current }}</strong></p>
+                <p class="card-text">Purchase Price/Share: {{ holding.get_purchase_price }}</p>
+                <p class="card-text">Current Price/Share: {{ holding.get_current_price }}</p>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
+      {% if forloop.last %}</div>{% endif %}
+    {% endfor %}
+<br>
+<br>
+
     {% if request.user.profile.has_investment_transactions %}
     <div class="row mt-3">
         <div class="col-lg-12 text-center">
+            <small>Transactions of negative (-) value are incoming.</small>
             <div class="table-responsive">
                 <table id="table" class="table table-bordered">
                     <thead>
@@ -42,7 +90,7 @@
                                     {{ transaction.name }}
                                 </td>
                                 <td>
-                                    {{ transaction.amount }} USD
+                                  $ {{ transaction.amount }}
                                 </td>
                             </tr>
                         {% endfor %}

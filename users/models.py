@@ -4,12 +4,19 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 import uuid
-from income.models import Income
+from income.models import Income, IncomeStream
 from institutions.models import UserInstitution
 from accounts.models import Transaction, Account
 from investments.models import InvestmentTransaction
+from liabilities.models import StudentLoan, CreditCard
 from django.db.models import Sum
 from django.conf import settings
+from plaid import Client
+client = Client(client_id=settings.PLAID_CLIENT_ID,
+    secret=settings.PLAID_SECRET,
+    public_key=settings.PLAID_PUBLIC_KEY,
+    environment=settings.PLAID_ENV
+)
 
 
 @receiver(user_logged_in)
@@ -39,27 +46,28 @@ class Profile(models.Model):
     def get_income(self):
         income = Income.objects.filter(user_institution__user=self.user, user_institution__is_active=True)\
             .aggregate(total=Sum("projected_yearly_minus_tax"))
+        last_year_income = Income.objects.filter(user_institution__user=self.user, user_institution__is_active=True)\
+            .aggregate(total=Sum("last_year_income_minus_tax"))
         print(income)
         income = income["total"] if income.get("total") else 0
+        last_year_income = last_year_income["total"] if last_year_income.get("total") else 0
         return {
             "per_day": round(income/365, 2),
             "per_week": round(income/52, 2),
             "per_month": round(income/12, 2),
-            "total": round(income, 2)
+            "total": round(income, 2),
+            "last_year_per_day": round(last_year_income/365, 2),
+            "last_year_per_week": round(last_year_income/52, 2),
+            "last_year_per_month": round(last_year_income/12, 2),
+            "last_year": round(last_year_income, 2)
         }
+
 
     def get_user_institutions(self):
         return self.user.userinstitution_set.filter(is_active=True)
 
     def get_user_products(self):
-        """ This method returns a list of billed Plaid products from
-            ALL connected Items (We call them: 'UserInstitutions'). """
-        from plaid import Client
-        client = Client(client_id=settings.PLAID_CLIENT_ID,
-            secret=settings.PLAID_SECRET,
-            public_key=settings.PLAID_PUBLIC_KEY,
-            environment=settings.PLAID_ENV
-        )
+        #below will retrieve the available and billed products for all connected institutions
         items = self.get_user_institutions().iterator()
         products_in_use = list()
         for item in items:
@@ -98,17 +106,32 @@ class Profile(models.Model):
     #Methods below check not for products in particular, but for specific data that the user does not always have.
 
     def has_investment_transactions(self):
-        investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__user=self.user)
+        investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user)
         if investment_transactions:
              return True
 
+    def has_liabilities(self):
+        products = self.get_user_products()
+        if "liabilities" in products:
+            return True
+
     def has_transactions_for_liabilities(self):
         account_types = ["loan"]
-        liabilities_transactions = Transaction.objects.filter(account__user_institution__user=self.user,
+        liabilities_transactions = Transaction.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user,
                                                               account__type__name__in=account_types)
         if liabilities_transactions:
             return True
 
-    def has_savings(self):
+    def has_student_loans_data(self):
+        student_loan = StudentLoan.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user)
+        if student_loan:
+            return True
+
+    def has_credit_card_data(self):
+        credit_card = CreditCard.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user)
+        if credit_card:
+            return True
+
+    def has_savings_data(self):
         account_subtypes = ["savings"]
-        return Account.objects.filter(subtype__name__in=account_subtypes, user_institution__user=self.user)
+        return Account.objects.filter(user_institution__is_active=True, subtype__name__in=account_subtypes, user_institution__user=self.user)

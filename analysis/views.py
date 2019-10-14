@@ -9,6 +9,8 @@ from django.db.models import Avg, Count, Min, Sum
 import json
 from .utils import ChartData
 from users.models import Profile
+from liabilities.models import StudentLoan
+from income.models import IncomeStream
 from investments.models import Holding, InvestmentTransaction
 from django.contrib.auth.decorators import login_required
 
@@ -18,8 +20,24 @@ def income_overview(request):
     context = dict()
     user = request.user
     if user.profile.get_user_institutions():
-        charts_data = ChartData().get_charts_data(user=user, chart_type="pie", category="income")
-        context = {"charts_data": charts_data}
+        income_streams = IncomeStream.objects.filter(income__user_institution__user=user,
+                                                     income__user_institution__is_active=True)
+        #savings data
+        account_types = ["depository"]
+        accounts = Account.objects.filter(user_institution__user=user, type__name__in=account_types,
+                                          user_institution__is_active=True) \
+                                          .aggregate(total=Sum("current_balance"))
+        total_balance = round(accounts["total"] if accounts.get("total") else 0, 2)
+        transactions = Transaction.objects.filter(account__user_institution__user=user,
+                                                  account__type__name__in=account_types, amount__lt=0,
+                                                  account__user_institution__is_active=True).order_by("-date")[:100]
+        charts_data = ChartData().get_charts_data_by_module(user=user, chart_type="pie", category="income", account_types=account_types)
+        context = {
+                    "charts_data": charts_data,
+                    "income_streams":income_streams,
+                    "total_balance":total_balance,
+                    "transactions":transactions
+                  }
     return render(request, 'analysis/income_overview.html', context)
 
 
@@ -29,8 +47,8 @@ def spending_overview(request):
     user = request.user
     if user.profile.get_user_institutions():
         account_types = ["depository", "credit"]
-        charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="spending",
-                                                  account_types=account_types)
+        charts_data = ChartData().get_charts_data_by_module(user=user, chart_type="line", category="spending",
+                                                            account_types=account_types)
         transactions = Transaction.objects.filter(account__user_institution__user=user,
                                                   account__type__name__in=account_types, amount__gt=0,
                                                   account__user_institution__is_active=True
@@ -46,17 +64,15 @@ def liabilities_overview(request):
     user = request.user
     if user.profile.get_user_institutions():
         account_types = ["loan"]
-        charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="liabilities",
-                                                  account_types=account_types)
+        charts_data = ChartData().get_charts_data_by_module(user=user, chart_type="line", category="liabilities")
         transactions = Transaction.objects.filter(account__user_institution__user=user,
                                                   account__type__name__in=account_types, amount__gt=0,
                                                   account__user_institution__is_active=True
                                                   ).order_by("-id")[:100]
         accounts = Account.objects.filter(user_institution__user=user, type__name__in=account_types,
-                                            user_institution__is_active=True) \
-                                            .aggregate(total=Sum("current_balance"))
-        total_balance = round(accounts["total"] if accounts.get("total") else 0, 2)
-        context = {"total_balance": total_balance, "charts_data": charts_data, "transactions": transactions}
+                                          user_institution__is_active=True) \
+                                          .aggregate(total=Sum("current_balance"))
+        context = {"charts_data": charts_data, "transactions": transactions}
     return render(request, 'analysis/liabilities_overview.html', context)
 
 
@@ -65,17 +81,10 @@ def savings_overview(request):
     context = dict()
     user = request.user
     if user.profile.get_user_institutions():
-        account_types = ["depository"]
-        accounts = Account.objects.filter(user_institution__user=user, type__name__in=account_types,
-                                            user_institution__is_active=True) \
-            .aggregate(total=Sum("current_balance"))
-        total_balance = round(accounts["total"] if accounts.get("total") else 0, 2)
-        charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="savings",
+
+        charts_data = ChartData().get_charts_data_by_module(user=user, chart_type="line", category="savings",
                                                   account_types=account_types)
-        transactions = Transaction.objects.filter(account__user_institution__user=user,
-                                                  account__type__name__in=account_types, amount__lt=0,
-                                                  account__user_institution__is_active=True).order_by("-date")[:100]
-        context = {"charts_data": charts_data, "total_balance": total_balance, "transactions": transactions}
+        context = {"charts_data": charts_data}
     return render(request, 'analysis/savings_overview.html', context)
 
 
@@ -86,17 +95,20 @@ def investments_overview(request):
     if user.profile.get_user_institutions():
         account_types = ["investment"]
         user_holdings = Holding.objects.filter(account__user_institution__user=user,
-                                                account__user_institution__is_active=True).aggregate(total_amount=Sum("institution_value"))
+                                               account__user_institution__is_active=True).aggregate(total_amount=Sum("institution_value"))
         investment_accounts = Account.objects.filter(user_institution__user=user, type__name__in=account_types,
-                                                    user_institution__is_active=True).aggregate(total_amount=Sum("current_balance"))
-
+                                                     user_institution__is_active=True).aggregate(total_amount=Sum("current_balance"))
         total_amount = user_holdings["total_amount"] if user_holdings.get("total_amount") else investment_accounts["total_amount"]
         total_investments = round(total_amount, 2)
 
+        holdings = Holding.objects.filter(account__user_institution__user=user,
+                                          account__user_institution__is_active=True)
+
         investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__user=user,
-                                                                        account__user_institution__is_active=True)[:100]
-        charts_data = ChartData().get_charts_data(user=user, chart_type="line", category="investments", account_types=account_types)
-        products = user.profile.has_investments()
-        context = {"charts_data": charts_data, "total_investments": total_investments,
-                   "investment_transactions": investment_transactions, "products":products}
+                                                                       account__user_institution__is_active=True)[:100]
+        charts_data = ChartData().get_charts_data_by_module(user=user, chart_type="line", category="investments", account_types=account_types)
+        context = {
+                   "charts_data": charts_data, "total_investments": total_investments,
+                   "investment_transactions": investment_transactions, "holdings":holdings
+                   }
     return render(request, 'analysis/investments_overview.html', context)

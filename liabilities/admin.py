@@ -9,6 +9,12 @@ class StudentLoanAdmin(admin.ModelAdmin):
 
 admin.site.register(StudentLoan, StudentLoanAdmin)
 
+class StudentLoanSnapshotAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in StudentLoanSnapshot._meta.fields]
+
+
+admin.site.register(StudentLoanSnapshot, StudentLoanSnapshotAdmin)
+
 
 class DisbursementDateAdmin(admin.ModelAdmin):
     list_display = [field.name for field in DisbursementDate._meta.fields]
@@ -22,6 +28,12 @@ class ServicerAddressAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ServicerAddress, ServicerAddressAdmin)
+
+class CreditCardSnapshotAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in CreditCardSnapshot._meta.fields]
+
+
+admin.site.register(CreditCardSnapshot, CreditCardSnapshotAdmin)
 
 class CreditCardAdmin(admin.ModelAdmin):
     list_display = [field.name for field in CreditCard._meta.fields]

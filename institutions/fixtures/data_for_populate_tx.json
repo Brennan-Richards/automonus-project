@@ -1,0 +1,486 @@
+[
+    {
+        "model": "accounts.accounttype",
+        "pk": 1,
+        "fields": {
+            "name": "depository",
+            "is_active": true,
+            "uuid": "13557995-550f-4534-b3eb-3de4f35a9f6f",
+            "created": "2019-10-13T16:26:48.364Z",
+            "updated": "2019-10-13T16:26:48.364Z"
+        }
+    },
+    {
+        "model": "accounts.accounttype",
+        "pk": 2,
+        "fields": {
+            "name": "credit",
+            "is_active": true,
+            "uuid": "9693a3ca-b1f7-400c-baf2-c592e2a5959a",
+            "created": "2019-10-13T16:26:48.557Z",
+            "updated": "2019-10-13T16:26:48.557Z"
+        }
+    },
+    {
+        "model": "accounts.accounttype",
+        "pk": 3,
+        "fields": {
+            "name": "investment",
+            "is_active": true,
+            "uuid": "bf4ed2f6-e2b6-4563-bb14-2172c4d9ca8d",
+            "created": "2019-10-13T16:26:48.650Z",
+            "updated": "2019-10-13T16:26:48.650Z"
+        }
+    },
+    {
+        "model": "accounts.accounttype",
+        "pk": 4,
+        "fields": {
+            "name": "loan",
+            "is_active": true,
+            "uuid": "7251091b-8661-41d6-8eff-1146c7a7b389",
+            "created": "2019-10-13T16:26:48.749Z",
+            "updated": "2019-10-13T16:26:48.749Z"
+        }
+    },
+    {
+        "model": "accounts.accountsubtype",
+        "pk": 1,
+        "fields": {
+            "name": "checking",
+            "is_active": true,
+            "uuid": "0d1172bc-f292-406e-be07-8adba68851ad",
+            "created": "2019-10-13T16:26:48.377Z",
+            "updated": "2019-10-13T16:26:48.377Z"
+        }
+    },
+    {
+        "model": "accounts.accountsubtype",
+        "pk": 2,
+        "fields": {
+            "name": "savings",
+            "is_active": true,
+            "uuid": "ad5b2505-0af7-4234-861c-4f5ca6ad544d",
+            "created": "2019-10-13T16:26:48.427Z",
+            "updated": "2019-10-13T16:26:48.427Z"
+        }
+    },
+    {
+        "model": "accounts.accountsubtype",
+        "pk": 3,
+        "fields": {
+            "name": "cd",
+            "is_active": true,
+            "uuid": "7f7e588f-7966-49c4-8c82-678524b34858",
+            "created": "2019-10-13T16:26:48.464Z",
+            "updated": "2019-10-13T16:26:48.464Z"
+        }
+    },
+    {
+        "model": "accounts.accountsubtype",
+        "pk": 4,
+        "fields": {
+            "name": "credit card",
+            "is_active": true,
+            "uuid": "52b4ccb8-ae85-44a3-b08b-d67a4587d350",
+            "created": "2019-10-13T16:26:48.573Z",
+            "updated": "2019-10-13T16:26:48.573Z"
+        }
+    },
+    {
+        "model": "accounts.accountsubtype",
+        "pk": 5,
+        "fields": {
+            "name": "money market",
+            "is_active": true,
+            "uuid": "752e1c11-295d-47d7-865d-891cd17238a3",
+            "created": "2019-10-13T16:26:48.617Z",
+            "updated": "2019-10-13T16:26:48.618Z"
+        }
+    },
+    {
+        "model": "accounts.accountsubtype",
+        "pk": 6,
+        "fields": {
+            "name": "ira",
+            "is_active": true,
+            "uuid": "0c79e855-9271-46df-8fc6-cb02c0b747c3",
+            "created": "2019-10-13T16:26:48.663Z",
+            "updated": "2019-10-13T16:26:48.663Z"
+        }
+    },
+    {
+        "model": "accounts.accountsubtype",
+        "pk": 7,
+        "fields": {
+            "name": "401k",
+            "is_active": true,
+            "uuid": "44705aec-0fb5-4c33-b6d1-c8fc6eb8d187",
+            "created": "2019-10-13T16:26:48.712Z",
+            "updated": "2019-10-13T16:26:48.712Z"
+        }
+    },
+    {
+        "model": "accounts.accountsubtype",
+        "pk": 8,
+        "fields": {
+            "name": "student",
+            "is_active": true,
+            "uuid": "95ac6151-a6a5-420c-b7a6-52ff025dd9ea",
+            "created": "2019-10-13T16:26:48.777Z",
+            "updated": "2019-10-13T16:26:48.778Z"
+        }
+    },
+    {
+        "model": "accounts.currency",
+        "pk": 1,
+        "fields": {
+            "code": "USD",
+            "is_active": true,
+            "uuid": "c83372ec-e2ec-4fb5-b634-37fbcb83a661",
+            "created": "2019-10-13T16:26:48.387Z",
+            "updated": "2019-10-13T16:26:48.387Z"
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 1,
+        "fields": {
+            "user_institution": 1,
+            "account_id": "k6V83JbAxns6RDlPbpNmtQXzqmdNv4fWbjKap",
+            "name": "Plaid Checking",
+            "official_name": "Plaid Gold Standard 0% Interest Checking",
+            "mask": "0000",
+            "type": 1,
+            "subtype": 1,
+            "available_balance": "100.00",
+            "current_balance": "110.00",
+            "limit_amount": "0.00",
+            "currency": 1,
+            "is_active": true,
+            "uuid": "892e925b-2874-4171-b3cc-31691959e2f6",
+            "created": "2019-10-13T16:26:48.399Z",
+            "updated": "2019-10-13T16:26:48.399Z"
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 2,
+        "fields": {
+            "user_institution": 1,
+            "account_id": "lGwyxqWA9bTGywka57PqIlWjAqa8y1tZvq8NR",
+            "name": "Plaid Saving",
+            "official_name": "Plaid Silver Standard 0.1% Interest Saving",
+            "mask": "1111",
+            "type": 1,
+            "subtype": 2,
+            "available_balance": "200.00",
+            "current_balance": "210.00",
+            "limit_amount": "0.00",
+            "currency": 1,
+            "is_active": true,
+            "uuid": "2b4a8b66-e7ad-4d50-8014-b30b332d09c6",
+            "created": "2019-10-13T16:26:48.437Z",
+            "updated": "2019-10-13T16:26:48.437Z"
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 3,
+        "fields": {
+            "user_institution": 1,
+            "account_id": "qGz8PNXAbKTWyD35q6rbTe9ZobXngBCdqjkxy",
+            "name": "Plaid CD",
+            "official_name": "Plaid Bronze Standard 0.2% Interest CD",
+            "mask": "2222",
+            "type": 1,
+            "subtype": 3,
+            "available_balance": "0.00",
+            "current_balance": "1000.00",
+            "limit_amount": "0.00",
+            "currency": 1,
+            "is_active": true,
+            "uuid": "e7c1278a-7b81-4e90-aa4c-73cd8ce19372",
+            "created": "2019-10-13T16:26:48.479Z",
+            "updated": "2019-10-13T16:26:48.479Z"
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 4,
+        "fields": {
+            "user_institution": 1,
+            "account_id": "KKxlvpaP4bFpmbAgnWDktyg37o4QVxSVv9bJo",
+            "name": "Plaid Credit Card",
+            "official_name": "Plaid Diamond 12.5% APR Interest Credit Card",
+            "mask": "3333",
+            "type": 2,
+            "subtype": 4,
+            "available_balance": "0.00",
+            "current_balance": "410.00",
+            "limit_amount": "2000.00",
+            "currency": 1,
+            "is_active": true,
+            "uuid": "c3145a15-02eb-4677-a18d-a7ea4efa5b9c",
+            "created": "2019-10-13T16:26:48.599Z",
+            "updated": "2019-10-13T16:26:48.599Z"
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 5,
+        "fields": {
+            "user_institution": 1,
+            "account_id": "rGBmkjRwgrTG1bARqmz9IbKn1xyZ3gflvAgm9",
+            "name": "Plaid Money Market",
+            "official_name": "Plaid Platinum Standard 1.85% Interest Money Market",
+            "mask": "4444",
+            "type": 1,
+            "subtype": 5,
+            "available_balance": "43200.00",
+            "current_balance": "43200.00",
+            "limit_amount": "0.00",
+            "currency": 1,
+            "is_active": true,
+            "uuid": "4fed05a0-2234-4898-a9f5-238c44074131",
+            "created": "2019-10-13T16:26:48.630Z",
+            "updated": "2019-10-13T16:26:48.630Z"
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 6,
+        "fields": {
+            "user_institution": 1,
+            "account_id": "zGjDpnMzaNTMnjmeoLPDIe4xrqz7RnCoGyWjN",
+            "name": "Plaid IRA",
+            "official_name": null,
+            "mask": "5555",
+            "type": 3,
+            "subtype": 6,
+            "available_balance": "0.00",
+            "current_balance": "320.76",
+            "limit_amount": "0.00",
+            "currency": 1,
+            "is_active": true,
+            "uuid": "43d82ba6-5e65-4fab-a4a6-3c94bf3e6348",
+            "created": "2019-10-13T16:26:48.683Z",
+            "updated": "2019-10-13T16:26:48.683Z"
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 7,
+        "fields": {
+            "user_institution": 1,
+            "account_id": "BMV3ErlkDpsLKvrnQwPZtB73vdAlkMFwGpnao",
+            "name": "Plaid 401k",
+            "official_name": null,
+            "mask": "6666",
+            "type": 3,
+            "subtype": 7,
+            "available_balance": "0.00",
+            "current_balance": "23631.98",
+            "limit_amount": "0.00",
+            "currency": 1,
+            "is_active": true,
+            "uuid": "7c2bd000-d59e-4580-aa3b-98facab11bc9",
+            "created": "2019-10-13T16:26:48.729Z",
+            "updated": "2019-10-13T16:26:48.729Z"
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 8,
+        "fields": {
+            "user_institution": 1,
+            "account_id": "3r894QBJG3UNmz6AZjkEH3XxejAg9Eiqaj3XD",
+            "name": "Plaid Student Loan",
+            "official_name": null,
+            "mask": "7777",
+            "type": 4,
+            "subtype": 8,
+            "available_balance": "0.00",
+            "current_balance": "65262.00",
+            "limit_amount": "0.00",
+            "currency": 1,
+            "is_active": true,
+            "uuid": "4a2728d2-6bf7-4ca0-879b-e9910f33602e",
+            "created": "2019-10-13T16:26:48.797Z",
+            "updated": "2019-10-13T16:26:48.797Z"
+        }
+    },
+    {
+        "model": "accounts.accountsnapshot",
+        "pk": 1,
+        "fields": {
+            "account": 1,
+            "available_balance": "100.00",
+            "current_balance": "110.00",
+            "limit_amount": "0.00",
+            "uuid": "26f87797-8e3e-43cf-aa53-2a9f607ad2e2",
+            "date": "2019-10-13",
+            "created": "2019-10-13T16:26:48.413Z",
+            "updated": "2019-10-13T16:26:48.413Z"
+        }
+    },
+    {
+        "model": "accounts.accountsnapshot",
+        "pk": 2,
+        "fields": {
+            "account": 2,
+            "available_balance": "200.00",
+            "current_balance": "210.00",
+            "limit_amount": "0.00",
+            "uuid": "16c625ea-0751-4065-b13c-3dcd153833e5",
+            "date": "2019-10-13",
+            "created": "2019-10-13T16:26:48.447Z",
+            "updated": "2019-10-13T16:26:48.447Z"
+        }
+    },
+    {
+        "model": "accounts.accountsnapshot",
+        "pk": 3,
+        "fields": {
+            "account": 3,
+            "available_balance": "0.00",
+            "current_balance": "1000.00",
+            "limit_amount": "0.00",
+            "uuid": "9141c277-5c05-4557-8bba-43b2b4fd5dbf",
+            "date": "2019-10-13",
+            "created": "2019-10-13T16:26:48.531Z",
+            "updated": "2019-10-13T16:26:48.531Z"
+        }
+    },
+    {
+        "model": "accounts.accountsnapshot",
+        "pk": 4,
+        "fields": {
+            "account": 4,
+            "available_balance": "0.00",
+            "current_balance": "410.00",
+            "limit_amount": "2000.00",
+            "uuid": "f185e3e4-85de-4dd5-821c-1dd516c078cc",
+            "date": "2019-10-13",
+            "created": "2019-10-13T16:26:48.610Z",
+            "updated": "2019-10-13T16:26:48.610Z"
+        }
+    },
+    {
+        "model": "accounts.accountsnapshot",
+        "pk": 5,
+        "fields": {
+            "account": 5,
+            "available_balance": "43200.00",
+            "current_balance": "43200.00",
+            "limit_amount": "0.00",
+            "uuid": "7a61f2b7-244d-4b49-9077-d55e6c83e95e",
+            "date": "2019-10-13",
+            "created": "2019-10-13T16:26:48.646Z",
+            "updated": "2019-10-13T16:26:48.646Z"
+        }
+    },
+    {
+        "model": "accounts.accountsnapshot",
+        "pk": 6,
+        "fields": {
+            "account": 6,
+            "available_balance": "0.00",
+            "current_balance": "320.76",
+            "limit_amount": "0.00",
+            "uuid": "28e4abf5-36c7-432b-84cd-0c21bd936739",
+            "date": "2019-10-13",
+            "created": "2019-10-13T16:26:48.701Z",
+            "updated": "2019-10-13T16:26:48.701Z"
+        }
+    },
+    {
+        "model": "accounts.accountsnapshot",
+        "pk": 7,
+        "fields": {
+            "account": 7,
+            "available_balance": "0.00",
+            "current_balance": "23631.98",
+            "limit_amount": "0.00",
+            "uuid": "73e51b0a-3e38-48a5-a70f-63086c3c55d5",
+            "date": "2019-10-13",
+            "created": "2019-10-13T16:26:48.734Z",
+            "updated": "2019-10-13T16:26:48.735Z"
+        }
+    },
+    {
+        "model": "accounts.accountsnapshot",
+        "pk": 8,
+        "fields": {
+            "account": 8,
+            "available_balance": "0.00",
+            "current_balance": "65262.00",
+            "limit_amount": "0.00",
+            "uuid": "05e1adbc-6b3b-4142-ae1b-4094a724b9e0",
+            "date": "2019-10-13",
+            "created": "2019-10-13T16:26:48.813Z",
+            "updated": "2019-10-13T16:26:48.813Z"
+        }
+    },
+    {
+        "model": "income.income",
+        "pk": 1,
+        "fields": {
+            "user_institution": 1,
+            "max_number_of_overlapping_income_streams": 1,
+            "number_of_income_streams": 1,
+            "last_year_income_before_tax": "7285.00",
+            "last_year_income_minus_tax": "6000.00",
+            "last_year_taxes": "1285.00",
+            "projected_yearly_income_before_tax": "7389.00",
+            "projected_yearly_minus_tax": "6085.00",
+            "projected_yearly_taxes": "1304.00",
+            "uuid": "d8030a25-de3a-4d3e-b5e0-bf4bcf9cf731",
+            "created": "2019-10-13T16:26:47.778Z",
+            "updated": "2019-10-13T16:26:47.778Z"
+        }
+    },
+    {
+        "model": "income.incomestream",
+        "pk": 1,
+        "fields": {
+            "income": 1,
+            "name": "UNITED AIRLINES",
+            "confidence": "0.99",
+            "days": 690,
+            "monthly_income": "500.00",
+            "uuid": "5e3885c4-206f-4cc6-8768-50c83c0adb29",
+            "created": "2019-10-13T16:26:47.791Z",
+            "updated": "2019-10-13T16:26:47.791Z"
+        }
+    },
+    {
+        "model": "institutions.institution",
+        "pk": 1,
+        "fields": {
+            "name": "Wells Fargo",
+            "is_active": true,
+            "uuid": "e6a2a1ec-c834-49c6-8771-33e0fe6522eb",
+            "created": "2019-10-13T16:26:47.162Z",
+            "updated": "2019-10-13T16:26:47.162Z",
+            "plaid_id": "ins_4"
+        }
+    },
+    {
+        "model": "institutions.userinstitution",
+        "pk": 1,
+        "fields": {
+            "name": "",
+            "plaid_id": "lGwyxqWA9bTGywka57PqIlWjQr4j1pfZ4jQzn",
+            "institution": 1,
+            "user": [
+                "max"
+            ],
+            "access_token": "access-sandbox-114165a9-ae6d-4594-afef-8714d2246c91",
+            "is_active": true,
+            "uuid": "f2eed287-13e0-4a9a-bc8e-c716b0fa6ab9",
+            "created": "2019-10-13T16:26:47.175Z",
+            "updated": "2019-10-13T16:26:47.175Z"
+        }
+    }
+]
