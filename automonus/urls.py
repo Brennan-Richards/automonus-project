@@ -12,6 +12,7 @@ LoginView.dispatch = method_decorator(axes_dispatch)(LoginView.dispatch)
 LoginView.form_invalid = method_decorator(axes_form_invalid)(LoginView.form_invalid)
 from django.views import defaults as default_views
 
+from django_otp.admin import OTPAdminSite
 
 """Check for rollback errors"""
 def trigger_error(request):
@@ -54,3 +55,5 @@ if settings.DEBUG:
                 kwargs={'exception': Exception('Page not Found')}),
         path('500/', default_views.server_error),
     ]
+else:
+    admin.site.__class__ = OTPAdminSite  # Two factor from Admin

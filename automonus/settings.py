@@ -74,6 +74,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'captcha',
     'django_apscheduler',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
 ]
 
 MIDDLEWARE = [
@@ -86,7 +88,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'axes.middleware.AxesMiddleware',
-    ]
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
+]
+
+OTP_TOTP_ISSUER = 'Automonus'
 
 ROOT_URLCONF = 'automonus.urls'
 
