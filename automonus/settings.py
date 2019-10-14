@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'academy.apps.AcademyConfig',
     'analysis.apps.AnalysisConfig',
     'planner.apps.PlanningConfig',
+    'payments.apps.PaymentsConfig',
 
     'accounts.apps.AccountsConfig',
     'income.apps.IncomeConfig',

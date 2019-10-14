@@ -61,6 +61,7 @@ def get_access_token(request):
     if request.method == 'POST':
         data = request.POST.copy()
         public_token = data['public_token']
+        account_id = data['account_id']
         # the public token is received from Plaid Link
         response = client.Item.public_token.exchange(public_token)
         item_id = response["item_id"]  # unique id for combination of user + institution
@@ -70,6 +71,10 @@ def get_access_token(request):
         institution, created = Institution.objects.update_or_create(plaid_id=institution_id,
                                                                     defaults={"name": institution_name}
                                                                     )
+
+        #getting stripe bank account token
+        stripe_response = client.Processor.stripeBankAccountTokenCreate(access_token, account_id)
+        stripe_bank_account_token = stripe_response['stripe_bank_account_token']
 
         # to prevent not creating UserInstitution if it was deactivated before and has is_active=False
         user_institution, created = UserInstitution.objects.update_or_create(plaid_id=item_id,
@@ -86,7 +91,7 @@ def get_access_token(request):
         In Production, you will be billed for each product that you specify when initializing Link.'
         """
         user_institution.populate_income_information()
-        user_institution.populate_or_update_accounts()
+        user_institution.populate_or_update_accounts(stripe_bank_account_token=stripe_bank_account_token)
 
         #getting liabilites data
         user_institution.populate_liabilities_data()

@@ -35,8 +35,8 @@ urlpatterns = [
     path('webhooks/', include('webhooks.urls')),
     path('income/', include('income.urls')),
     path('investments/', include('investments.urls')),
+    path('payments/', include('payments.urls')),
 
-    # path('link/', views.link, name='link'),
     path('display/<int:pk>/update', views.UpdateDisplay.as_view(), name='display_update'),
     path('marketing/', views.marketing, name='marketing'),
 

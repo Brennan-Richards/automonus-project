@@ -68,7 +68,7 @@
 
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url 'user_institutions' %}">Connected Institutions</a>
-          <a href="#">Enable Payments</a>
+          <a href="{% url 'enable_payments' %}">Enable Payments</a>
           <a class="dropdown-item" href="#">Account: ({{ request.user }}) </a>
           <a class="dropdown-item" href="{% url 'account_logout' %}">Log Out</a>
         </div>

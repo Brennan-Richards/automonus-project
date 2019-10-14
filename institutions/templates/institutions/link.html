@@ -27,7 +27,7 @@
             csrf_token = "{{ csrf_token }}";
             console.log(csrf_token);
           var handler = Plaid.create({
-            clientName: 'Automonus',
+            clientName: 'Aurum',
             // Optional, specify an array of ISO-3166-1 alpha-2 country
             // codes to initialize Link; European countries will have GDPR
             // consent panel
@@ -35,7 +35,7 @@
             env: 'sandbox',
             // Replace with your public_key from the Dashboard
             key: '6c5492915411a3645fdd0368516aa9',
-            product: ['transactions'],
+            product: ['auth', 'transactions'],
             // Optional, use webhooks to get transaction and error updates
             webhook: '{{ webhook_url }}',
             // Optional, specify a language to localize Link
@@ -55,6 +55,7 @@
               data = {
                 csrfmiddlewaretoken: csrf_token,
                 public_token: public_token,
+                account_id: metadata.account_id,
                 metadata: metadata,
               };
               $.ajax({

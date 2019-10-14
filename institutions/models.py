@@ -292,13 +292,8 @@ class UserInstitution(ModelBaseFieldsAbstract):
     def check_client(self):
         return client
 
-    def populate_or_update_accounts(self):
-        """The code with getting stripe token is not needed here:
-        stripe_response = client.Processor.stripeBankAccountTokenCreate(self.access_token, account_id)
-        even if it is referenced in the plaid docs.
-        Following information in this link https://stripe.com/docs/ach, such token is only needed in case
-        of the need to make payments, using that account.
-        """
+    def populate_or_update_accounts(self, stripe_bank_account_token):
+        print(stripe_bank_account_token)
         try:
             bank_accounts_data = client.Accounts.get(self.access_token)
         except Exception as e:
@@ -316,6 +311,11 @@ class UserInstitution(ModelBaseFieldsAbstract):
                 account_subtype, created = AccountSubType.objects.get_or_create(name=subtype_name)
             else:
                 account_subtype = None
+
+            # stripe_response = client.Processor.stripeBankAccountTokenCreate(self.access_token, self.account_id)
+            # print(stripe_response)
+            # stripe_bank_account_token = stripe_response['stripe_bank_account_token']
+
             currency_code = account_data["balances"]["iso_currency_code"]
             currency, created = Currency.objects.get_or_create(code=currency_code)
             bank_account_defaults_kwargs = {
@@ -327,7 +327,8 @@ class UserInstitution(ModelBaseFieldsAbstract):
                 "available_balance": account_data["balances"]["available"] if account_data["balances"]["available"] else 0,
                 "current_balance": account_data["balances"].get('current', 0),
                 "limit_amount": account_data["balances"]["limit"] if account_data["balances"]["limit"] else 0,
-                "currency": currency
+                "currency": currency,
+                "stripe_bank_account_token": stripe_bank_account_token,
             }
             """Account information can be updated after initial creation of the instance"""
             account, created = Account.objects.update_or_create(user_institution=self,

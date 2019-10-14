@@ -49,6 +49,7 @@ class Account(models.Model):
     # initial information from frontend
     user_institution = models.ForeignKey("institutions.UserInstitution", blank=True, null=True, default=None, on_delete=models.SET_NULL)
     account_id = models.CharField(max_length=64, blank=True, null=True, default=None)
+    stripe_bank_account_token = models.CharField(max_length=128, blank=True, null=True, default=None)
     # additional information, which is triggered by the API for account_id
     name = models.CharField(max_length=128, blank=True, null=True, default=None)
     official_name = models.CharField(max_length=256, blank=True, null=True, default=None)
