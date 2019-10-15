@@ -2,6 +2,75 @@
 
 {% block content %}
 
+<form id="base_deposit">
+    <span class="status">
 
+    </span>
+    <div class="form-group">
+        <label for="formGroupExampleInput">Amount</label>
+        <input id="amount" type="number" name="amount" step="0.1" class="form-control" min="0.5" id="formGroupExampleInput"
+            placeholder="Amount of deposit" required>
+    </div>
+    <div class="form-group">
+        <label for="formGroupExampleInput2">Currency</label>
+        <input type="text" disabled name="currency" required class="form-control" id="formGroupExampleInput2"
+            placeholder="currency" value="usd">
+    </div>
+    <button class="btn btn-primary">Pay</button>
+</form>
+{% endblock %}
+{% block js_stuff %}
+<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+<script>
+    (function($) {
+        csrf_token="{{ csrf_token }}";
+        form_data={}
+        var linkHandler=Plaid.create({
+            env: 'sandbox',
+            clientName: 'Stripe/Plaid Test',
+            key: '6c5492915411a3645fdd0368516aa9',
+            product: ['auth'],
+            selectAccount: true,
+            onSuccess: function(public_token,metadata) {
+                // Send the public_token and account ID to your app server.
+                console.log('public_token: '+public_token);
+                console.log('account ID: '+metadata.account_id);
+                console.log(form_data);
+                data={
+                    csrfmiddlewaretoken: csrf_token,
+                    public_token: public_token,
+                    account_id: metadata.account_id,
+                    amount: parseFloat($('#amount').val()).toFixed(2),
+                    currency: 'usd'
+                };
+                $.ajax({
+                    method: "post",
+                    url: '/payments/check-auth/',
+                    data: data,
+                    dataType: 'json',
+                    success: function(return_data) {
+                        console.log(return_data)
+                    }
+                });
+            },
+            onExit: function(err,metadata) {
+                // The user exited the Link flow.
+                if(err!=null) {
+                    // The user encountered a Plaid API error prior to exiting.
+                }
+            },
+        });
 
+        // // Trigger the Link UI
+        // document.getElementById('linkButton').onclick=function() {
+        //     linkHandler.open();
+        // };
+
+        $('#base_deposit').submit(function(e) {
+            e.preventDefault();
+            linkHandler.open();
+        })
+
+    })(jQuery);
+</script>
 {% endblock %}

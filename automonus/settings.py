@@ -185,6 +185,11 @@ PLAID_PUBLIC_KEY = env("PLAID_PUBLIC_KEY", default="6c5492915411a3645fdd0368516a
 """Replace ngrok server address (it is the string till "/webhooks/webhook-handler/" with your server address"""
 PLAID_WEBHOOK_URL = env("PLAID_WEBHOOK_URL", default="https://ffcc0def.ngrok.io/webhooks/webhook-handler/")
 
+# STRIPE DATA
+
+STRIPE_PUBLIC_KEY = env("STRIPE_PUBLIC_KEY", default="pk_test_Yefm4kQnlPKSvM5W6BW24gk700SThCTQkg")
+STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY", default="sk_test_Cm8UAku0L4hL4G2aOpDMIM7r00iBv2frlo")
+
 # SendGrid for emails
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY', default='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')
 
