@@ -32,8 +32,8 @@ class StripeChecker(View):
         sm =  StripleManager(public_token=public_token,
                              account_id=account_id)
         try:
-            sm.deposit_payment(currency=currency,
+            resp = sm.deposit_payment(currency=currency,
                                amount=amount)
         except Exception as e: 
             return HttpResponseBadRequest(content=f'{e}')
-        return  JsonResponse({"status": "success"})
+        return  JsonResponse({"status": resp})

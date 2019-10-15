@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<form id="base_deposit">
-    <span class="status">
-
-    </span>
-    <div class="form-group">
-        <label for="formGroupExampleInput">Amount</label>
-        <input id="amount" type="number" name="amount" step="0.1" class="form-control" min="0.5" id="formGroupExampleInput"
-            placeholder="Amount of deposit" required>
-    </div>
-    <div class="form-group">
-        <label for="formGroupExampleInput2">Currency</label>
-        <input type="text" disabled name="currency" required class="form-control" id="formGroupExampleInput2"
-            placeholder="currency" value="usd">
-    </div>
-    <button class="btn btn-primary">Pay</button>
-</form>
+<div id="content">
+    <form id="base_deposit">
+        <span class="status">
+        </span>
+        <div class="form-group">
+            <label for="formGroupExampleInput">Amount</label>
+            <input id="amount" type="number" name="amount" step="0.1" class="form-control" min="0.5"
+                id="formGroupExampleInput" placeholder="Amount of deposit" required>
+        </div>
+        <div class="form-group">
+            <label for="formGroupExampleInput2">Currency</label>
+            <input type="text" disabled name="currency" required class="form-control" id="formGroupExampleInput2"
+                placeholder="currency" value="usd">
+        </div>
+        <button class="btn btn-primary">Pay</button>
+    </form>
+</div>
 {% endblock %}
 {% block js_stuff %}
 <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
@@ -49,7 +49,8 @@
                     data: data,
                     dataType: 'json',
                     success: function(return_data) {
-                        console.log(return_data)
+                        $('#content').empty();
+                        $('#content').append('<a href="'+return_data.status.receipt_url+'">'+return_data.status.receipt_url+'</a>')
                     }
                 });
             },
