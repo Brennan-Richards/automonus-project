@@ -6,14 +6,29 @@
         <span class="status">
         </span>
         <div class="form-group">
-            <label for="formGroupExampleInput">Amount</label>
+            <label for="amount">Amount</label>
             <input id="amount" type="number" name="amount" step="0.1" class="form-control" min="0.5"
-                id="formGroupExampleInput" placeholder="Amount of deposit" required>
+                placeholder="Amount of deposit" required>
         </div>
         <div class="form-group">
-            <label for="formGroupExampleInput2">Currency</label>
-            <input type="text" disabled name="currency" required class="form-control" id="formGroupExampleInput2"
-                placeholder="currency" value="usd">
+            <label for="account_id">From Account</label>
+            <select class="form-control" id="account_id" name="account_uuid">
+                {% for item in user_institution %}
+                {% for account in item.accounts_user_institution.all %}
+                {% if account.mask == '1111' or account.mask == '0000' %}
+                <option value='{{ account.uuid }}'>
+                    {{ account.user_institution.institution.name }} {{ account.name }}, balance:
+                    {{ account.current_balance }} $
+                </option>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="currency">Currency</label>
+            <input type="text" name="currency" required class="form-control" id="currency" placeholder="currency"
+                value="usd" disabled>
         </div>
         <button class="btn btn-primary">Pay</button>
     </form>
@@ -24,52 +39,24 @@
 <script>
     (function($) {
         csrf_token="{{ csrf_token }}";
-        form_data={}
-        var linkHandler=Plaid.create({
-            env: 'sandbox',
-            clientName: 'Stripe/Plaid Test',
-            key: '6c5492915411a3645fdd0368516aa9',
-            product: ['auth'],
-            selectAccount: true,
-            onSuccess: function(public_token,metadata) {
-                // Send the public_token and account ID to your app server.
-                console.log('public_token: '+public_token);
-                console.log('account ID: '+metadata.account_id);
-                console.log(form_data);
-                data={
-                    csrfmiddlewaretoken: csrf_token,
-                    public_token: public_token,
-                    account_id: metadata.account_id,
-                    amount: parseFloat($('#amount').val()).toFixed(2),
-                    currency: 'usd'
-                };
-                $.ajax({
-                    method: "post",
-                    url: '/payments/check-auth/',
-                    data: data,
-                    dataType: 'json',
-                    success: function(return_data) {
-                        $('#content').empty();
-                        $('#content').append('<a href="'+return_data.status.receipt_url+'">'+return_data.status.receipt_url+'</a>')
-                    }
-                });
-            },
-            onExit: function(err,metadata) {
-                // The user exited the Link flow.
-                if(err!=null) {
-                    // The user encountered a Plaid API error prior to exiting.
-                }
-            },
-        });
-
-        // // Trigger the Link UI
-        // document.getElementById('linkButton').onclick=function() {
-        //     linkHandler.open();
-        // };
-
         $('#base_deposit').submit(function(e) {
             e.preventDefault();
-            linkHandler.open();
+            data={
+                csrfmiddlewaretoken: csrf_token,
+                account_uuid: $('#account_id').val(),
+                amount: parseFloat($('#amount').val()).toFixed(2),
+                currency: 'usd'
+            };
+            $.ajax({
+                method: "post",
+                url: '/payments/check-auth/',
+                data: data,
+                dataType: 'json',
+                success: function(return_data) {
+                    $('#content').empty();
+                    $('#content').append('<a href="'+return_data.status.receipt_url+'">'+return_data.status.receipt_url+'</a>')
+                }
+            });
         })
 
     })(jQuery);

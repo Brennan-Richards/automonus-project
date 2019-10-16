@@ -292,7 +292,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
     def check_client(self):
         return client
 
-    def populate_or_update_accounts(self, stripe_bank_account_token):
+    def populate_or_update_accounts(self, stripe_bank_account_token=''):
         print(stripe_bank_account_token)
         try:
             bank_accounts_data = client.Accounts.get(self.access_token)
