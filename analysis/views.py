@@ -15,6 +15,9 @@ from investments.models import Holding, InvestmentTransaction
 from django.contrib.auth.decorators import login_required
 
 
+def about_analysis(request):
+    return render(request, 'analysis/about_analysis.html')
+
 @login_required
 def income_overview(request):
     context = dict()
