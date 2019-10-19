@@ -1,6 +1,6 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-sm navbar-light bg-light">
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
 
   <a class="navbar-brand" href="#">
 
@@ -20,20 +20,24 @@
     <ul class="navbar-nav mr-auto">
 
       <li class="nav-item">
+        <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'about' %}">
+          Home
+        </a>
+      </li>
+
+      <!-- <li class="nav-item">
         <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'academy_home' %}">
           <img src="{% static 'img/academy-automonus.png' %}" height=30 class="mr-sm-2">
           Academy
         </a>
-      </li>
+      </li> -->
 
       <li class="nav-item dropdown">
-
         <button class="nav-link dropdown-toggle mr-sm-2 btn btn-secondary" href="#" id="navbarDropdown" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <img src="{% static 'img/analysis-automonus.png' %}" height=30 class="mr-sm-2">
           Analysis
         </button>
-
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url 'income_overview' %}">Income & Savings</a>
           <a class="dropdown-item" href="{% url 'spending_overview' %}">Spending</a>
@@ -41,7 +45,6 @@
           <a class="dropdown-item" href="{% url 'liabilities_overview' %}">Liabilities</a>
           <a class="dropdown-item" href="{% url 'investments_overview' %}">Investments</a>
         </div>
-
       </li>
 
       <!-- <li class="nav-item">
@@ -49,16 +52,16 @@
           <img src="{% static 'img/planning-automonus.png' %}" height=30 class="mr-sm-2">
           Planning
         </a>
-      </li>
+      </li> -->
 
       <li class="nav-item">
-        <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="#">
+        <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'enable_payments' %}">
           <img src="{% static 'img/payments-automonus.png' %}" height=30 class="mr-sm-2">
           Payments
         </a>
       </li>
 
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-item nav-link mr-sm-2 btn btn-sm btn-outline-secondary" href="#">Virtual Marketplace</a>
       </li> -->
 
@@ -70,10 +73,13 @@
 
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url 'user_institutions' %}">Connected Institutions</a>
-          <a class="dropdown-item" href="{% url 'external_transfer_create' %}">Transfer to User</a>
-          <a class="dropdown-item" href="{% url 'internal_transfer_value' %}">Transfer to my Account</a>
-          <a class="dropdown-item" href="#">Account: ({{ request.user }}) </a>
-          <a class="dropdown-item" href="{% url 'account_logout' %}">Log Out</a>
+          <<<<<<< HEAD <a class="dropdown-item" href="{% url 'external_transfer_create' %}">Transfer to User</a>
+            <a class="dropdown-item" href="{% url 'internal_transfer_value' %}">Transfer to my Account</a>
+            =======
+            <!-- <a class="dropdown-item" href="{% url 'enable_payments' %}">Payments</a> -->
+            >>>>>>> e3b857d2701ad895fbd433982d15e0da3f3172ae
+            <a class="dropdown-item" href="#">Account: ({{ request.user }}) </a>
+            <a class="dropdown-item" href="{% url 'account_logout' %}">Log Out</a>
         </div>
       </li>
     </ul>

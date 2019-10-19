@@ -62,6 +62,7 @@ def get_access_token(request):
         data = request.POST.copy()
         public_token = data['public_token']
         account_id = data['account_id']
+        print(account_id)
         # the public token is received from Plaid Link
         response = client.Item.public_token.exchange(public_token)
 
