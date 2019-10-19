@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="progress mb-4">
+    <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+  </div>
+<h1 class="mb-4">
+    Send money to user
+</h1>
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+        <div class="alert alert-warning" role="alert">
+          {{ error }}
+        </div>
+        {% endfor %}
+    {% endif %}
+  
+    {% for hidden_field in form.hidden_fields %}
+      {% if hidden_field.errors %}
+          {% for error in hidden_field.errors %}
+            <li>(Hidden field {{ hidden_field.name }}) {{ error }}</li>
+          {% endfor %}
+      {% endif %}
+      {{ hidden_field }}
+    {% endfor %}
+    <div class="row">
+        <div class="col">
+            {% for field in form.visible_fields %}
+            {% if field.errors %}
+                {% for error in field.errors %}
+                <div class="alert alert-warning" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            {% endif %}
+                <label for="staticEmail" class="col-sm-2 col-form-label">
+                    {{ field.label_tag }}
+                </label>
+                <div class="col-sm-10 mt-1">
+                    {{ field }}
+                </div>
+            {% if field.help_text %}
+            {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+    <div class="col mt-4">
+        <button type="submit" class="btn btn-primary">
+            Next
+        </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block js_stuff %}
+{% endblock %}

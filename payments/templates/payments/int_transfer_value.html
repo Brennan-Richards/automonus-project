@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="progress mb-4">
+        <div class="progress-bar w-50" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+        </div>
+    </div>
+    <h1 class="mb-4">
+        Please provide data
+    </h1>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+        <div class="alert alert-warning" role="alert">
+            {{ error }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% for hidden_field in form.hidden_fields %}
+        {% if hidden_field.errors %}
+        {% for error in hidden_field.errors %}
+        <div class="alert alert-warning" role="alert">
+            (Hidden field {{ hidden_field.name }}) {{ error }}
+        </div>
+        {% endfor %}
+        </ul>
+        {% endif %}
+        {{ hidden_field }}
+        {% endfor %}
+        <div class="row">
+            <div class="col">
+                {% for field in form.visible_fields %}
+                {% if field.errors %}
+                {% for error in field.errors %}
+                <div class="alert alert-warning" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                <div class="col-sm-10 mt-1">
+                    {% if field.name == 'dest_accounts' %}
+                    <div class="form-group">
+                        <label class="col-form-label" for="dest_accounts">
+                            {{ field.label_tag }}
+                        </label>
+                        <select name="dest_accounts" id="dest_accounts" class="form-control">
+                            {% for item in dest_user_institutions %}
+                            {% for account in item.accounts_user_institution.all %}
+                            {% if account.mask == '1111' or account.mask == '0000' %}
+                            {% if account.accounts_number_to_account.all %}
+                            <option value='{{ account.uuid }}'>
+                                {{ account.user_institution.institution.name }} {{ account.name }}, balance:
+                                {{ account.current_balance }} $
+                            </option>
+                            {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% elif field.name == 'src_accounts' %}
+                    <div class="form-group">
+                        <label class="col-form-label" for="src_accounts">
+                            {{ field.label_tag }}
+                        </label>
+                        <select name="src_accounts" id="src_accounts" class="form-control">
+                            {% for item in src_user_institutions %}
+                            {% for account in item.accounts_user_institution.all %}
+                            {% if account.mask == '1111' or account.mask == '0000' %}
+                            {% if account.accounts_number_to_account.all %}
+                            <option value='{{ account.uuid }}'>
+                                {{ account.user_institution.institution.name }} {{ account.name }}, balance:
+                                {{ account.current_balance }} $
+                            </option>
+                            {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% else %}
+                    {{ field }}
+                    {% endif %}
+                </div>
+                {% if field.help_text %}
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col mt-4">
+            <button type="submit" class="btn btn-primary">
+                Next
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block js_stuff %}
+{% endblock %}

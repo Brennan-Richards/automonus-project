@@ -82,6 +82,21 @@ class Account(models.Model):
                                                         })
 
 
+class AccountNumber(ModelBaseFieldsAbstract):
+    ACH = 'ach'
+
+    NUMBER_TYPES = (
+        (ACH, 'ACH'),
+    )
+
+    account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL, related_name='accounts_number_to_account')
+    number_type = models.CharField(max_length=128, choices=NUMBER_TYPES, blank=True, null=True, default=NUMBER_TYPES[0])
+    number_id = models.CharField(max_length=128, blank=True, null=True, default=None)
+    number_routing = models.CharField(max_length=128, blank=True, null=True, default=None)
+
+    def __str__(self):
+        return f'{self.account}'
+
 class TransactionCategory(models.Model):
     plaid_category_id = models.CharField(max_length=38, default=None)
     group = models.CharField(max_length=32, default=None)

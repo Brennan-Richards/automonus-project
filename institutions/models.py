@@ -293,12 +293,17 @@ class UserInstitution(ModelBaseFieldsAbstract):
         return client
 
     def populate_or_update_accounts(self, stripe_bank_account_token=''):
-        print(stripe_bank_account_token)
         try:
-            bank_accounts_data = client.Accounts.get(self.access_token)
+            bank_accounts_data = client.Auth.get(self.access_token)
         except Exception as e:
             print(e)
             return False
+        # Create account Numbers
+        numbers = bank_accounts_data.get("numbers", None)
+        if numbers:
+            arc_data = numbers.get('ach', [])
+        else:
+            arc_data = []
         for account_data in bank_accounts_data["accounts"]:
             account_id = account_data["account_id"]
             type_name = account_data["type"]
@@ -311,11 +316,9 @@ class UserInstitution(ModelBaseFieldsAbstract):
                 account_subtype, created = AccountSubType.objects.get_or_create(name=subtype_name)
             else:
                 account_subtype = None
-
             # stripe_response = client.Processor.stripeBankAccountTokenCreate(self.access_token, self.account_id)
             # print(stripe_response)
             # stripe_bank_account_token = stripe_response['stripe_bank_account_token']
-
             currency_code = account_data["balances"]["iso_currency_code"]
             currency, created = Currency.objects.get_or_create(code=currency_code)
             bank_account_defaults_kwargs = {
@@ -334,6 +337,12 @@ class UserInstitution(ModelBaseFieldsAbstract):
             account, created = Account.objects.update_or_create(user_institution=self,
                                                                 account_id=account_id,
                                                                 defaults=bank_account_defaults_kwargs)
+            for arc in arc_data:
+                if arc['account_id'] == account.account_id:
+                    acc_obj =AccountNumber.objects.create(account=account,
+                                                        number_type=AccountNumber.ACH,
+                                                        number_id=arc.get('account', None),
+                                                        number_routing=arc.get('routing', None))
             account.create_account_snapshot()
 
     def populate_liabilities_data(self):

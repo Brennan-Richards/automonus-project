@@ -65,13 +65,15 @@ def get_access_token(request):
         print(account_id)
         # the public token is received from Plaid Link
         response = client.Item.public_token.exchange(public_token)
+
+        # asset_response = asset.Item.public_token.exchange(public_token)
+        # print(response, asset_response)
         item_id = response["item_id"]  # unique id for combination of user + institution
         access_token = response['access_token']
         institution_name = data["metadata[institution][name]"]
         institution_id = data["metadata[institution][institution_id]"]
         institution, created = Institution.objects.update_or_create(plaid_id=institution_id,
-                                                                    defaults={"name": institution_name}
-                                                                    )
+                                                                    defaults={"name": institution_name})
 
         #getting stripe bank account token
         stripe_response = client.Processor.stripeBankAccountTokenCreate(access_token, account_id)

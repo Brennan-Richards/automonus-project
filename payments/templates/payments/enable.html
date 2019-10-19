@@ -21,14 +21,14 @@
             <label for="account_id">From Account</label>
             <select class="form-control" id="account_id" name="account_uuid">
                 {% for item in user_institution %}
-                {% for account in item.accounts_user_institution.all %}
-                {% if account.mask == '1111' or account.mask == '0000' %}
-                <option value='{{ account.uuid }}'>
-                    {{ account.user_institution.institution.name }} {{ account.name }}, balance:
-                    {{ account.current_balance }} $
-                </option>
-                {% endif %}
-                {% endfor %}
+                    {% for account in item.accounts_user_institution.all %}
+                        {% if account.mask == '1111' or account.mask == '0000' %}
+                        <option value='{{ account.uuid }}'>
+                            {{ account.user_institution.institution.name }} {{ account.name }}, balance:
+                            {{ account.current_balance }} $
+                        </option>
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
             </select>
         </div>
