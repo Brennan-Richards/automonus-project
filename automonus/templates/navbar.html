@@ -2,18 +2,19 @@
 
 <nav class="navbar navbar-expand-sm navbar-light bg-light">
 
-    <a class="navbar-brand" href="#">
+  <a class="navbar-brand" href="#">
 
-      <a href="{% url 'about' %}">
-        <img src="{% static 'img/automonus-beta-light-compressed.png' %}" height="250">
-      </a>
-
+    <a href="{% url 'about' %}">
+      <img src="{% static 'img/automonus-beta-light-compressed.png' %}" height="250">
     </a>
 
-    <!-- Bootstrap navbar toggler -->
-    <a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </a>
+  </a>
+
+  <!-- Bootstrap navbar toggler -->
+  <a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03"
+    aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </a>
 
   <div class="collapse navbar-collapse" id="navbarsExample03">
     <ul class="navbar-nav mr-auto">
@@ -27,7 +28,8 @@
 
       <li class="nav-item dropdown">
 
-        <button class="nav-link dropdown-toggle mr-sm-2 btn btn-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="nav-link dropdown-toggle mr-sm-2 btn btn-secondary" href="#" id="navbarDropdown" role="button"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <img src="{% static 'img/analysis-automonus.png' %}" height=30 class="mr-sm-2">
           Analysis
         </button>
@@ -61,14 +63,15 @@
       </li> -->
 
       <li class="nav-item dropdown">
-        <button class="nav-link dropdown-toggle btn btn-secondary"
-                id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="nav-link dropdown-toggle btn btn-secondary" id="navbarDropdown" role="button"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Account
         </button>
 
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url 'user_institutions' %}">Connected Institutions</a>
-          <a href="{% url 'enable_payments' %}">Enable Payments</a>
+          <a class="dropdown-item" href="{% url 'external_transfer_create' %}">Transfer to User</a>
+          <a class="dropdown-item" href="{% url 'internal_transfer_value' %}">Transfer to my Account</a>
           <a class="dropdown-item" href="#">Account: ({{ request.user }}) </a>
           <a class="dropdown-item" href="{% url 'account_logout' %}">Log Out</a>
         </div>

@@ -50,3 +50,10 @@ class AccountSnapshotAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AccountSnapshot, AccountSnapshotAdmin)
+
+
+class AccountNumberAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in AccountNumber._meta.fields]
+
+
+admin.site.register(AccountNumber, AccountNumberAdmin)

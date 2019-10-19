@@ -36,7 +36,7 @@ post_save.connect(user_post_save, sender=User)
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    user = models.OneToOneField(User, blank=True, null=True, default=None, on_delete=models.SET_NULL, related_name='profile_user')
     agree_to_receive_emails = models.BooleanField(default=False)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
 

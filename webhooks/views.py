@@ -4,7 +4,9 @@ import json
 from institutions.models import UserInstitution
 from django.utils import timezone
 import datetime
-
+from django.conf import settings
+import stripe
+from payments.models import PaymentOrder
 
 @csrf_exempt
 def webhook_handler(request):
@@ -59,4 +61,43 @@ def webhook_handler(request):
             to be implemented"""
             print("transactions removed webhook")
 
+    return HttpResponse(status=200)
+
+
+@csrf_exempt
+def stripe_webhook_handler(request):
+    """Information about webhooks: 
+    """
+    print('stripe_webhook_handler')
+    payload = request.body
+    event = None
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+
+    try:
+        event = stripe.Event.construct_from(
+        json.loads(payload), stripe.api_key
+        )
+    except ValueError as e:
+        # Invalid payload
+        print('error', e)
+        return HttpResponse(status=400)
+
+    # Handle the event
+    if event.type == 'charge.succeeded':
+        payment_intent = event.data.object # contains a stripe.PaymentIntent
+        try:
+            po = PaymentOrder.objects.get(tx_id=payment_intent.get('id', None))
+        except PaymentOrder.DoesNotExist as e:
+            print('DoesNotExist')
+            return HttpResponse(status=400)
+        else:
+            po.status = payment_intent.get('status', None)
+            po.save()
+        # handle_payment_intent_succeeded(payment_intent)
+    elif event.type == 'payment_method.attached':
+        payment_method = event.data.object # contains a stripe.PaymentMethod
+    # ... handle other event types
+    else:
+        print('payment_intent', event.data.object)
+        # Unexpected event type
     return HttpResponse(status=200)
