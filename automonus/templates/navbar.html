@@ -39,11 +39,24 @@
           Analysis
         </button>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url 'income_overview' %}">Income & Savings</a>
-          <a class="dropdown-item" href="{% url 'spending_overview' %}">Spending</a>
-          <!-- <a class="dropdown-item" href="{% url 'savings_overview' %}">Savings</a> -->
-          <a class="dropdown-item" href="{% url 'liabilities_overview' %}">Liabilities</a>
-          <a class="dropdown-item" href="{% url 'investments_overview' %}">Investments</a>
+          {% if user.profile.get_user_institutions %}
+              {% if user.profile.has_income %}
+                <a class="dropdown-item" href="{% url 'income_overview' %}">Income & Savings</a>
+              {% endif %}
+              {% if user.profile.has_spending %}
+                <a class="dropdown-item" href="{% url 'spending_overview' %}">Spending</a>
+              {% endif %}
+              <!-- <a class="dropdown-item" href="{% url 'savings_overview' %}">Savings</a> -->
+              {% if user.profile.has_liabilities %}
+                <a class="dropdown-item" href="{% url 'liabilities_overview' %}">Liabilities</a>
+              {% endif %}
+              {% if user.profile.has_investments %}
+                <a class="dropdown-item" href="{% url 'investments_overview' %}">Investments</a>
+              {% endif %}
+          {% else %}
+            <a class="dropdown-item" href="{% url 'about_analysis' %}">About Analysis</a>
+            <a class="dropdown-item" href="{% url 'link_institution' %}">Connect an Institution!</a>
+          {% endif %}
         </div>
       </li>
 
