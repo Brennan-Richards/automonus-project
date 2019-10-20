@@ -117,13 +117,15 @@ class ExternalTransferValueView(FormView):
         # params
         currency = "usd"
         amount = int(Decimal(form.amount) * 100)
-        app_fee = int(Decimal(form.amount) * Decimal(0.01) * 100)  # TODO STRIPE FEE
+        app_fee = StripleManager.calculate_application_fee(
+            form.amount
+        )  # TODO STRIPE FEE
         account_uuid = form.src_user_accounts.uuid
         dest_account_uuid = form.dest_accounts
         # init manager
         sm = StripleManager(account_uuid=account_uuid)
         # call deposit method
-        try :
+        try:
             resp = sm.transfer_between_accounts(
                 dest_account_uuid=dest_account_uuid,
                 currency=currency,
@@ -133,6 +135,7 @@ class ExternalTransferValueView(FormView):
         except Exception as e:
             return HttpResponseRedirect(reverse("try_again_later"))
         return HttpResponseRedirect(self.get_success_url())
+
 
 @method_decorator(login_required, name="dispatch")
 class ExternalTransferSuccessView(TemplateView):
@@ -169,13 +172,15 @@ class InternalTransferValueView(FormView):
         # This method is called when valid form data has been POSTed.
         currency = "usd"
         amount = int(Decimal(form.amount) * 100)
-        app_fee = int(Decimal(form.amount) * Decimal(0.01) * 100)  # TODO STRIPE FEE
+        app_fee = StripleManager.calculate_application_fee(
+            form.amount
+        )  # TODO STRIPE FEE
         account_uuid = form.src_user_accounts.uuid
         dest_account_uuid = form.dest_user_accounts.uuid
         # init manager
         sm = StripleManager(account_uuid=account_uuid)
         # call deposit method
-        try :
+        try:
             resp = sm.transfer_between_accounts(
                 dest_account_uuid=dest_account_uuid,
                 currency=currency,
@@ -193,6 +198,7 @@ class InternalTransferSuccessView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
+
 
 class TryAgainErrorView(TemplateView):
     template_name = "payments/try_again_later.html"

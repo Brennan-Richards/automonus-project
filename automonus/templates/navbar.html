@@ -73,13 +73,11 @@
 
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url 'user_institutions' %}">Connected Institutions</a>
-          <<<<<<< HEAD <a class="dropdown-item" href="{% url 'external_transfer_create' %}">Transfer to User</a>
-            <a class="dropdown-item" href="{% url 'internal_transfer_value' %}">Transfer to my Account</a>
-            =======
-            <!-- <a class="dropdown-item" href="{% url 'enable_payments' %}">Payments</a> -->
-            >>>>>>> e3b857d2701ad895fbd433982d15e0da3f3172ae
-            <a class="dropdown-item" href="#">Account: ({{ request.user }}) </a>
-            <a class="dropdown-item" href="{% url 'account_logout' %}">Log Out</a>
+          <a class="dropdown-item" href="{% url 'external_transfer_create' %}">Transfer to User</a>
+          <a class="dropdown-item" href="{% url 'internal_transfer_value' %}">Transfer to my Account</a>
+          <!-- <a class="dropdown-item" href="{% url 'enable_payments' %}">Payments</a> -->
+          <a class="dropdown-item" href="#">Account: ({{ request.user }}) </a>
+          <a class="dropdown-item" href="{% url 'account_logout' %}">Log Out</a>
         </div>
       </li>
     </ul>

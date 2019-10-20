@@ -19,6 +19,10 @@ class PopulateAccountTest(TestCase):
     def test_base_users(self):
         self.assertEqual(1, 1)
 
+    def test_calculate_application_fee(self):
+        fee = StripleManager.calculate_application_fee(23)
+        self.assertEqual(23, fee)
+
     def test_base_direct_deposits(self):
         available_masks = ["1111", "0000"]
         user_institution = UserInstitution.objects.filter(user=self.first_user)

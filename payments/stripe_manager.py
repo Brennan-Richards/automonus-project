@@ -9,6 +9,7 @@ import datetime
 from payments.models import PaymentOrder
 from decimal import Decimal
 
+
 class StripleManager:
     default_client = Client(
         client_id=settings.PLAID_CLIENT_ID,
@@ -29,6 +30,10 @@ class StripleManager:
         self.stripe_pk = stripe_pk
         self.stripe_sk = stripe_sk
         stripe.api_key = self.stripe_sk
+
+    @staticmethod
+    def calculate_application_fee(amount):
+        return int(Decimal(amount) * Decimal(0.01) * 100)
 
     def __create_access_token(self, public_token):
         exchange_token_response = self.client.Item.public_token.exchange(public_token)
@@ -71,46 +76,44 @@ class StripleManager:
 
     def __get_account_individual(self, access_token, account_id, currency="usd"):
         dest_identity_data = self.client.Identity.get(access_token)
-        dest_accounts_identity = dest_identity_data.get('accounts', None)
+        dest_accounts_identity = dest_identity_data.get("accounts", None)
 
         individual_external_account = {}
         for account in dest_accounts_identity:
-            if account['account_id'] == account_id:
-                balances = account.get('balances', None)
-                owners = account.get('owners', None)
+            if account["account_id"] == account_id:
+                balances = account.get("balances", None)
+                owners = account.get("owners", None)
                 if owners:
-                    addresses = owners[0].get('address', [])
+                    addresses = owners[0].get("address", [])
                     for address in addresses:
-                        if address.get('primary', False):
-                            individual_external_account['address'] = {
-                                'city': address.get('city', ''),
-                                'country': 'US',  # US ACH support only for USA accounts
-                                'line1': address.get('street', ''),
-                                'postal_code': address.get('postal_code', ''),
-                                'state': address.get('region', ''),
+                        if address.get("primary", False):
+                            individual_external_account["address"] = {
+                                "city": address.get("city", ""),
+                                "country": "US",  # US ACH support only for USA accounts
+                                "line1": address.get("street", ""),
+                                "postal_code": address.get("postal_code", ""),
+                                "state": address.get("region", ""),
                             }
 
-                    emails = owners[0].get('emails', [])
+                    emails = owners[0].get("emails", [])
                     for email in emails:
-                        if email.get('primary', False):
-                            individual_external_account['email'] = email.get('data', '')
+                        if email.get("primary", False):
+                            individual_external_account["email"] = email.get("data", "")
 
-                    phone_numbers = owners[0].get('phone_numbers', [])
+                    phone_numbers = owners[0].get("phone_numbers", [])
                     for phone in phone_numbers:
-                        if phone.get('primary', False):
-                            individual_external_account['phone'] = phone.get('data', '')
+                        if phone.get("primary", False):
+                            individual_external_account["phone"] = phone.get("data", "")
 
-                    names = owners[0].get('names', [])
+                    names = owners[0].get("names", [])
                     if names:
                         name = names[0].split()
-                        individual_external_account['last_name'] = name[-1]
+                        individual_external_account["last_name"] = name[-1]
                         name.remove(name[-1])
-                        individual_external_account['first_name'] = ' '.join(name)  #concat other names
-        individual_external_account['dob'] = {
-                'day': '31',
-                'month': '5',
-                'year': '1948',
-        }
+                        individual_external_account["first_name"] = " ".join(
+                            name
+                        )  # concat other names
+        individual_external_account["dob"] = {"day": "31", "month": "5", "year": "1948"}
         return individual_external_account
 
     def deposit_payment(self, currency, amount, app_fee=0):
@@ -138,7 +141,9 @@ class StripleManager:
         )
         return charge
 
-    def transfer_between_accounts(self, dest_account_uuid, amount, currency="usd", app_fee=0):
+    def transfer_between_accounts(
+        self, dest_account_uuid, amount, currency="usd", app_fee=0
+    ):
         # get accounts
         src_account = Account.objects.get(uuid=self.account_uuid)
         dest_account = Account.objects.get(uuid=dest_account_uuid)
@@ -170,8 +175,9 @@ class StripleManager:
         )
 
         # create dest account
-        individual_data = self.__get_account_individual(access_token=dest_access_token,
-                                      account_id=dest_account.account_id)
+        individual_data = self.__get_account_individual(
+            access_token=dest_access_token, account_id=dest_account.account_id
+        )
 
         des_number = AccountNumber.objects.get(
             account=dest_account, number_type=AccountNumber.ACH
@@ -180,12 +186,12 @@ class StripleManager:
         external_account_test = {
             "object": "bank_account",
             "country": "US",  # US ACH support only for USA accounts
-            "account_number": '000123456789',
-            "routing_number": '110000000',
+            "account_number": "000123456789",
+            "routing_number": "110000000",
             "currency": dest_account.currency.code,
         }
 
-        external_account={
+        external_account = {
             "object": "bank_account",
             "country": "US",  # US ACH support only for USA accounts
             "account_number": des_number.number_id,
@@ -198,7 +204,9 @@ class StripleManager:
             type="custom",
             default_currency="usd",
             business_type="individual",
-            external_account=external_account_test if settings.ACH_STRIPE_TEST else external_account,
+            external_account=external_account_test
+            if settings.ACH_STRIPE_TEST
+            else external_account,
             individual=individual_data,
             requested_capabilities=["legacy_payments"],
         )
@@ -228,10 +236,10 @@ class StripleManager:
             to_account=dest_account,
             amount=Decimal(amount) / 100,
             fee=Decimal(app_fee) / 100,
-            tx_id=charge.get('id', ''),
-            customer=charge.get('customer', ''),
-            destination=charge.get('destination', ''),
-            description=charge.get('description', ''),
-            status=charge.get('description', 'failure'),
+            tx_id=charge.get("id", ""),
+            customer=charge.get("customer", ""),
+            destination=charge.get("destination", ""),
+            description=charge.get("description", ""),
+            status=charge.get("description", "failure"),
         )
         return po
