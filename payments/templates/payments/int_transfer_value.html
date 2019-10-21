@@ -48,7 +48,7 @@
                         <select name="dest_accounts" id="dest_accounts" class="form-control">
                             {% for item in dest_user_institutions %}
                             {% for account in item.accounts_user_institution.all %}
-                            {% if account.mask == '1111' or account.mask == '0000' %}
+                            {% if account.subtype.name == 'savings' or account.subtype.name == 'checking' %}
                             {% if account.accounts_number_to_account.all %}
                             <option value='{{ account.uuid }}'>
                                 {{ account.user_institution.institution.name }} {{ account.name }}, balance:
@@ -68,7 +68,7 @@
                         <select name="src_accounts" id="src_accounts" class="form-control">
                             {% for item in src_user_institutions %}
                             {% for account in item.accounts_user_institution.all %}
-                            {% if account.mask == '1111' or account.mask == '0000' %}
+                            {% if account.subtype.name == 'savings' or account.subtype.name == 'checking' %}
                             {% if account.accounts_number_to_account.all %}
                             <option value='{{ account.uuid }}'>
                                 {{ account.user_institution.institution.name }} {{ account.name }}, balance:
