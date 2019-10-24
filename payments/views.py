@@ -35,10 +35,10 @@ from django.utils.decorators import method_decorator
 @login_required
 def enable_payments(request):
     user = request.user
-    available_masks = ["1111", "0000"]
+    available_subtypes = ["savings", "checking"]
     user_institution = UserInstitution.objects.filter(user=user)
     user_accounts = Account.objects.filter(
-        user_institution__in=user_institution, mask__in=available_masks
+        user_institution__in=user_institution, subtype__name__in=available_subtypes
     )
     context = {"user_institution": user_institution, "user_accounts": user_accounts}
     return render(request, "payments/enable.html", context=context)

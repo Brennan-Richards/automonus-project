@@ -24,10 +24,10 @@ class PopulateAccountTest(TestCase):
         self.assertEqual(23, fee)
 
     def test_base_direct_deposits(self):
-        available_masks = ["1111", "0000"]
+        available_subtypes = ["savings", "checking"]
         user_institution = UserInstitution.objects.filter(user=self.first_user)
         user_accounts = Account.objects.filter(
-            user_institution__in=user_institution, mask__in=available_masks
+            user_institution__in=user_institution, subtype__name__in=available_subtypes
         ).first()
         # params
         currency = "usd"
@@ -42,15 +42,17 @@ class PopulateAccountTest(TestCase):
         print("==============")
 
     def test_deposit_between_few_users(self):
-        available_masks = ["1111", "0000"]
+        available_subtypes = ["savings", "checking"]
         src_user_institution = UserInstitution.objects.filter(user=self.first_user)
         src_user_accounts = Account.objects.filter(
-            user_institution__in=src_user_institution, mask__in=available_masks
+            user_institution__in=src_user_institution,
+            subtype__name__in=available_subtypes,
         ).first()
 
         dest_user_institution = UserInstitution.objects.filter(user=self.second_user)
         dest_user_accounts = Account.objects.filter(
-            user_institution__in=dest_user_institution, mask__in=available_masks
+            user_institution__in=dest_user_institution,
+            subtype__name__in=available_subtypes,
         ).first()
         # params
         currency = "usd"

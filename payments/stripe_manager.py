@@ -128,7 +128,7 @@ class StripleManager:
             access_token=access_token, account_id=account.account_id
         )
         # Create a Customer
-        customer = self.stripe.Customer.create(
+        customer = stripe.Customer.create(
             source=bank_account_token,
             description="Example customer",  # TODO Change Name to user
         )

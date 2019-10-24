@@ -14,3 +14,8 @@ AXES_FAILURE_LIMIT  # limit of failed attempts login attempts before temporary b
 SCHEDULER_AUTOSTART  # set to True if you need to switch on the scheduler
 ROLLBAR_TOKEN  # set the value of token from rollbar
 
+
+ACH_STRIPE_TEST *-IF TRUE USE TEST ACH ACCOUNT NUMBER, USING FOR DEV *
+
+STRIPE_PUBLIC_KEY
+STRIPE_SECRET_KEY
