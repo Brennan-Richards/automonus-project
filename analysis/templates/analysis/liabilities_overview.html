@@ -11,14 +11,16 @@
     <div class="row text-center">
         <div class="col-lg-12 ">
 
-            <div id="student_debt_total" class=" col-lg-6 offset-lg-3">
+            <!-- <div id="student_debt_total" class=" col-lg-6 offset-lg-3">
                 Your liabilities: <b>{{ total_balance }} USD</b>
-            </div>
-
+            </div> -->
+            <br>
+            <h3>Student Loans</h3>
             {% if user.profile.has_student_loans_data %}
             <div id="chart_container_1" class="mt-3"></div>
             {% endif %}
-
+            <br>
+            <h3>Credit Card</h3>
             {% if user.profile.has_credit_card_data %}
             <div id="chart_container_2" class="mt-3"></div>
             {% endif %}

@@ -82,7 +82,7 @@ class ExternalTransferCreateView(FormView):
         # return super().form_valid(form)
         print(form.user)
         return HttpResponseRedirect(
-            self.get_success_url(user_id=form.user.profile_user.uuid)
+            self.get_success_url(user_id=form.user.profile.uuid)
         )
 
 
@@ -94,7 +94,7 @@ class ExternalTransferValueView(FormView):
     def get_context_data(self, **kwargs):
         context = super(ExternalTransferValueView, self).get_context_data(**kwargs)
         uuid = self.kwargs.get("to_user", "")
-        to_user = User.objects.get(profile_user__uuid=uuid)
+        to_user = User.objects.get(profile__uuid=uuid)
         src_user_institutions = UserInstitution.objects.filter(user=self.request.user)
         dest_user_institutions = UserInstitution.objects.filter(user=to_user)
         context["src_user_institutions"] = src_user_institutions
@@ -206,4 +206,3 @@ class TryAgainErrorView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
-

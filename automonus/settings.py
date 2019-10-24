@@ -177,7 +177,7 @@ PLAID_PUBLIC_KEY = env("PLAID_PUBLIC_KEY", default="6c5492915411a3645fdd0368516a
 
 """Replace ngrok server address (it is the string till "/webhooks/webhook-handler/" with your server address"""
 PLAID_WEBHOOK_URL = env(
-    "PLAID_WEBHOOK_URL", default="https://ffcc0def.ngrok.io/webhooks/webhook-handler/"
+    "PLAID_WEBHOOK_URL", default="http://9d9c1a5a.ngrok.io/webhooks/webhook-handler/"
 )
 
 # STRIPE DATA
