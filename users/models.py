@@ -62,12 +62,12 @@ class Profile(models.Model):
             "last_year": round(last_year_income, 2)
         }
 
-
     def get_user_institutions(self):
+        #returns all of a user's connected items (userinstitutions) if they exist
         return self.user.userinstitution_set.filter(is_active=True)
 
     def get_user_products(self):
-        #below will retrieve the available and billed products for all connected institutions
+        #this method returns the available and billed products for all connected institutions
         items = self.get_user_institutions().iterator()
         products_in_use = list()
         for item in items:
@@ -81,57 +81,48 @@ class Profile(models.Model):
         return products_in_use
 
     #The following methods check if any of the user's connected institution supports the specific product mentioned.
-
     def has_income(self):
         products = self.get_user_products()
         if "income" in products:
             return True
-
     def has_transactions(self):
         products = self.get_user_products()
         if "transactions" in products:
             return True
-
     def has_investments(self):
         products = self.get_user_products()
         print(products)
         if "investments" in products:
             return True
-
     def has_liabilities(self):
         products = self.get_user_products()
         if "liabilities" in products:
             return True
 
-    #Methods below check not for products in particular, but for specific data that the user does not always have.
-
+    #Methods below check for the existence of SPECIFIC pieces of data connected to the User's account.
     def has_investment_transactions(self):
         investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user)
         if investment_transactions:
              return True
-
     def has_liabilities(self):
         products = self.get_user_products()
         if "liabilities" in products:
             return True
-
     def has_transactions_for_liabilities(self):
         account_types = ["loan"]
         liabilities_transactions = Transaction.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user,
                                                               account__type__name__in=account_types)
         if liabilities_transactions:
             return True
-
     def has_student_loans_data(self):
         student_loan = StudentLoan.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user)
         if student_loan:
             return True
-
     def has_credit_card_data(self):
         credit_card = CreditCard.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user)
         if credit_card:
             return True
-
-    def has_savings_data(self):
-        account_subtypes = ["savings"]
-        return Account.objects.filter(user_institution__is_active=True, subtype__name__in=account_subtypes, user_institution__user=self.user)
+    def has_savings_transactions(self):
+        savings_accounts = Account.objects.filter(user_institution__is_active=True, subtype__name="savings", user_institution__user=self.user)
+        if savings_accounts:
+            return True

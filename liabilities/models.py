@@ -43,21 +43,22 @@ class StudentLoan(models.Model):
     def __str__(self):
         return "{}: {}".format(self.user_institution.user.username, self.guarantor)
 
-    # def get_payment_period(self):
-    #     if self.next_payment_due_date and self.last_statement_issue_date:
-    #         timedelta = self.next_payment_due_date - self.last_statement_issue_date
-    #     #print(timedelta)
-    #     if timedelta.days >= 28:
-    #         period = "month"
-    #     elif timedelta.days == 14:
-    #         period = "biweek"
-    #     elif timedelta.days == 7:
-    #         period = "week"
-    #     elif timedelta.days == 1:
-    #         period = "day"
-    #     #print(period)
-    #     return period
-    #
+    def get_payments_per_year(self):
+        if self.next_payment_due_date and self.last_statement_issue_date:
+            timedelta = self.next_payment_due_date - self.last_statement_issue_date
+        #print(timedelta)
+        if timedelta.days >= 28: #monthly
+            payments_per_year = 12
+        elif timedelta.days == 14: #biweekly
+            payments_per_year = 26
+        elif timedelta.days == 7: #weekly
+            payments_per_year = 52
+        elif timedelta.days == 1: #daily
+            payments_per_year = 365
+        #print(period)
+
+        return payments_per_year
+
     # def get_current_balance(self):
     #     #get number of months between end date and now (a.k.a number of payments)
     #     remaining_loan_term = date(self.end_date).days - date(self.last_statement_issue_date).days #returns remaining term of loan

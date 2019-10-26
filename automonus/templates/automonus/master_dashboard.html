@@ -1,0 +1,36 @@
+{% extends "charts/base.html" %}
+
+{% block page_content %}
+
+  {% if user.profile.get_user_institutions %}
+    <div class="row text-center">
+      <div class="col-sm-4 offset-sm-4">
+        <h1 class="text-center">Your Dashboard</h1>
+      </div>
+    </div>
+    <br>
+      <div class="row">
+          <div class="col-lg-12 text-center">
+            <div class="h3">Balance Chart</div>
+            <p>Shows the progress of the total balance of your accounts over time.</p>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-lg-12">
+              <div id="charts_container" class="mt-3"></div>
+          </div>
+      </div>
+  {% else %}
+
+  <div class="row">
+    <div class="col-lg-12 text-center">
+        <p>You have not yet added an institution to use with the automonus system.</p>
+        <a class="btn btn-primary" href="{% url 'link_institution' %}">
+            Connect With Your Financial Institution
+        </a>
+    </div>
+  </div>
+
+  {% endif %}
+
+{% endblock page_content %}

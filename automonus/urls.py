@@ -19,26 +19,29 @@ def trigger_error(request):
     division_by_zero = 1 / 0
 
 urlpatterns = [
+
     path('error-logger-debug/', trigger_error),
 
+    #Main application views
+    path('', views.home, name='home'),
+    path('master_dashboard/', views.master_dashboard, name="master_dashboard"),
     path('adminnewurl/', admin.site.urls),
-    path('', views.about, name='about'),
 
-    path('academy/', include('academy.urls')),
-    path('analysis/', include('analysis.urls')),
-    path('planning/', include('planner.urls')),
-
-    path('hornescalculator/', include('hornescalculator.urls')),
-    path('accounts/', include('accounts.urls')),
+    path('charts/', include('charts.urls')),
     path('institutions/', include('institutions.urls')),
     path('user-accounts/', include('users.urls')),
     path('webhooks/', include('webhooks.urls')),
-    path('income/', include('income.urls')),
-    path('investments/', include('investments.urls')),
     path('payments/', include('payments.urls')),
 
-    path('display/<int:pk>/update', views.UpdateDisplay.as_view(), name='display_update'),
-    path('marketing/', views.marketing, name='marketing'),
+    #Extend to financial object-based applications
+    path('accounts/', include('accounts.urls')),
+    path('income/', include('income.urls')),
+    path('investments/', include('investments.urls')),
+    path('liabilities/', include('liabilities.urls')),
+    path('expenditures/', include('expenditures.urls')),
+
+    # path('display/<int:pk>/update', views.UpdateDisplay.as_view(), name='display_update'),
+    path('login_signup/', views.login_signup, name='login_signup'),
 
     # django all-auth
     path('accounts/', include('allauth.urls')),

@@ -73,7 +73,7 @@ class InternalTransferSecondForm(forms.Form):
         self.user = kwargs.pop("user")
         super(InternalTransferSecondForm, self).__init__(*args, **kwargs)
 
-    dest_accounts = forms.CharField(label="Choose destenetion account", required=True)
+    dest_accounts = forms.CharField(label="Choose destination account", required=True)
     src_accounts = forms.CharField(label="Choose source account", required=True)
     amount = forms.DecimalField(
         label="Amount Transfer",

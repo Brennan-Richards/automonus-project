@@ -85,13 +85,13 @@ class UserInstitution(ModelBaseFieldsAbstract):
             # Reverse method is used so that transactions with later dates will have larger ID #s.
 
             kwargs = dict()
-            account_id = transaction["account_id"]
+            account_id = transaction.get("account_id", "")
             account = Account.objects.get(account_id=account_id)
-            amount = transaction["amount"]
-            transaction_date = transaction["date"]
-            category_name = transaction["category"][0]
-            category_id = transaction["category_id"]
-            group = transaction["transaction_type"]
+            amount = transaction.get("amount", "")
+            transaction_date = transaction.get("date", "")
+            category_name = transaction.get("category"[0], "")
+            category_id = transaction.get("category_id", "")
+            group = transaction.get("transaction_type", "")
 
             hierarchy = transaction["category"]
             categories = {"sub_category_1": hierarchy[0], }
@@ -103,12 +103,12 @@ class UserInstitution(ModelBaseFieldsAbstract):
 
             category, created = TransactionCategory.objects.get_or_create(plaid_category_id=category_id, group=group,
                                                                           defaults=categories)
-            iso_currency_code = transaction["iso_currency_code"]
+            iso_currency_code = transaction.get("iso_currency_code", "")
             currency, created = Currency.objects.get_or_create(code=iso_currency_code)
-            name = transaction["name"]
-            pending = transaction["pending"]
-            transaction_id = transaction["transaction_id"]
-            transaction_type_name = transaction["transaction_type"]
+            name = transaction.get("name", "")
+            pending = transaction.get("pending", "")
+            transaction_id = transaction.get("transaction_id", "")
+            transaction_type_name = transaction.get("transaction_type", "")
             kwargs["account"] = account
             kwargs["amount"] = amount
             kwargs["currency"] = currency
@@ -155,24 +155,24 @@ class UserInstitution(ModelBaseFieldsAbstract):
         bulk_create_list = list()
         for transaction in transactions_data["investment_transactions"]:
             kwargs = dict()
-            account_id = transaction["account_id"]
+            account_id = transaction.get("account_id", "")
             account = Account.objects.get(account_id=account_id)
 
             user_security = UserSecurity.objects.get(user_institution=self, security__plaid_security_id=transaction["security_id"])
 
-            amount = transaction["amount"]
-            fees = transaction["fees"] if transaction["fees"] else 0
-            transaction_date = transaction["date"]
-            quantity = transaction["quantity"]
+            amount = transaction.get("amount", "")
+            fees = transaction.get("fees", "")
+            transaction_date = transaction.get("date", "")
+            quantity = transaction.get("quantity", "")
 
-            iso_currency_code = transaction["iso_currency_code"]
+            iso_currency_code = transaction.get("iso_currency_code", "")
             currency, created = Currency.objects.get_or_create(code=iso_currency_code)
 
-            name = transaction["name"]
-            investment_transaction_id = transaction["investment_transaction_id"]
-            type = transaction["type"]
+            name = transaction.get("name", "")
+            investment_transaction_id = transaction.get("investment_transaction_id", "")
+            type = transaction.get("type", "")
             type, created = InvestmentTransactionType.objects.get_or_create(name=type)
-            cancel_transaction_id = transaction["cancel_transaction_id"]
+            cancel_transaction_id = transaction.get("cancel_transaction_id", "")
 
             kwargs["user_security"] = user_security
             kwargs["account"] = account  #
@@ -221,32 +221,45 @@ class UserInstitution(ModelBaseFieldsAbstract):
         'ticker_symbol': 'NFLX180201C00355000', 'type': 'derivative', 'unofficial_currency_code': None},
         """
         for item in securities:
-            security_id = item["security_id"]
-            security, created = Security.objects.get_or_create(ticker_symbol=item["ticker_symbol"], name=item["name"],
-                                                               isin=item["isin"], sedol=item["sedol"],
-                                                               cusip=item["cusip"], plaid_security_id=security_id)
-            security_type, created = SecurityType.objects.get_or_create(name=item["type"])
-            currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
+            #creating Security model if one does not already exist
+            security_id = item.get("security_id", "")
+            ticker_symbol = item.get("ticker_symbol", "")
+            name = item.get("name", "")
+            isin = item.get("isin", "")
+            sedol = item.get("sedol", "")
+            cusip = item.get("cusip", "")
+            plaid_security_id = item.get("plaid_security_id", "")
+            security, created = Security.objects.get_or_create(ticker_symbol=ticker_symbol, name=name,
+                                                               isin=isin, sedol=sedol,
+                                                               cusip=cusip, plaid_security_id=security_id)
+            #creating SecurityType model " " " " " "
+            name = item.get("type", "")
+            security_type, created = SecurityType.objects.get_or_create(name=name)
+            #creating Currency model " " " " " "
+            code = item.get("iso_currency_code", "")
+            currency, created = Currency.objects.get_or_create(code=code)
+
             kwargs = {
-                "is_cash_equivalent": item["is_cash_equivalent"],
+                "is_cash_equivalent": item.get("is_cash_equivalent", ""),
                 "type": security_type,
-                "close_price": item["close_price"], "close_price_as_of": item["close_price_as_of"],
+                "close_price": item.get("close_price", ""), "close_price_as_of": item.get("close_price_as_of", ""),
                 "currency": currency
             }
+
             user_security, created = UserSecurity.objects.update_or_create(user_institution=self, security=security, defaults=kwargs)
             user_security.create_snapshot()
-        """
-        {'account_id': 'Z1l84PBBKaUzRw36
-        KBqPsreoddXrk5FgLoJdb', 'cost_basis': 1, 'institution_price': 1, 'institution_price_as_of': None,
-        'institution_value': 12345.67, 'iso_currency_code': 'USD', 'quantity': 12345.67, 'se
-        curity_id': 'd6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are', 'unofficial_currency_code': None}
-        """
+
         for item in holdings:
-            security_id = item["security_id"]
-            account = Account.objects.get(account_id=item["account_id"])
+            account_id = item.get("account_id", "")
+            account = Account.objects.get(account_id=account_id)
+
+            security_id = item.get("security_id", "")
             user_security, created = UserSecurity.objects.get_or_create(security__plaid_security_id=security_id,
                                                                         user_institution=self)
-            currency, created = Currency.objects.get_or_create(code=item["iso_currency_code"])
+
+            code = item.get("iso_currency_code", "")
+            currency, created = Currency.objects.get_or_create(code=code)
+
             kwargs = {
                 "institution_value": item["institution_value"],
                 "institution_price": item["institution_price"],
@@ -269,25 +282,25 @@ class UserInstitution(ModelBaseFieldsAbstract):
             return False
         data = income_data["income"]
         income_defaults_kwargs = {
-            "max_number_of_overlapping_income_streams": data["max_number_of_overlapping_income_streams"],
-            "number_of_income_streams": data["number_of_income_streams"],
-            "last_year_income_before_tax": data["last_year_income_before_tax"],
-            "last_year_income_minus_tax": data["last_year_income"],
-            "projected_yearly_income_before_tax": data["projected_yearly_income_before_tax"],
-            "projected_yearly_minus_tax": data["projected_yearly_income"],
+            "max_number_of_overlapping_income_streams": data.get("max_number_of_overlapping_income_streams", ""),
+            "number_of_income_streams": data.get("number_of_income_streams", ""),
+            "last_year_income_before_tax": data.get("last_year_income_before_tax"),
+            "last_year_income_minus_tax": data.get("last_year_income", ""),
+            "projected_yearly_income_before_tax": data.get("projected_yearly_income_before_tax", ""),
+            "projected_yearly_minus_tax": data.get("projected_yearly_income", ""),
         }
 
         income, created = Income.objects.update_or_create(user_institution=self, defaults=income_defaults_kwargs)
         income_streams = data["income_streams"]
         for income_stream in income_streams:
-            # ToDo: think about a way to define and deactivate income streams, which are not relevant anymore
-            name = income_stream["name"]
-            confidence = income_stream["confidence"]
-            days = income_stream["days"]
-            monthly_income = income_stream["monthly_income"]
+            name = income_stream.get("name", "")
+            income_stream_defaults = {
+                "confidence": income_stream.get("confidence", ""),
+                "days": income_stream.get("days", ""),
+                "monthly_income": income_stream.get("monthly_income", "")
+                }
             IncomeStream.objects.update_or_create(income=income, name=name,
-                                                  defaults={"confidence": confidence, "days": days,
-                                                            "monthly_income": monthly_income})
+                                                  defaults=income_stream_defaults)
 
     def check_client(self):
         return client
@@ -316,15 +329,13 @@ class UserInstitution(ModelBaseFieldsAbstract):
                 account_subtype, created = AccountSubType.objects.get_or_create(name=subtype_name)
             else:
                 account_subtype = None
-            # stripe_response = client.Processor.stripeBankAccountTokenCreate(self.access_token, self.account_id)
-            # print(stripe_response)
-            # stripe_bank_account_token = stripe_response['stripe_bank_account_token']
+
             currency_code = account_data["balances"]["iso_currency_code"]
             currency, created = Currency.objects.get_or_create(code=currency_code)
-            bank_account_defaults_kwargs = {
-                "name": account_data["name"],
-                "official_name": account_data["official_name"],
-                "mask": account_data["mask"],
+            bank_account_defaults = {
+                "name": account_data.get("name", ""),
+                "official_name": account_data.get("official_name", ""),
+                "mask": account_data.get("mask", ""),
                 "type": account_type,
                 "subtype": account_subtype,
                 "available_balance": account_data["balances"]["available"] if account_data["balances"]["available"] else 0,
@@ -333,13 +344,14 @@ class UserInstitution(ModelBaseFieldsAbstract):
                 "currency": currency,
                 "stripe_bank_account_token": stripe_bank_account_token,
             }
-            """Account information can be updated after initial creation of the instance"""
+
+            #If an Account instance already exists, the data will be updated.
             account, created = Account.objects.update_or_create(user_institution=self,
                                                                 account_id=account_id,
-                                                                defaults=bank_account_defaults_kwargs)
+                                                                defaults=bank_account_defaults)
             for arc in arc_data:
                 if arc['account_id'] == account.account_id:
-                    acc_obj =AccountNumber.objects.create(account=account,
+                    acc_obj = AccountNumber.objects.create(account=account,
                                                         number_type=AccountNumber.ACH,
                                                         number_id=arc.get('account', None),
                                                         number_routing=arc.get('routing', None))
@@ -354,37 +366,38 @@ class UserInstitution(ModelBaseFieldsAbstract):
         except Exception as e:
             print(e)
             return False
-        student_loan_kwargs = {
+
+        student_loan_defaults = {
             "account": account,
-            "account_number": student_loans["account_number"],
-            "expected_payoff_date": student_loans["expected_payoff_date"],
-            "guarantor": student_loans["guarantor"],
-            "interest_rate_percentage": student_loans["interest_rate_percentage"],
-            "is_overdue": student_loans["is_overdue"],
-            "last_payment_amount": student_loans["last_payment_amount"],
-            "last_payment_date": student_loans["last_payment_date"],
-            "last_statement_balance": student_loans["last_statement_balance"],
-            "last_statement_issue_date": student_loans["last_statement_issue_date"],
-            "loan_name": student_loans["loan_name"],
-            "end_date": student_loans["loan_status"]["end_date"],
-            "type": student_loans["loan_status"]["type"],
-            "minimum_payment_amount": student_loans["minimum_payment_amount"],
-            "next_payment_due_date": student_loans["next_payment_due_date"],
-            "origination_date": student_loans["origination_date"],
-            "origination_principal_amount": student_loans["origination_principal_amount"],
-            "outstanding_interest_amount": student_loans["outstanding_interest_amount"],
-            "payment_reference_number": student_loans["payment_reference_number"],
-            "estimated_pslf_eligibility_date": student_loans["pslf_status"]["estimated_eligibility_date"],
-            "payments_made": student_loans["pslf_status"]["payments_made"],
-            "pslf_payments_remaining": student_loans["pslf_status"]["payments_remaining"],
-            "repayment_description": student_loans["repayment_plan"]["description"],
-            "repayment_type": student_loans["repayment_plan"]["type"],
-            "sequence_number": student_loans["sequence_number"],
-            "ytd_interest_paid": student_loans["ytd_interest_paid"],
-            "ytd_principal_paid": student_loans["ytd_principal_paid"],
+            "account_number": student_loans.get("account_number", ""),
+            "expected_payoff_date": student_loans.get("expected_payoff_date", ""),
+            "guarantor": student_loans.get("guarantor", ""),
+            "interest_rate_percentage": student_loans.get("interest_rate_percentage", ""),
+            "is_overdue": student_loans.get("is_overdue", ""),
+            "last_payment_amount": student_loans.get("last_payment_amount", ""),
+            "last_payment_date": student_loans.get("last_payment_date", ""),
+            "last_statement_balance": student_loans.get("last_statement_balance", ""),
+            "last_statement_issue_date": student_loans.get("last_statement_issue_date", ""),
+            "loan_name": student_loans.get("loan_name", ""),
+            "end_date": student_loans["loan_status"].get("end_date", ""),
+            "type": student_loans["loan_status"].get("type", "none"),
+            "minimum_payment_amount": student_loans.get("minimum_payment_amount", ""),
+            "next_payment_due_date": student_loans.get("next_payment_due_date", ""),
+            "origination_date": student_loans.get("origination_date", ""),
+            "origination_principal_amount": student_loans.get("origination_principal_amount", ""),
+            "outstanding_interest_amount": student_loans.get("outstanding_interest_amount", ""),
+            "payment_reference_number": student_loans.get("payment_reference_number", ""),
+            "estimated_pslf_eligibility_date": student_loans["pslf_status"].get("estimated_eligibility_date", ""),
+            "payments_made": student_loans["pslf_status"].get("payments_made", ""),
+            "pslf_payments_remaining": student_loans["pslf_status"].get("payments_remaining", ""),
+            "repayment_description": student_loans["repayment_plan"].get("description", ""),
+            "repayment_type": student_loans["repayment_plan"].get("type", ""),
+            "sequence_number": student_loans.get("sequence_number", ""),
+            "ytd_interest_paid": student_loans.get("ytd_interest_paid", ""),
+            "ytd_principal_paid": student_loans.get("ytd_principal_paid", ""),
         }
 
-        loan_instance, created = StudentLoan.objects.update_or_create(user_institution=self, defaults=student_loan_kwargs)
+        loan_instance, created = StudentLoan.objects.update_or_create(user_institution=self, defaults=student_loan_defaults)
 
         loan_instance.create_snapshot()
 
@@ -394,36 +407,38 @@ class UserInstitution(ModelBaseFieldsAbstract):
             for date in disbursement_dates:
                 DisbursementDate.objects.update_or_create(loan_instance=loan_instance, date_of_disbursement=date)
 
-        servicer_address_kwargs = {
-            "city": student_loans["servicer_address"]["city"],
-            "country": student_loans["servicer_address"]["country"],
-            "postal_code": student_loans["servicer_address"]["postal_code"],
-            "region": student_loans["servicer_address"]["region"],
-            "street": student_loans["servicer_address"]["street"]
+        servicer_address_defaults = {
+            "city": student_loans["servicer_address"].get("city", ""),
+            "country": student_loans["servicer_address"].get("country", ""),
+            "postal_code": student_loans["servicer_address"].get("postal_code", ""),
+            "region": student_loans["servicer_address"].get("region", ""),
+            "street": student_loans["servicer_address"].get("street", "")
         }
 
-        ServicerAddress.objects.get_or_create(loan_instance=loan_instance, defaults=servicer_address_kwargs)
+        ServicerAddress.objects.get_or_create(loan_instance=loan_instance, defaults=servicer_address_defaults)
 
     def populate_credit_card_data(self):
         try:
             response = client.Liabilities.get(self.access_token)
             credit_data = response["liabilities"]["credit"][0]
-            account = Account.objects.get(account_id=credit_data["account_id"])
+
+            account_id = credit_data.get("account_id", "")
+            account = Account.objects.get(account_id=account_id)
             print("populating credit card data")
         except Exception as e:
             print(e)
             return False
 
-        credit_card_kwargs = {
+        credit_card_defaults = {
             "account": account,
-            "is_overdue": credit_data["is_overdue"],
-            "last_payment_amount": credit_data["last_payment_amount"],
-            "last_payment_date": credit_data["last_payment_date"],
-            "last_statement_balance": credit_data["last_statement_balance"],
-            "last_statement_issue_date": credit_data["last_statement_issue_date"],
+            "is_overdue": credit_data.get("is_overdue", ""),
+            "last_payment_amount": credit_data.get("last_payment_amount", ""),
+            "last_payment_date": credit_data.get("last_payment_date", ""),
+            "last_statement_balance": credit_data.get("last_statement_balance", ""),
+            "last_statement_issue_date": credit_data.get("last_statement_issue_date", ""),
             # "late_fee_amount":credit_data["late_fee_amount"] if credit_data["late_fee_amount"] else 0,
-            "minimum_payment_amount": credit_data["minimum_payment_amount"] if credit_data["minimum_payment_amount"] else 0,
-            "next_payment_due_date": credit_data["next_payment_due_date"],
+            "minimum_payment_amount": credit_data.get("minimum_payment_amount", ""),
+            "next_payment_due_date": credit_data.get("next_payment_due_date", ""),
             # "credit_limit":credit_data["credit_limit"] if credit_data["credit_limit"] else 0,
         }
 
@@ -431,11 +446,11 @@ class UserInstitution(ModelBaseFieldsAbstract):
         credit_card.create_snapshot()
 
         apr_data = credit_data["aprs"][0]
-        apr_kwargs = {
-            "apr_type": apr_data["apr_type"],
-            "apr_percentage": apr_data["apr_percentage"],
-            "balance_subject_to_apr": apr_data["balance_subject_to_apr"],
-            "interest_charge_amount": apr_data["interest_charge_amount"]
+        apr_defaults = {
+            "apr_type": apr_data.get("apr_type", ""),
+            "apr_percentage": apr_data.get("apr_percentage", ""),
+            "balance_subject_to_apr": apr_data.get("balance_subject_to_apr", ""),
+            "interest_charge_amount": apr_data.get("interest_charge_amount", "")
         }
 
-        APR.objects.update_or_create(credit_card=credit_card, defaults=apr_kwargs)
+        APR.objects.update_or_create(credit_card=credit_card, defaults=apr_defaults)

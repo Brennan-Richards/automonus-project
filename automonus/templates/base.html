@@ -5,6 +5,7 @@
 <html lang="en">
 
 <head>
+
   <meta charset="utf-8">
 
   <title>The Automonus Project</title>
@@ -18,35 +19,34 @@
 
   {% block header_stuff %}
   {% endblock header_stuff %}
+
 </head>
 
 <header>
 
-<!-- Navbar -->
-{% if user.is_authenticated %}
-    {% include "navbar.html" %}
-{% endif %}
+  <!-- Navbar -->
+  {% if user.is_authenticated %}
+      {% include "navbar.html" %}
+  {% endif %}
 
-<br>
-<br>
+  <br>
+  <br>
 
 </header>
 
 <body>
 
-    <div class="container">
+  <div class="container">
 
-      <!-- Website Content -->
+    <!-- Website Content -->
 
-      {% block content %}
-      {% endblock %}
+    {% block content %}
+    {% endblock %}
 
-    </div>
-
+  </div>
 
 </body>
 
-<br>
 <br>
 
 <footer class="text-center">
@@ -56,15 +56,15 @@
   <small class="text-muted"><em>©️ Automonus 2019</em></small>
 
   <br>
-  <br>
 
 </footer>
+
     <!-- Import Javascript and Jquery files. -->
     <script src="//code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="//stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-    <!--Toastr for messages showing-->
+    <!--Toastr for showing updates messages-->
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script type="text/javascript" src="{% static 'js/toastr_settings.js' %}"></script>
 

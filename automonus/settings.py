@@ -38,18 +38,17 @@ DEBUG = env.bool("DEBUG", True)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
-
-LOGIN_URL = "/marketing/"
-LOGIN_REDIRECT_URL = "/marketing/"
-LOGOUT_REDIRECT_URL = "/marketing/"
+#URLs set for login defaults
+LOGIN_URL = "/login_signup/"
+LOGIN_REDIRECT_URL = "/login_signup/"
+LOGOUT_REDIRECT_URL = "/login_signup/"
 
 # Application definition
 
 INSTALLED_APPS = [
-    "hornescalculator.apps.HornesCalculatorConfig",
+    "expenditures.apps.ExpendituresConfig",
     "academy.apps.AcademyConfig",
-    "analysis.apps.AnalysisConfig",
-    "planner.apps.PlanningConfig",
+    "charts.apps.ChartsConfig",
     "payments.apps.PaymentsConfig",
     "accounts.apps.AccountsConfig",
     "income.apps.IncomeConfig",
