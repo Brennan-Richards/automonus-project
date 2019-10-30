@@ -1,9 +1,48 @@
 {% extends 'base.html' %}
 
-  {% load static %}
-  {% load mathfilters %}
+{% load static %}
 
 {% block content %}
 
+<div class="row">
+  <div class="col-sm-8 offset-sm-2">
+    <h3>The Automonus Project</h3>
+    <p>Our goal is to teach the world how to handle its money, and how to acquire more of it.</p>
+    <p>The Automonus Project is an ongoing effort to create financial software products that
+    help you to optimize and streamline your financial processes.</p>
+  </div>
+</div>
 
-<p>automonus/templates/home.html</p>
+  <br>
+  <br>
+
+<div class="row">
+  <div class="col-sm-8 offset-sm-2">
+    <h3>Analysis</h3>
+    <p>Our Analysis system allows you to connect your bank accounts from almost any
+    US financial institution by simply filling in your online username and password.
+    From there, we break down your finances to show you how much
+    money you earn, spend, save, and invest - as well as keeping track of your debts</p>
+  </div>
+</div>
+
+<br>
+
+<div class="row">
+  <div class="col-sm-8 offset-sm-2">
+    <h3>Payments</h3>
+    <p>Our payments system allows you to send money to any other user on our platform.</p>
+  </div>
+</div>
+
+<br>
+
+<div class="row text-center">
+  <div class="col-sm-4 offset-sm-4">
+    <a href="{% url 'master_dashboard' %}" class="btn btn-lg btn-block btn-primary">Go to master dashboard.</a>
+  </div>
+</div>
+
+  <br>
+
+{% endblock %}

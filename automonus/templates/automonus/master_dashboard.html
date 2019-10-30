@@ -1,0 +1,109 @@
+{% extends "charts/base.html" %}
+
+{% block page_content %}
+
+  {% if user.profile.get_user_institutions %}
+
+    <div class="row text-center">
+      <div class="col-sm-6 offset-sm-3">
+        <h1 class="text-center">Your Master Dashboard</h1>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-12 text-center">
+          <div class="h3">Balance Chart</div>
+          <p>Shows the progress of the total balance of your accounts over time.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div id="charts_container" class="mt-3"></div>
+        </div>
+    </div>
+    <br>
+    <hr>
+    <br>
+    <div class="row text-center">
+      <div class="col-sm-4 offset-sm-4">
+        <h3>Make a Payment</h3>
+        <a href="{% url 'external_transfer_create' %}" class="btn btn-block btn-success">To Another User</a>
+        <a href="{% url 'internal_transfer_value' %}" class="btn btn-block btn-success">Amongst Your Accounts</a>
+      </div>
+    </div>
+    <br>
+    <hr>
+    <br>
+    <h3 class="text-center">Your Cash Accounts</h3>
+    <div class="row mt-3">
+        <div class="col-lg-12 text-center">
+            <div class="table-responsive">
+                <table id="table" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Owner</th>
+                            <!-- <th>Type</th> -->
+                            <th>Banking Institution</th>
+                            <th>Current Balance</th>
+                            <th>Available Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for account in accounts %}
+                            <tr>
+                                <td>
+                                  {{ account.user_institution.user }}
+                                </td>
+                                <!-- <td>
+                                  {{ account.type }}
+                                </td> -->
+                                <td>
+                                  {{ account.user_institution.institution }}
+                                </td>
+                                <td>
+                                    ${{ account.current_balance }}
+                                </td>
+                                <td>
+                                    ${{ account.available_balance }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br>
+    <hr>
+    <br>
+    <div class="row mb-3">
+      <div class="col">
+        <a href="{% url 'income_dashboard' %}" class="btn btn-primary btn-lg btn-block">Your Income</a>
+      </div>
+      <div class="col">
+        <a href="{% url 'expenditures_dashboard' %}" class="btn btn-primary btn-lg btn-block">Your Expenditures</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <a href="{% url 'liabilities_dashboard' %}" class="btn btn-primary btn-lg btn-block">Your Liabilities</a>
+      </div>
+      <div class="col">
+        <a href="{% url 'investments_dashboard' %}" class="btn btn-primary btn-lg btn-block">Your Investments</a>
+      </div>
+    </div>
+
+  {% else %}
+
+    <div class="row">
+      <div class="col-lg-12 text-center">
+          <p>You have not yet added an institution to use with the automonus system.</p>
+          <a class="btn btn-primary" href="{% url 'link_institution' %}">
+              Connect With Your Financial Institution
+          </a>
+      </div>
+    </div>
+
+  {% endif %}
+
+{% endblock page_content %}
