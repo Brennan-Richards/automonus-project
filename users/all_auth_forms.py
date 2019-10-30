@@ -33,7 +33,7 @@ class CustomResetPasswordForm(ResetPasswordForm):
 
 
 class CustomLoginForm(LoginForm):
-
+    #Add first name, last name, date of birth
     def __init__(self, *args, **kwargs):
         super(CustomLoginForm, self).__init__(*args, **kwargs)
         self.fields['login'] = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": _("Email")}))
@@ -55,6 +55,7 @@ class CustomLoginForm(LoginForm):
 
 
 class CustomSignupForm(BaseSignupForm):
+    #Add first name, last name, date of birth
     email = forms.EmailField(required=True, label=False, widget=forms.TextInput(attrs={'placeholder': _("Email*")}))
     password1 = forms.CharField(label=False,
                                 widget=forms.PasswordInput(attrs={"placeholder": _("Password*")}))

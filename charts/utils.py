@@ -1,6 +1,6 @@
 from django.db.models import Avg, Count, Min, Sum
 from accounts.models import AccountSnapshot, Transaction
-from income.models import Income
+from income.models import Income, IncomeStream
 from liabilities.models import CreditCardSnapshot, StudentLoanSnapshot
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -39,7 +39,6 @@ class ChartData():
         chart_categories = [item.strftime("%m/%d/%Y") for item in chart_categories]
         chart_data = {"title": chart_name, "type": chart_type, "categories": chart_categories,
                       "chart_series": chart_series}
-        print("4")
         return chart_data
 
     def prepare_chart_data_pie_chart(self, data, user, chart_name, chart_type):
@@ -59,8 +58,8 @@ class ChartData():
                       "chart_series": chart_series}
         return chart_data
 
-    def get_transactions_data(self, user, chart_name, chart_type, account_types=None,
-                              date_period_days=30, is_cumulative=False, model_name="Transaction"):
+    def get_transactions_data(self, user, chart_name, chart_type, date_period_days, account_types=None,
+                              is_cumulative=False, model_name="Transaction"):
         if model_name == "Transaction":
             kwargs = {
                 "account__user_institution__user": user,
@@ -110,34 +109,21 @@ class ChartData():
         # print(data)
         return data, transactions_qs
 
-    #TODO: Get rid of this method and make it something more simple on the views.py page.
-    def get_transactions_sum(self, user, account_types=None, date_period_days=30):
-        # Gets total value of transactions over a given time period.
-        kwargs = {
-            "account__user_institution__user": user,
-            "account__type__name__in": account_types,
-            "date__gte": timezone.now()-timedelta(days=date_period_days),
-            "amount__gt": 0,
-            "account__user_institution__is_active": True
-        }
-
-        transactions = Transaction.objects.filter(**kwargs).values('date', 'currency__code') \
-                                                  .annotate(amount=Sum('amount'))
-
-        sum_transactions = 0
-        for transaction in transactions:
-            sum_transactions += transaction["amount"]
-
-        return round(float(sum_transactions),2)
-
-
     def get_income_data(self, user, chart_name, chart_type):
-        kwargs = {
-            "user_institution__user": user,
-            "user_institution__is_active": True
-        }
+        kwargs = dict()
+        if chart_name == "Your monthly income by income stream":
+            kwargs["income__user_institution__user"] = user
+            kwargs["income__user_institution__is_active"] = True
+            income_data = IncomeStream.objects.filter(**kwargs)
+            data = dict()
+            for stream in income_data:
+                data[stream.name] = round(float(stream.monthly_income), 2)
+            print(data)
 
-        if chart_name == "Last year's income before and after taxes, cost of tax":
+        elif chart_name == "Last year's income before and after taxes, cost of tax":
+            kwargs["user_institution__user"] = user
+            kwargs["user_institution__is_active"] = True
+
             income_data = Income.objects.filter(**kwargs).aggregate(
                 last_year_income_minus_tax=Sum("last_year_income_minus_tax"),
                 last_year_taxes=Sum("last_year_taxes")
@@ -147,6 +133,8 @@ class ChartData():
                     "Last year taxes": round(float(income_data["last_year_taxes"]), 2)
                     }
         elif chart_name == "Projected income before and after taxes":
+            kwargs["user_institution__user"] = user
+            kwargs["user_institution__is_active"] = True
             income_data = Income.objects.filter(**kwargs).aggregate(
                 projected_yearly_minus_tax=Sum("projected_yearly_minus_tax"),
                 projected_yearly_taxes=Sum("projected_yearly_taxes")
@@ -157,9 +145,9 @@ class ChartData():
                     }
         return data, income_data
 
-    def get_spendings_data(self, user, chart_name, chart_type, account_types):
+    def get_spendings_data(self, user, chart_name, chart_type, date_period_days, account_types):
         print("get_spendings_data")
-        data, transactions = self.get_transactions_data(user, chart_name, chart_type, account_types)
+        data, transactions = self.get_transactions_data(user, chart_name, chart_type, date_period_days, account_types)
         data_dict = dict()
         for item in transactions.iterator():
             if ((item.category.sub_category_1 == "Payment") or (item.category.sub_category_1 == "Transfer")) and item.category.sub_category_2:
@@ -176,23 +164,28 @@ class ChartData():
 
         return data_dict, transactions
 
-    def get_snapshots_data_by_model(self, user, chart_name, chart_type, account_types=None, account_subtypes=None, date_period_days=365, model_name="AccountSnapshot"):
+    def get_snapshots_data_by_model(self, user, chart_name, chart_type, model_name, account_types=None, account_subtypes=None, date_period_days=365):
         kwargs = {
             "account__user_institution__user": user,
             "date__gte": timezone.now() - timedelta(days=date_period_days),
             "account__user_institution__is_active": True
         }
 
-        model = ContentType.objects.get(model=model_name.lower()).model_class()
-        qs = model.objects.filter(**kwargs).order_by("date")
-
         if model_name == "AccountSnapshot":
-            kwargs["type__name__in"] = account_types
-            kwargs["subtype__name__in"] = account_subtypes
+            kwargs["account__type__name__in"] = account_types
+            if account_subtypes is not None:
+                kwargs["account__subtype__name__in"] = account_subtypes
+
+            model = ContentType.objects.get(model=model_name.lower()).model_class()
+            qs = model.objects.filter(**kwargs).order_by("date")
+
             snapshots = qs \
                 .values('date', 'account__currency__code')\
                 .annotate(field=Sum('current_balance'))
+
         else: #CreditCard
+            model = ContentType.objects.get(model=model_name.lower()).model_class()
+            qs = model.objects.filter(**kwargs).order_by("date")
             snapshots = qs \
                 .values('date', 'account__currency__code')\
                 .annotate(field=Sum('last_statement_balance'))
@@ -219,7 +212,7 @@ class ChartData():
 
         return data, qs
 
-    def get_data_by_chart_name(self, user, chart_name, chart_type, qs_data=None, account_types=None, account_subtypes=None):
+    def get_data_by_chart_name(self, user, chart_name, chart_type, date_period_days=None, qs_data=None, account_types=None, account_subtypes=None):
         """
         :param user:
         :param chart_name:
@@ -229,10 +222,13 @@ class ChartData():
         #Accounts
         if chart_name == "Progress of your cash balances":
             print("2")
-            data, qs_data = self.get_snapshots_data_by_model(user, chart_name, chart_type, account_types)
+            data, qs_data = self.get_snapshots_data_by_model(user, chart_name, chart_type, model_name="AccountSnapshot", account_types=account_types, account_subtypes=account_subtypes)
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
 
         #Income
+        elif chart_name == "Your monthly income by income stream":
+            data, qs_data = self.get_income_data(user, chart_name, chart_type)
+            chart_data = self.prepare_chart_data_pie_chart(data, user, chart_name, chart_type)
         elif chart_name == "Last year's income before and after taxes, cost of tax":
             data, qs_data = self.get_income_data(user, chart_name, chart_type)
             chart_data = self.prepare_chart_data_pie_chart(data, user, chart_name, chart_type)
@@ -242,39 +238,43 @@ class ChartData():
 
         #Expenditures
         elif chart_name == "Your past month's spending by expenditure category:":
-            data, qs_data = self.get_spendings_data(user, chart_name, chart_type, account_types)
+            data, qs_data = self.get_spendings_data(user, chart_name, chart_type, date_period_days, account_types)
             chart_data = self.prepare_chart_data_pie_chart(data, user, chart_name, chart_type)
-        elif chart_name == "Your spending activity over the past quarter (90 days)":
+        elif chart_name == "Your spending activity over the past 30 days":
             # line chart type by default
-            data, qs_data = self.get_transactions_data(user, chart_name, chart_type, account_types, date_period_days=90)
+            data, qs_data = self.get_transactions_data(user, chart_name, chart_type, date_period_days, account_types)
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
 
         #Liabilities
         elif chart_name == "Your student loan debt total over time":
-            data, qs_data = self.get_snapshots_data_by_model(user, chart_name, chart_type, account_types, account_subtypes, model_name="CreditCardSnapshot")
+            data, qs_data = self.get_snapshots_data_by_model(user, chart_name, chart_type, model_name="AccountSnapshot", account_types=account_types, account_subtypes=account_subtypes)
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
         elif chart_name == "Your credit card balance over time":
-            data, qs_data = self.get_snapshots_data_by_model(user, chart_name, chart_type)
+            data, qs_data = self.get_snapshots_data_by_model(user, chart_name, chart_type, model_name="CreditCardSnapshot")
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
 
         #Investments
         elif chart_name == "Progress of your total investments":
-            data, qs_date = self.get_snapshots_data_by_model(user, chart_name, chart_type, account_types)
+            data, qs_date = self.get_snapshots_data_by_model(user, chart_name, chart_type, model_name="AccountSnapshot", account_types=account_types)
             chart_data = self.prepare_chart_data(data, user, chart_name, chart_type)
 
         return chart_data, qs_data
 
-    def get_charts_data_by_module(self, user, chart_type, category, account_types=None, account_subtypes=None):
-        #This method returns a series of data + chart feature options for HighCharts on the frontend
+    def get_charts_data_by_module(self, user, chart_type, category, date_period_days=None, account_types=None, account_subtypes=None):
+        #This method returns one or more series of data + chart configuration options for use with HighCharts
         charts_data = list()
         if category == "spending":
-            chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your spending activity over the past quarter (90 days)",
-                                                              chart_type=chart_type, account_types=account_types)
+            chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your spending activity over the past 30 days",
+                                                              date_period_days=date_period_days, chart_type=chart_type, account_types=account_types)
             charts_data.append(chart_data)
             chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your past month's spending by expenditure category:",
-                                                              chart_type="pie", account_types=account_types)
+                                                              date_period_days=date_period_days, chart_type="pie", account_types=account_types)
             charts_data.append(chart_data)
+
         elif category == "income":
+            chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your monthly income by income stream", chart_type=chart_type)
+            charts_data.append(chart_data)
+        elif category == "income2":
             print("income")
             chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Last year's income before and after taxes, cost of tax", chart_type=chart_type)
             charts_data.append(chart_data)
@@ -289,10 +289,12 @@ class ChartData():
           chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your credit card balance over time", chart_type=chart_type,
                                                             account_types=account_types)
           charts_data.append(chart_data)
+
         elif category == "investments":
             chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Progress of your total investments", chart_type=chart_type,
                                                               account_types=account_types)
             charts_data.append(chart_data)
+
         elif category == "accounts":
             print("1")
             chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Progress of your cash balances", chart_type="line",

@@ -33,7 +33,7 @@ urlpatterns = [
     path('webhooks/', include('webhooks.urls')),
     path('payments/', include('payments.urls')),
 
-    #Extend to financial object-based applications
+    #Extend to URLs of financial-object-based applications
     path('accounts/', include('accounts.urls')),
     path('income/', include('income.urls')),
     path('investments/', include('investments.urls')),
@@ -59,4 +59,4 @@ if settings.DEBUG:
         path('500/', default_views.server_error),
     ]
 else:
-    admin.site.__class__ = OTPAdminSite  # Two factor from Admin
+    admin.site.__class__ = OTPAdminSite  # Two factor authentication for admin site

@@ -6,9 +6,9 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    path('expenditures_analysis/', views.expenditures_analysis, name='expenditures_analysis'),
+    path('expenditures_dashboard/', views.expenditures_dashboard, name='expenditures_dashboard'),
 
-    #expenditure planning views
+    #Expenditure 'Planning' app views
     path('overview', views.overview, name='overview'),
 
     path('tax', views.tax, name='tax'),
@@ -18,7 +18,7 @@ urlpatterns = [
     path('food', views.food, name='food'),
     path('miscellaneous', views.miscellaneous, name='miscellaneous'),
 
-    #Detail views for all expenses & income
+        #Detail views for all expenses & income
     path('tax/<int:pk>', views.DetailTax.as_view(), name='tax_details'),
     path('housing/<int:pk>', views.DetailHousing.as_view(), name='housing_details'),
     path('car/<int:pk>', views.DetailCar.as_view(), name='car_details'),
@@ -26,7 +26,7 @@ urlpatterns = [
     path('food/<int:pk>', views.DetailFood.as_view(), name='food_details'),
     path('miscellaneous/<int:pk>', views.DetailMiscellaneous.as_view(), name='miscellaneous_details'),
 
-    #Update views for all expenses & income
+        #Update views for all expenses & income
     path('tax/<int:pk>/update', views.UpdateTax.as_view(), name='tax_update'),
     path('housing/<int:pk>/update', views.UpdateHousing.as_view(), name='housing_update'),
     path('car/<int:pk>/update', views.UpdateCar.as_view(), name='car_update'),

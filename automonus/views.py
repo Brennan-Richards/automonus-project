@@ -9,7 +9,7 @@ from django.http import JsonResponse
 import requests
 import json
 from institutions.models import Institution, UserInstitution
-from accounts.models import Transaction
+from accounts.models import Account, Transaction
 from django.contrib.auth.decorators import login_required
 from charts.utils import ChartData
 
@@ -32,7 +32,9 @@ def master_dashboard(request):
         account_types = ["depository"]
         charts_data = ChartData().get_charts_data_by_module(user=user, chart_type="line", category="accounts",
                                                             account_types=account_types)
-        context = {"charts_data": charts_data}
+        accounts = Account.objects.filter(user_institution__user=user, user_institution__is_active=True,
+                                          type__name__in=account_types)
+        context = {"charts_data": charts_data, "accounts":accounts}
     return render(request, 'automonus/master_dashboard.html', context)
 
 

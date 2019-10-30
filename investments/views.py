@@ -9,7 +9,7 @@ from .models import Holding, InvestmentTransaction
 from accounts.models import Account
 
 @login_required
-def investments_analysis(request):
+def investments_dashboard(request):
     context = dict()
     user = request.user
     if user.profile.get_user_institutions():
@@ -18,8 +18,7 @@ def investments_analysis(request):
                                                account__user_institution__is_active=True).aggregate(total_amount=Sum("institution_value"))
         investment_accounts = Account.objects.filter(user_institution__user=user, type__name__in=account_types,
                                                      user_institution__is_active=True).aggregate(total_amount=Sum("current_balance"))
-        total_amount = user_holdings["total_amount"] if user_holdings.get("total_amount") else investment_accounts["total_amount"]
-        total_investments = round(total_amount, 2)
+        total_investments = round(user_holdings["total_amount"], 2) if user_holdings.get("total_amount") else investment_accounts["total_amount"]
 
         holdings = Holding.objects.filter(account__user_institution__user=user,
                                           account__user_institution__is_active=True)
@@ -31,4 +30,4 @@ def investments_analysis(request):
                    "charts_data": charts_data, "total_investments": total_investments,
                    "investment_transactions": investment_transactions, "holdings":holdings
                    }
-    return render(request, 'investments/investments_analysis.html', context)
+    return render(request, 'investments/investments_dashboard.html', context)

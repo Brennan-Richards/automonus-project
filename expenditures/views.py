@@ -3,28 +3,38 @@ from django.views import generic
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 from accounts.models import Transaction
+from django.db.models import Sum
+from django.utils import timezone
+from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from charts.utils import ChartData
 
 # Create your views here.
 
 @login_required
-def expenditures_analysis(request):
+def expenditures_dashboard(request):
     context = dict()
     user = request.user
     if user.profile.get_user_institutions():
         account_types = ["depository", "credit"]
         charts_data = ChartData().get_charts_data_by_module(user=user, chart_type="line", category="spending",
-                                                            account_types=account_types)
-        transactions = Transaction.objects.filter(account__user_institution__user=user,
+                                                            account_types=account_types, date_period_days=30)
+        transactions_in_period = Transaction.objects.filter(account__user_institution__user=user,
+                                                            account__type__name__in=account_types,
+                                                            date__gte=timezone.now()-timedelta(days=30),
+                                                            amount__gt= 0, account__user_institution__is_active=True
+                                                            ).aggregate(sum=Sum("amount"))
+        sum = round(transactions_in_period.get("sum", ""), 2)
+        all_transactions = Transaction.objects.filter(account__user_institution__user=user,
                                                   account__type__name__in=account_types, amount__gt=0,
                                                   account__user_institution__is_active=True
-                                                  ).order_by("-date")[:100]
-        transactions_total = ChartData().get_transactions_sum(user=user, account_types=account_types)
-        context = {"charts_data": charts_data, "transactions": transactions, "transactions_total": transactions_total}
-    return render(request, 'expenditures/expenditures_analysis.html', context)
+                                                  ).order_by("-date")
 
-#Expenditure Planning Views
+        # transactions_total = round(transactions.get("sum_total", ""), 2)
+        context = {"charts_data": charts_data, "all_transactions": all_transactions, "sum": sum}
+    return render(request, 'expenditures/expenditures_dashboard.html', context)
+
+#Expenditure 'Planning' Views
 
 from .models import Display, Tax, Housing, Car, Utilities, Food, Miscellaneous
 from .forms import DisplayForm, TaxForm, HousingForm, CarForm, UtilitiesForm, FoodForm, MiscellaneousForm

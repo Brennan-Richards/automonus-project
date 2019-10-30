@@ -442,7 +442,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
             # "credit_limit":credit_data["credit_limit"] if credit_data["credit_limit"] else 0,
         }
 
-        credit_card, created = CreditCard.objects.update_or_create(user_institution=self, defaults=credit_card_kwargs)
+        credit_card, created = CreditCard.objects.update_or_create(user_institution=self, defaults=credit_card_defaults)
         credit_card.create_snapshot()
 
         apr_data = credit_data["aprs"][0]
