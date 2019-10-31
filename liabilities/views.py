@@ -25,13 +25,10 @@ def liabilities_dashboard(request):
                                           subtype__name__in=account_subtypes, user_institution__is_active=True) \
                                           .aggregate(total=Sum("current_balance"))
 
-        # data needed for amortization calculations
         student_loan = StudentLoan.objects.get(account__user_institution__user=user, user_institution__is_active=True)
+        # amortize_30 = student_loan.amortize(30, student_loan.minimum_payment_amount)
         credit_card = CreditCard.objects.get(account__user_institution__user=user, user_institution__is_active=True)
         apr = APR.objects.get(credit_card__account__user_institution__user=user, credit_card__user_institution__is_active=True)
-        # min_payment = student_loan.minimum_payment_amount
-        # interest_rate = student_loan.interest_rate_percentage
-        # payments_per_year = student_loan.get_payments_per_year()
 
         remaining_principal_balance = student_loan_accounts["total"]
 
@@ -40,6 +37,7 @@ def liabilities_dashboard(request):
                    "transactions": transactions,
                    "student_loan": student_loan,
                    "credit_card": credit_card,
-                   "apr": apr
+                   "apr": apr,
+                   # "a": amortize_30
                    }
     return render(request, 'liabilities/liabilities_dashboard.html', context)

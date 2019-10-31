@@ -1,7 +1,7 @@
 from django.db.models import Avg, Count, Min, Sum
 from accounts.models import AccountSnapshot, Transaction
 from income.models import Income, IncomeStream
-from liabilities.models import CreditCardSnapshot, StudentLoanSnapshot
+from liabilities.models import CreditCardSnapshot, StudentLoanSnapshot, StudentLoan
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.contrib.contenttypes.models import ContentType
@@ -22,7 +22,8 @@ class ChartData():
             chart_categories += list(dates_data.keys())  # keys are dates in this dictionary
 
         chart_categories = sorted(list(set(chart_categories)))  # removing duplicated values and sorting the list
-
+        # print(data)
+        # print(chart_categories) #Format: [[datetime.date(2019, 10, 30)],[...]]
         for currency, dates_data in data.items():
             chart_series_data = list()
             for date in chart_categories:
@@ -31,11 +32,27 @@ class ChartData():
                 else:
                     amount = 0
                 chart_series_data.append(amount)
-
+            # print(chart_series_data)
             chart_series.append({
                 "name": currency,
                 "data": chart_series_data
             })
+        print(chart_series, "1")
+
+        if chart_name == "Your student loan debt total over time": #"Your credit card balance over time"
+            student_loan = StudentLoan.objects.get(user_institution__user = user, user_institution__is_active=True)
+            amortization_data = student_loan.amortize(30, student_loan.minimum_payment_amount)
+            chart_series.append({
+                "name": "Projection of your loan balance at minimum payment amount",
+                "data": amortization_data[0], #[val1, val2, ...]
+                "color":'red'
+                            })
+            for date in amortization_data[1]: #[date1, date2, ...]
+                # print(date)
+                chart_categories.append(date)
+
+        # print(chart_categories)
+        print(chart_series, "2")
         chart_categories = [item.strftime("%m/%d/%Y") for item in chart_categories]
         chart_data = {"title": chart_name, "type": chart_type, "categories": chart_categories,
                       "chart_series": chart_series}

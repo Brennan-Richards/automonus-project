@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from accounts.models import Account
 import uuid
 from django.utils import timezone
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from django.forms.models import model_to_dict
 # Create your models here.
 
@@ -58,6 +58,70 @@ class StudentLoan(models.Model):
         #print(period)
 
         return payments_per_year
+
+    def amortize(self, steps, payment_amount): #To show how changing payment affects speed of paydown, add :payment_amount: param
+        amortization_series = []
+        dates_as_categories = []
+        remaining_principal_balance = self.account.current_balance
+        interest = self.interest_rate_percentage
+        payment_amount = self.minimum_payment_amount
+        payments_per_year = self.get_payments_per_year()
+        days_between_payments = 365 / payments_per_year
+
+        balance = remaining_principal_balance
+        start_date = datetime.now() + timedelta(days=30)
+        for i in range(0, steps):
+            #amortize steps times and push the value of remaining principal to amortiz.Series each time
+            r = payment_amount
+            m = payments_per_year
+            i = balance * (r / m)
+            principal_paid = r - i
+            # print(b)
+            amortization_series.append(round(float(balance), 2))
+            dates_as_categories.append(start_date)
+            balance -= payment_amount
+            start_date += timedelta(days=4 * days_between_payments)
+        #print("XX", dates_as_categories)
+        return amortization_series, dates_as_categories
+
+        """  <script type="text/javascript"> //Creates a series of data
+              //TODO: Add a date to each payment
+              var amortizationArray = [];
+              remaining_p_bal = {{ remaining_principal_balance }};
+              interest = {{ interest_rate }};
+              // TODO: Add a way for user to manipulate below payment value to show how it affects the loan term
+              payment = {{ min_payment }};
+              payments_per_year = {{ payments_per_year }};
+
+              for(var balance = remaining_p_bal; balance > 0; balance - payment){
+
+                  var b = balance;
+                  payment_number = 0;
+
+                  if(payment_number > 1){
+                    payment = {
+                           payment_number: payment_number,
+                           payment_amount: payment,
+                           interest_paid: (b * (interest / payments_per_year)),
+                           principal_paid: payment - (b * (interest / payments_per_year)),
+                           balance_remaining: b
+                         };
+                  }else{
+                    payment = {
+                           payment_number: payment_number,
+                           payment_amount: null,
+                           interest_paid: null,
+                           principal_paid: null,
+                           balance_remaining: b
+                         };
+                  }
+                  amortizationArray[payment_number]=payment;
+                  payment_number++;
+              }
+
+              console.log(amortizationArray);
+            </script> """
+
 
     # def get_current_balance(self):
     #     #get number of months between end date and now (a.k.a number of payments)

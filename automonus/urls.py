@@ -27,6 +27,7 @@ urlpatterns = [
     path('master_dashboard/', views.master_dashboard, name="master_dashboard"),
     path('adminnewurl/', admin.site.urls),
 
+    #Extends to utilitity URLs
     path('charts/', include('charts.urls')),
     path('institutions/', include('institutions.urls')),
     path('user-accounts/', include('users.urls')),
