@@ -8,19 +8,22 @@
     <h1>Your Subscription Costs</h1>
     <p>Based on your {{ object.institutions_for_investments }} institutions for
        investments and your {{ object.institutions_for_liabilities }} institutions
-       for liabilities your subscription will cost: ${{ user.mocksubscription.calculate_subscription_cost|floatformat:-2 }} per month.</p>
+       for liabilities your subscription will cost:
+       ${{ user.mocksubscription.calculate_subscription_cost|floatformat:-2 }} per month.
+     </p>
   </div>
 </div>
 <div class="row text-center">
-  <div class="col-lg-6 offset-lg-3">
-    <a href="{% url 'mocksubscription_update' user.mocksubscription.id %}" class="btn btn-success">Update</a>
+  <div class="col-lg-4 offset-lg-4">
+    <a href="{% url 'mocksubscription_update' user.mocksubscription.id %}" class="btn btn-block btn-success">Update</a>
   </div>
 </div>
 <div class="row text-center">
-  <div class="col-lg-6 offset-lg-3">
-    <a href="{% url 'link_institution' %}" class="btn btn-primary mt-1">Continue</a>
+  <div class="col-lg-4 offset-lg-4">
+    <a href="{% url 'link_institution' %}" class="btn btn-block btn-primary mt-1">Continue</a>
   </div>
 </div>
+
 {% else %}
 <div class="row text-center">
   <div class="col-sm-6 offset-sm-3">

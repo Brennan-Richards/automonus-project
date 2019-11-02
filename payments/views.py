@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
@@ -220,6 +220,13 @@ class MockSubscriptionCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+    # def get(self, *args, **kwargs):
+    #     if self.model.objects.get(user=self.request.user).exists():
+    #         model = self.model.objects.get(user=self.request.user)
+    #         return redirect("mocksubscription_update", pk=model.id)
+    #     else:
+    #         return render(request, template_name)
 
     # def get_absolute_url(self):
     #     return reverse('subscription_cost_display')

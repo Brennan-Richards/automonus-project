@@ -21,6 +21,7 @@
 
       <li class="nav-item">
         <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'home' %}">
+          <img src="{% static 'img/house.png' %}" width=40>
           Home
         </a>
       </li>
@@ -28,28 +29,31 @@
       {% if user.profile.get_user_institutions %}
         <li class="nav-item">
           <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'master_dashboard' %}">
+            <img src="{% static 'img/dollar sign.png' %}" width=40>
             Dashboard
           </a>
         </li>
       {% else %}
-        {% if not user.profile.filled_mock_subscription %}
-          <li class="nav-item">
-            <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'mocksubscription_create' %}">
-              Calculate Subscription Cost
+        {% if user.profile.filled_mock_subscription %}
+          <li>
+            <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'mocksubscription_display'%}">
+              <img src="{% static 'img/dollar sign.png' %}" width=40>
+              Step #1 - Subscription Cost
             </a>
           </li>
         {% else %}
           <li>
-            <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'mocksubscription_display' %}">
-              Calculate Subscription Cost
-            </a>
-          </li>
-          <li>
-            <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'link_institution' %}">
-              Connect an Institution
+            <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'mocksubscription_create' %}">
+              <img src="{% static 'img/dollar sign.png' %}" width=40>
+              Step #1 - Calculate Subscription Cost
             </a>
           </li>
         {% endif %}
+          <li>
+            <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'link_institution' %}">
+              Step #2 - Connect an Institution
+            </a>
+          </li>
       {% endif %}
 
 

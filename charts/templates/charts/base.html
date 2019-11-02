@@ -13,9 +13,17 @@
           {% block page_content %}
           {% endblock page_content %}
       {% else %}
+      <div class="row text-center">
+        <div class="col-lg-6 offset-lg-3">
+          <div class="alert alert-warning">
+            <p>You have not subscribed to Automonus.</p>
+          </div>
+        </div>
+      </div>
         <div class="row text-center">
           <div class="col-lg-10 mx-auto">
-              <a class="btn btn-sm btn-primary" href="{% url 'calculate_cost' %}">Calculate the Cost of Your Subscription</a>
+              <a class="btn btn-lg btn-primary mb-3" href="{% url 'mocksubscription_create' %}">Calculate the Cost of Your Subscription</a>
+              <br>
               <a class="btn btn-lg btn-success" href="{% url 'link_institution' %}">
                   Connect Your First Financial Institution
               </a>

@@ -6,17 +6,103 @@
 
 <div class="row">
   <div class="col-sm-8 offset-sm-2">
-    <h3>The Automonus Project</h3>
-    <p>Our goal is to teach the world how to handle its money, and how to acquire more of it.</p>
-    <p>The Automonus Project is an ongoing effort to create financial software products that
-    help you to optimize and streamline your financial processes.</p>
+    <h1 class="text-center">The Automonus Project</h1>
+    <br>
+    <p>
+      Our goal is to create a system which gives you perfect clarity of where you stand financially
+      while helping you to handle your money more efficiently.
+    </p>
+    <p>The system as it stands is based on monitoring your income and planning your expenditures,
+       while keeping track of your liabilities, such as student loans and credit card debt, and your
+       investments.
+    </p>
   </div>
 </div>
 
   <br>
   <br>
 
-<div class="row">
+<div class="row text-center">
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Income</h4>
+        <div class="card-text">
+          <ul>
+            <li>Displays your projected income per month.</li>
+            <li>View your current streams of income.</li>
+            <li>Keep track of your income transactions.</li>
+          </ul>
+        </div>
+        {% if user.profile.get_user_institutions %}
+          <a href="{% url 'income_dashboard' %}" class="btn btn-primary">Go to Income</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Expenditures</h4>
+        <div class="card-text">
+          <ul>
+            <li>Evaluate the velocity of your spending each day over the past quarter.</li>
+            <li>Evaluate total spending by category.</li>
+            <li>Keep track of your spending transactions and transaction info.</li>
+          </ul>
+          {% if user.profile.get_user_institutions %}
+            <a href="{% url 'expenditures_dashboard' %}" class="btn btn-primary">Go to Expenditures</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Liabilities</h4>
+        <div class="card-text">
+          <ul>
+            <li>Show credit card debt totals over time.</li>
+            <li>Show student loan totals over time.</li>
+          </ul>
+        </div>
+        {% if user.profile.get_user_institutions %}
+          <a href="{% url 'liabilities_dashboard' %}" class="btn btn-primary">Go to Liabilities</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Investments</h4>
+        <div class="card-text">
+          <ul>
+            <li>Show progress of total holdings over time.</li>
+            <li>Show profit to date of any of a user’s holdings.</li>
+            <li>Show investment transactions if available.</li>
+          </ul>
+        </div>
+        {% if user.profile.get_user_institutions %}
+          <a href="{% url 'investments_dashboard' %}" class="btn btn-primary">Go to Investments</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<hr>
+<br>
+{% if not user.profile.get_user_institutions %}
+  <div class="row">
+    <div class="col-lg-6 offset-lg-3">
+      <a href="{% url 'link_institution' %}" class="btn btn-lg btn-block btn-success">Add an Insitution</a>
+    </div>
+  </div>
+{% endif %}
+
+<!-- <div class="row">
   <div class="col-sm-8 offset-sm-2">
     <h3>Analysis</h3>
     <p>Our Analysis system allows you to connect your bank accounts from almost any
@@ -24,24 +110,41 @@
     From there, we break down your finances to show you how much
     money you earn, spend, save, and invest - as well as keeping track of your debts</p>
   </div>
-</div>
+</div> -->
 
 <br>
-
+<hr>
+<br>
 <div class="row">
-  <div class="col-sm-8 offset-sm-2">
+  <div class="col-sm-4">
+    <img src="{% static 'img/aurum.jpeg' %}" height=300>
+  </div>
+  <div class="col-sm-8">
+    <br>
+    <br>
+    <br>
     <h3>Payments</h3>
-    <p>Our payments system allows you to send money to any other user on our platform.</p>
+    <p>
+      Our payments system allows you to send money to any other user on our platform, as well as to
+      move money across your own accounts. If it is possible, your accounts are immediately authorized
+      upon adding an institution. The standard fee of any transaction made through Automonus is 1%.
+
+    </p>
   </div>
 </div>
+<div class="row">
+
+</div>
 
 <br>
 
+{% if user.profile.get_user_institutions %}
 <div class="row text-center">
   <div class="col-sm-4 offset-sm-4">
     <a href="{% url 'master_dashboard' %}" class="btn btn-lg btn-block btn-primary">Go to master dashboard.</a>
   </div>
 </div>
+{% endif %}
 
   <br>
 

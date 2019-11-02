@@ -6,6 +6,8 @@ from . import views
 urlpatterns = [
     path("enable-payments/", views.enable_payments, name="enable_payments"),
     path("check-auth/", views.StripeChecker.as_view(), name="check_stripe"),
+
+    #Creating internal and external transfers.
     path(
         "external-transfer-create/",
         views.ExternalTransferCreateView.as_view(),

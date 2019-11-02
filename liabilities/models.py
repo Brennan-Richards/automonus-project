@@ -63,7 +63,7 @@ class StudentLoan(models.Model):
         amortization_series = []
         dates_as_categories = []
         remaining_principal_balance = self.account.current_balance
-        interest = self.interest_rate_percentage
+        interest_rate_percentage = self.interest_rate_percentage / 100
         payment_amount = self.minimum_payment_amount
         payments_per_year = self.get_payments_per_year()
         days_between_payments = 365 / payments_per_year
@@ -74,53 +74,18 @@ class StudentLoan(models.Model):
             #amortize steps times and push the value of remaining principal to amortiz.Series each time
             r = payment_amount
             m = payments_per_year
-            i = balance * (r / m)
+            i = balance * (interest_rate_percentage / m)
+            print(balance, "= balance")
+            print(i, " = interest")
             principal_paid = r - i
             # print(b)
             amortization_series.append(round(float(balance), 2))
             dates_as_categories.append(start_date)
-            balance -= payment_amount
-            start_date += timedelta(days=4 * days_between_payments)
+            # balance *= 1 + interest
+            balance -= principal_paid
+            start_date += timedelta(days=days_between_payments)
         #print("XX", dates_as_categories)
         return amortization_series, dates_as_categories
-
-        """  <script type="text/javascript"> //Creates a series of data
-              //TODO: Add a date to each payment
-              var amortizationArray = [];
-              remaining_p_bal = {{ remaining_principal_balance }};
-              interest = {{ interest_rate }};
-              // TODO: Add a way for user to manipulate below payment value to show how it affects the loan term
-              payment = {{ min_payment }};
-              payments_per_year = {{ payments_per_year }};
-
-              for(var balance = remaining_p_bal; balance > 0; balance - payment){
-
-                  var b = balance;
-                  payment_number = 0;
-
-                  if(payment_number > 1){
-                    payment = {
-                           payment_number: payment_number,
-                           payment_amount: payment,
-                           interest_paid: (b * (interest / payments_per_year)),
-                           principal_paid: payment - (b * (interest / payments_per_year)),
-                           balance_remaining: b
-                         };
-                  }else{
-                    payment = {
-                           payment_number: payment_number,
-                           payment_amount: null,
-                           interest_paid: null,
-                           principal_paid: null,
-                           balance_remaining: b
-                         };
-                  }
-                  amortizationArray[payment_number]=payment;
-                  payment_number++;
-              }
-
-              console.log(amortizationArray);
-            </script> """
 
 
     # def get_current_balance(self):
