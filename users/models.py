@@ -9,6 +9,7 @@ from institutions.models import UserInstitution
 from accounts.models import Transaction, Account
 from investments.models import InvestmentTransaction
 from liabilities.models import StudentLoan, CreditCard
+from payments.models import MockSubscription
 from django.db.models import Sum
 from django.conf import settings
 from plaid import Client
@@ -125,4 +126,9 @@ class Profile(models.Model):
     def has_savings_transactions(self):
         savings_accounts = Account.objects.filter(user_institution__is_active=True, subtype__name="savings", user_institution__user=self.user)
         if savings_accounts:
+            return True
+
+    def filled_mock_subscription(self):
+        model = MockSubscription.objects.filter(user=self.user)
+        if model:
             return True

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row text-center">
+  <div class="col-lg-8 offset-lg-2">
+    <h1>Calculate the Cost of Your Subscription</h1>
+    <p>We make sure that you don't pay for what you don't use. Fill out the information below and we'll calculate the cost of your subscription.</p>
+  </div>
+</div>
+<br>
+<hr>
+<br>
+<div class="row">
+  <div class="col-lg-8 offset-lg-2">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <!-- <p>How many institutions in total do you use to handle your banking (Accounts, Liabilities, Investments)?
+         {{ form.total_inst }}</p> -->
+      <p>How many of your insitutions include an investment portfolio? {{ form.institutions_for_investments }}</p>
+      <p>How many institutions include your liabilities data such as student loans and credit cards
+         {{ form.institutions_for_liabilities }} </p>
+      <button type="submit" class="btn btn-primary">
+          Calculate Subscription Cost
+      </button>
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

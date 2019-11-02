@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.http import (
@@ -14,6 +16,7 @@ import json
 import stripe
 from payments.stripe_manager import StripleManager
 from decimal import Decimal
+from .models import MockSubscription
 from institutions.models import UserInstitution
 from accounts.models import Account
 
@@ -21,7 +24,8 @@ from accounts.models import Account
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.contrib.auth.models import User
-from django.views.generic.edit import FormView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import FormView, CreateView, UpdateView
 from django import forms
 from payments.forms import (
     ExternalTransferFirstForm,
@@ -206,3 +210,29 @@ class TryAgainErrorView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
+
+class MockSubscriptionCreate(LoginRequiredMixin, CreateView):
+    model = MockSubscription
+    template_name = 'subscription/mocksubscription_form.html'
+    fields = ['institutions_for_investments', 'institutions_for_liabilities']
+    success_url = reverse_lazy("mocksubscription_display")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    # def get_absolute_url(self):
+    #     return reverse('subscription_cost_display')
+
+class MockSubscriptionUpdate(LoginRequiredMixin, UpdateView):
+    model = MockSubscription
+    fields = ['institutions_for_investments', 'institutions_for_liabilities']
+    success_url = reverse_lazy("mocksubscription_display")
+    template_name = 'subscription/mocksubscription_update_form.html'
+
+class MockSubscriptionDisplay(TemplateView):
+    template_name = "subscription/mocksubscription_display.html"
+
+    # def get(self, request, *args, **kwargs):
+    #     context = self.get_context_data(**kwargs)
+    #     return self.render_to_response(context)

@@ -32,6 +32,11 @@ urlpatterns = [
         name="internal_transfer_success",
     ),
     path("try-again-later/", views.TryAgainErrorView.as_view(), name="try_again_later"),
+
+    #Subscription Cost Calculator
+    path("mock-subscription-form/", views.MockSubscriptionCreate.as_view(), name="mocksubscription_create"),
+    path("mock-subscription/<int:pk>/update", views.MockSubscriptionUpdate.as_view(), name="mocksubscription_update"),
+    path("mock-subscription-display/", views.MockSubscriptionDisplay.as_view(), name="mocksubscription_display")
 ]
 
 if settings.DEBUG:
