@@ -67,21 +67,17 @@ class StudentLoan(models.Model):
         payment_amount = self.minimum_payment_amount
         payments_per_year = self.get_payments_per_year()
         days_between_payments = 365 / payments_per_year
-
         balance = remaining_principal_balance
         start_date = datetime.now() + timedelta(days=30)
+        """ TODO: Add feature to this method so that each value in amortization_series
+            represents a date one month apart, even if the user pays per week or per day
+            (self.get_payments_per_year) """
         for i in range(0, steps):
             #amortize steps times and push the value of remaining principal to amortiz.Series each time
-            r = payment_amount
-            m = payments_per_year
-            i = balance * (interest_rate_percentage / m)
-            print(balance, "= balance")
-            print(i, " = interest")
-            principal_paid = r - i
-            # print(b)
+            interest_paid = balance * (interest_rate_percentage / payments_per_year)
+            principal_paid = payment_amount - interest_paid
             amortization_series.append(round(float(balance), 2))
             dates_as_categories.append(start_date)
-            # balance *= 1 + interest
             balance -= principal_paid
             start_date += timedelta(days=days_between_payments)
         #print("XX", dates_as_categories)

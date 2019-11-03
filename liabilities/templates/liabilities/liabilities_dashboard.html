@@ -6,48 +6,165 @@
   <!-- <div class="row">
     <h3>Liabilities-</h3>
     <ul>
-      <li>Show credit card debt totals over time.</li>
-      <li>Show student loan totals over time.</li>
+      <td>Show credit card debt totals over time.<td>
+      <td>Show student loan totals over time.<td>
     </ul>
   </div> -->
   <!-- {{ a }} -->
   <div class="row">
       <div class="col-lg-12 text-center">
-          <div class="h1">Liabilities Overview</div>
+          <div class="h1">Your Liabilities Dashboard</div>
       </div>
   </div>
   <br>
-  <div class="row text-center">
-      <div class="col-lg-12 ">
-          <!-- TODO: If user has credit card but not student loans, will this display correctly? -->
-          <h3>Student Loans</h3>
-          {% if user.profile.has_student_loans_data %}
-          <div id="chart_container_1" class="mt-3"></div>
-          <ul class="col-sm-4 offset-sm-4">
-            <li>Minimum payment amount: ${{ student_loan.minimum_payment_amount }}</li>
-            <li>Interest rate percentage: {{ student_loan.interest_rate_percentage }}%</li>
-            <li>Last statement balance: ${{ student_loan.last_statement_balance }}</li>
-          </ul>
-          {% endif %}
-          <br>
-          <hr>
-          <br>
-          <h3>Credit Card</h3>
-          {% if user.profile.has_credit_card_data %}
-          <div id="chart_container_2" class="mt-3"></div>
-          <ul class="col-sm-4 offset-sm-4">
-            <li>Minimum payment amount: ${{ credit_card.minimum_payment_amount }}</li>
-            <li>Interest rate percentage: {{ apr.apr_percentage }}%</li>
-            <li>Last statement balance: ${{ credit_card.last_statement_balance }}</li>
-          </ul>
-          {% endif %}
+  {% if user.profile.has_student_loans_data and user.profile.has_credit_card_data%}
+    <div class="row text-center">
+      <h3>Student Loans</h3>
+      <div class="col-lg-12">
+        <div id="chart_container_1" class="mt-3"></div>
       </div>
+    </div>
+    <br>
+    <div class="row text-center">
+      <div class="col-lg-12">
+        <table class="table table-dark">
+          <tr>
+            <thead>
+              <th scope="col">Student Loan #</th>
+              <th scope="col">Minimum payment amount:</th>
+              <th scope="col">Interest rate percentage:</th>
+              <th scope="col">Next statement amount due:</th>
+              <th class="bg-warning">Next payment due date:</th>
+            </thead>
+          </tr>
+          <tbody>
+            {% for student_loan in student_loans %}
+              <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>${{ student_loan.minimum_payment_amount }}</td>
+                  <td>{{ student_loan.interest_rate_percentage }}%</td>
+                  <td>${{ student_loan.last_statement_balance }}</td>
+                  <td class="bg-warning">{{ student_loan.next_payment_due_date }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <br>
+    <hr>
+    <br>
+    <div class="row text-center">
+      <div class="col-lg-12">
+        <h3>Credit Card</h3>
+        <div id="chart_container_2" class="mt-3"></div>
+      </div>
+    </div>
+    <br>
+    <div class="row text-center">
+      <div class="col-lg-12">
+        <table class="table table-dark">
+          <thead>
+            <tr>
+              <th>Credit card #</th>
+              <th>Minimum payment amount:</th>
+              <th>Interest rate percentage:</th>
+              <th>Next statement amount due:</th>
+              <th class="bg-warning">Next payment due date:</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for credit_card in credit_cards %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>${{ credit_card.minimum_payment_amount }}</td>
+                <td>{{ apr.apr_percentage }}%</td>
+                <td>${{ credit_card.last_statement_balance }}</td>
+                <td class="bg-warning">{{ credit_card.next_payment_due_date }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  {% elif user.profile.has_credit_card_data %}
+  <div class="row text-center">
+    <div class="col-lg-12">
+      <h3>Credit Card</h3>
+      <div id="charts_container" class="mt-3"></div>
+    </div>
   </div>
+  <br>
+  <div class="row text-center">
+    <div class="col-lg-12">
+      <table class="table table-dark">
+        <thead>
+          <tr>
+            <th>Credit card #</th>
+            <th>Minimum payment amount:</th>
+            <th>Interest rate percentage:</th>
+            <th>Next statement amount due:</th>
+            <th class="bg-warning">Next payment due date:</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student_loan in student_loans %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>${{ credit_card.minimum_payment_amount }}</td>
+                <td>{{ apr.apr_percentage }}%</td>
+                <td>${{ credit_card.last_statement_balance }}</td>
+                <td class="bg-warning">{{ credit_card.next_payment_due_date }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="row text-center">
+    <div class="col-lg-12">
+      <h3>Student Loans</h3>
+      <div id="chart_container_1" class="mt-3"></div>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-lg-12">
+      <table class="table table-dark">
+        <thead>
+          <tr>
+            <th>Student Loan #</th>
+            <th>Minimum payment amount:</th>
+            <th>Interest rate percentage:</th>
+            <th>Next statement amount due:</th>
+            <th class="bg-warning">Next payment due date:</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student_loan in student_loans %}
+          <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>${{ student_loan.minimum_payment_amount }}</td>
+              <td>{{ student_loan.interest_rate_percentage }}%</td>
+              <td>${{ student_loan.last_statement_balance }}</td>
+              <td class="bg-warning">{{ student_loan.next_payment_due_date }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+{% endif %}
 
   {% if request.user.profile.has_transactions_for_liabilities %}
 
-  <div class="row mt-3">
+  <div class="row mt-3 text-center">
       <div class="col-lg-12">
+          <h3>Loan Transactions</h3>
           <div class="table-responsive">
               <table id="table" class="table table-bordered">
                   <thead>

@@ -24,20 +24,29 @@ def liabilities_dashboard(request):
         student_loan_accounts = Account.objects.filter(user_institution__user=user, type__name__in=account_types,
                                           subtype__name__in=account_subtypes, user_institution__is_active=True) \
                                           .aggregate(total=Sum("current_balance"))
-
-        student_loan = StudentLoan.objects.get(account__user_institution__user=user, user_institution__is_active=True)
-        # amortize_30 = student_loan.amortize(30, student_loan.minimum_payment_amount)
-        credit_card = CreditCard.objects.get(account__user_institution__user=user, user_institution__is_active=True)
-        apr = APR.objects.get(credit_card__account__user_institution__user=user, credit_card__user_institution__is_active=True)
+        query_kwargs = {
+            "account__user_institution__user": user,
+            "user_institution__is_active": True
+        }
 
         remaining_principal_balance = student_loan_accounts["total"]
 
         context = {
                    "charts_data": charts_data,
-                   "transactions": transactions,
-                   "student_loan": student_loan,
-                   "credit_card": credit_card,
-                   "apr": apr,
-                   # "a": amortize_30
+                   "transactions": transactions
                    }
+        try:
+            student_loans = StudentLoan.objects.filter(**query_kwargs)
+            apr = APR.objects.get(credit_card__account__user_institution__user=user, credit_card__user_institution__is_active=True)
+            context["student_loans"] = student_loans
+            context["apr"] = apr
+        except StudentLoan.objects.get(**query_kwargs).DoesNotExist:
+            student_loans = None
+
+        try:
+            credit_cards = CreditCard.objects.filter(**query_kwargs)
+            context["credit_cards"] = credit_cards
+        except CreditCard.objects.filter(**query_kwargs).DoesNotExist:
+            credit_cards = None
+
     return render(request, 'liabilities/liabilities_dashboard.html', context)

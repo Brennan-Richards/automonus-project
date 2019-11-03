@@ -1,7 +1,7 @@
 from django.db.models import Avg, Count, Min, Sum
 from accounts.models import AccountSnapshot, Transaction
 from income.models import Income, IncomeStream
-from liabilities.models import CreditCardSnapshot, StudentLoanSnapshot, StudentLoan
+from liabilities.models import CreditCardSnapshot, StudentLoanSnapshot, StudentLoan, CreditCard
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.contrib.contenttypes.models import ContentType
@@ -39,17 +39,35 @@ class ChartData():
             })
         print(chart_series, "1")
 
-        if chart_name == "Your student loan debt total over time": #"Your credit card balance over time"
-            student_loan = StudentLoan.objects.get(user_institution__user = user, user_institution__is_active=True)
-            amortization_data = student_loan.amortize(30, student_loan.minimum_payment_amount)
+        if chart_name == "Your student loan debt total over time":
+            student_loans = StudentLoan.objects.filter(user_institution__user = user, user_institution__is_active=True)
+            amortization_series = list()
+            amortization_dates = list()
+            for loan in student_loans:
+                amortization_data = loan.amortize(30, loan.minimum_payment_amount)
+                counter = 0
+                for value in amortization_data[0]: #[val1, val2, ...]
+                    if (len(amortization_series) - 1) <= counter:
+                        amortization_series.append(value)
+                        print(counter)
+                        print(value, len(amortization_series), "append")
+                        counter += 1
+                    else:
+                        amortization_series[counter] += amount
+                        print(counter)
+                        print(value, len(amortization_series), "aggregate")
+                        counter += 1
+
+
+                for date in amortization_data[1]: #[date1, date2, ...]
+                    chart_categories.append(date)
+                    # print(date)
+
             chart_series.append({
                 "name": "Projection of your loan balance at minimum payment amount",
-                "data": amortization_data[0], #[val1, val2, ...]
+                "data": amortization_series,
                 "color":'red'
-                            })
-            for date in amortization_data[1]: #[date1, date2, ...]
-                # print(date)
-                chart_categories.append(date)
+                })
 
         # print(chart_categories)
         print(chart_series, "2")
@@ -300,12 +318,14 @@ class ChartData():
             charts_data.append(chart_data)
 
         elif category == "liabilities":
-          chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your student loan debt total over time", chart_type=chart_type,
-                                                            account_types=account_types, account_subtypes=account_subtypes)
-          charts_data.append(chart_data)
-          chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your credit card balance over time", chart_type=chart_type,
-                                                            account_types=account_types)
-          charts_data.append(chart_data)
+            if StudentLoan.objects.filter(user_institution__is_active=True, account__user_institution__user=user):
+              chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your student loan debt total over time", chart_type=chart_type,
+                                                                account_types=account_types, account_subtypes=account_subtypes)
+              charts_data.append(chart_data)
+            if CreditCard.objects.filter(user_institution__is_active=True, account__user_institution__user=user):
+              chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your credit card balance over time", chart_type=chart_type,
+                                                                account_types=account_types)
+              charts_data.append(chart_data)
 
         elif category == "investments":
             chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Progress of your total investments", chart_type=chart_type,
