@@ -23,6 +23,12 @@
           <button href="{% url 'master_dashboard' %}" class="btn btn-lg btn-block btn-success">Go to master dashboard.</button>
         </div>
       </div>
+      {% else %}
+      <div class="row text-center">
+        <div class="col-sm-6 offset-sm-3">
+          <button href="{% url 'link_institution' %}" class="btn btn-lg btn-block btn-primary">Link an institution.</button>
+        </div>
+      </div>
       {% endif %}
     </div>
   </div>

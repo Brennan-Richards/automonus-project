@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views import generic
 from django.urls import reverse_lazy
 from django.http import HttpResponse
@@ -40,7 +41,7 @@ from .models import Display, Tax, Housing, Car, Utilities, Food, Miscellaneous
 from .forms import DisplayForm, TaxForm, HousingForm, CarForm, UtilitiesForm, FoodForm, MiscellaneousForm
 
 @login_required
-def overview(request):
+def hornescalculator_base(request):
 
     displayform = DisplayForm(request.POST or None)
 
@@ -50,8 +51,13 @@ def overview(request):
         display.save()
         return redirect('overview')
 
-    return render(request, 'expenditures/hornescalculator/overview.html', {'form':displayform})
+    return render(request, 'hornescalculator/hornescalculator_base.html', {'form':displayform})
 
+class UpdateDisplay(generic.UpdateView):
+    model = Display
+    template_name = 'automonus/update_display.html'
+    fields = ['display']
+    success_url = reverse_lazy('overview')
 
 @login_required
 def tax(request):
@@ -92,17 +98,17 @@ def tax(request):
         tax.save()
         return redirect('overview')
 
-    return render(request, 'expenditures/hornescalculator/data/tax.html', {'form':taxform})
+    return render(request, 'hornescalculator/data/tax.html', {'form':taxform})
 
 
 class DetailTax(generic.DetailView):
     model = Tax
-    template_name = 'expenditures/hornescalculator/data/tax_details.html'
+    template_name = 'hornescalculator/data/tax_details.html'
 
 
 class UpdateTax(generic.UpdateView):
     model = Tax
-    template_name = 'expenditures/hornescalculator/data/tax_update.html'
+    template_name = 'hornescalculator/data/tax_update.html'
     form_class = TaxForm
     success_url = reverse_lazy('overview')
 
@@ -143,7 +149,6 @@ class UpdateTax(generic.UpdateView):
         return redirect('overview')
 
 
-# Expense views.
 @login_required
 def housing(request):
     housingform = HousingForm(request.POST or None)
@@ -155,17 +160,17 @@ def housing(request):
         housing.save()
         return redirect('overview')
 
-    return render(request, 'expenditures/hornescalculator/data/housing.html', {'form':housingform})
+    return render(request, 'hornescalculator/data/housing.html', {'form':housingform})
 
 
 class DetailHousing(generic.DetailView):
     model = Housing
-    template_name = 'expenditures/hornescalculator/data/housing_details.html'
+    template_name = 'hornescalculator/data/housing_details.html'
 
 
 class UpdateHousing(generic.UpdateView):
     model = Housing
-    template_name = 'expenditures/hornescalculator/data/housing_update.html'
+    template_name = 'hornescalculator/data/housing_update.html'
     form_class = HousingForm
     success_url = reverse_lazy('overview')
 
@@ -188,17 +193,17 @@ def car(request):
         car.save()
         return redirect('overview')
 
-    return render(request, 'expenditures/hornescalculator/data/car.html', {'form':carform})
+    return render(request, 'hornescalculator/data/car.html', {'form':carform})
 
 
 class DetailCar(generic.DetailView):
     model = Car
-    template_name = 'expenditures/hornescalculator/data/car_details.html'
+    template_name = 'hornescalculator/data/car_details.html'
 
 
 class UpdateCar(generic.UpdateView):
     model = Car
-    template_name = 'expenditures/hornescalculator/data/car_update.html'
+    template_name = 'hornescalculator/data/car_update.html'
     form_class = CarForm
     success_url = reverse_lazy('overview')
 
@@ -221,17 +226,17 @@ def utilities(request):
         utility.save()
         return redirect('overview')
 
-    return render(request, 'expenditures/hornescalculator/data/utilities.html', {'form':utilitiesform})
+    return render(request, 'hornescalculator/data/utilities.html', {'form':utilitiesform})
 
 
 class DetailUtilities(generic.DetailView):
     model = Utilities
-    template_name = 'expenditures/hornescalculator/data/utilities_details.html'
+    template_name = 'hornescalculator/data/utilities_details.html'
 
 
 class UpdateUtilities(generic.UpdateView):
     model = Utilities
-    template_name = 'expenditures/hornescalculator/data/utilities_update.html'
+    template_name = 'hornescalculator/data/utilities_update.html'
     form_class = UtilitiesForm
     success_url = reverse_lazy('overview')
 
@@ -252,17 +257,17 @@ def food(request):
         food.save()
         return redirect('overview')
 
-    return render(request, 'expenditures/hornescalculator/data/food.html', {'form':foodform})
+    return render(request, 'hornescalculator/data/food.html', {'form':foodform})
 
 
 class DetailFood(generic.DetailView):
     model = Food
-    template_name = 'expenditures/hornescalculator/data/food_details.html'
+    template_name = 'hornescalculator/data/food_details.html'
 
 
 class UpdateFood(generic.UpdateView):
     model = Food
-    template_name = 'expenditures/hornescalculator/data/food_update.html'
+    template_name = 'hornescalculator/data/food_update.html'
     form_class = FoodForm
     success_url = reverse_lazy('overview')
 
@@ -283,17 +288,17 @@ def miscellaneous(request):
         miscellaneous.save()
         return redirect('overview')
 
-    return render(request, 'expenditures/hornescalculator/data/miscellaneous.html', {'form':miscellaneousform})
+    return render(request, 'hornescalculator/data/miscellaneous.html', {'form':miscellaneousform})
 
 
 class DetailMiscellaneous(generic.DetailView):
     model = Miscellaneous
-    template_name = 'expenditures/hornescalculator/data/miscellaneous_details.html'
+    template_name = 'hornescalculator/data/miscellaneous_details.html'
 
 
 class UpdateMiscellaneous(generic.UpdateView):
     model = Miscellaneous
-    template_name = 'expenditures/hornescalculator/data/miscellaneous_update.html'
+    template_name = 'hornescalculator/data/miscellaneous_update.html'
     form_class = MiscellaneousForm
     success_url = reverse_lazy('overview')
 

@@ -2,24 +2,33 @@
 
 
 {% block page_content %}
-{% if request.user.profile.has_income %}
 
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'master_dashboard' %}">Master</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="{% url 'income_dashboard' %}">Income</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'expenditures_dashboard' %}">Expenditures</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'liabilities_dashboard' %}">Liabilities</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'investments_dashboard' %}">Investments</a>
+  </li>
+</ul>
+
+{% if request.user.profile.has_income %}
+<br>
+<br>
     <div class="row">
         <div class="col-lg-12 text-center">
             <div class="h1">Your Income Dashboard</div>
         </div>
     </div>
-
-    <!-- <div class="row text-muted">
-      <div class="col-sm-4 offset-sm-4">
-        <ul>
-          <li>View your last years income and projected income for the upcoming year.</li>
-          <li>View your current streams of income.</li>
-          <li>Keep track of your income transactions.</li>
-        </ul>
-      </div>
-    </div>
-    <hr> -->
 
     <br>
 
@@ -63,6 +72,7 @@
     </div>
 
 {% else %}
+<br>
   <div class="row">
     <div class="col-lg-12 text-center">
       <p>You have not yet added an institution which is is compatible with our <strong>income</strong> product.</p>

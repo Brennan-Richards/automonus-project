@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+  {% load static %}
+  {% load mathfilters %}
+
+{% block content %}
+
+<title>Home</title>
+
+<div class="row">
+
+<div class="col-sm-10 offset-sm-1 text-center">
+
+  <!-- OVERVIEW -->
+
+  <h1>Horne's Calculator</h1>
+  <br>
+  <div class="text-center">
+    <p>Horne's calculator is a tool for planning your living expenses. Fill in all of the modules below
+       and we will calculate your total cost of living.</p>
+  </div>
+  <br>
+  <hr>
+
+  <!-- MASTER -->
+
+    <h2 align="left">Your Life Expenses</h2>
+    <br>
+
+    {% include 'hornescalculator/master.html' %}
+
+
+
+
+  </div>
+</div>
+
+{% endblock %}

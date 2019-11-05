@@ -252,7 +252,7 @@ class CreditCardSnapshot(models.Model):
         return "{}: {}".format(self.user_institution.user.username, self.user_institution.institution)
 
 class APR(models.Model):
-    credit_card = models.ForeignKey(CreditCard, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    credit_card = models.OneToOneField(CreditCard, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     apr_type = models.CharField(max_length=64, blank=True, null=True, default=None)
     apr_percentage = models.DecimalField(max_digits=4, decimal_places=2, default=0, null=True, blank=True)
     balance_subject_to_apr = models.DecimalField(max_digits=18, decimal_places=2, default=0, null=True, blank=True)

@@ -2,8 +2,28 @@
 
 {% block page_content %}
 
-{% if request.user.profile.has_investments %}
 
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'master_dashboard' %}">Master</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'income_dashboard' %}">Income</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'expenditures_dashboard' %}">Expenditures</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'liabilities_dashboard' %}">Liabilities</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="{% url 'investments_dashboard' %}">Investments</a>
+  </li>
+</ul>
+
+{% if request.user.profile.has_investments %}
+<br>
+<br>
   <div class="row">
       <div class="col-lg-4 offset-sm-4 text-center">
           <div class="h1">Investments</div>
@@ -111,7 +131,7 @@
 
 
 {% else %}
-
+  <br>
   <div class="row">
     <div class="col-lg-12 text-center">
       <p>You have not yet added an institution which is is compatible with our <strong>investments</strong> product.</p>

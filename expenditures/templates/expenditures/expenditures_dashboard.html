@@ -1,21 +1,42 @@
 {% extends "charts/base.html" %}
 
+{% block page_content %}
+
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'master_dashboard' %}">Master</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'income_dashboard' %}">Income</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="{% url 'expenditures_dashboard' %}">Expenditures</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'liabilities_dashboard' %}">Liabilities</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'investments_dashboard' %}">Investments</a>
+  </li>
+</ul>
+
 {% if request.user.profile.has_transactions %}
 
-{% block page_content %}
-<!-- <div class="row">
-  <ul>
-    <li>Evaluate the velocity of your spending each day over the past quarter.</li>
-    <li>Evaluate total spending by category.</li>
-    <li>Keep track of your spending transactions and transaction info.</li>
-  </ul>
-</div> -->
-
+<br>
+<br>
   <div class="row">
       <div class="col-lg-12 text-center">
           <div class="h1">Your Expenditures Dashboard</div>
       </div>
   </div>
+  <br>
+  <!-- <div class="row">
+    <div class="col-lg-8 offset-lg-2">
+      <a href="{% url 'hornescalculator_base' %}" class="btn btn-block btn-success">Plan Your Expenses</a>
+    </div>
+  </div> -->
+  <br>
   <div class="row">
       <div class="col-lg-12">
           <div id="chart_container_2" class="mt-3"></div>
@@ -75,11 +96,13 @@
           </div>
       </div>
   </div>
-{% endblock page_content %}
-
 {% else %}
+
+<br>
     <p>You have not yet added an institution which is compatible with our <strong>transactions</strong> product.</p>
     <a class="btn btn-primary" href="{% url 'link_institution' %}">
         Connect A Financial Institution
     </a>
 {% endif %}
+
+{% endblock page_content %}

@@ -24,6 +24,7 @@ urlpatterns = [
 
     #Main application views
     path('', views.home, name='home'),
+    path('login_signup/', views.login_signup, name='login_signup'),
     path('master_dashboard/', views.master_dashboard, name="master_dashboard"),
     path('adminnewurl/', admin.site.urls),
 
@@ -40,9 +41,6 @@ urlpatterns = [
     path('investments/', include('investments.urls')),
     path('liabilities/', include('liabilities.urls')),
     path('expenditures/', include('expenditures.urls')),
-
-    # path('display/<int:pk>/update', views.UpdateDisplay.as_view(), name='display_update'),
-    path('login_signup/', views.login_signup, name='login_signup'),
 
     # django all-auth
     path('accounts/', include('allauth.urls')),

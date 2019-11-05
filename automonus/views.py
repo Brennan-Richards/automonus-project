@@ -36,13 +36,3 @@ def master_dashboard(request):
                                           type__name__in=account_types)
         context = {"charts_data": charts_data, "accounts":accounts}
     return render(request, 'automonus/master_dashboard.html', context)
-
-
-# from hornescalculator.forms import DisplayForm
-# from expenditures.models import Display
-
-# class UpdateDisplay(generic.UpdateView):
-#     model = Display
-#     template_name = 'automonus/update_display.html'
-#     fields = ['display']
-#     success_url = reverse_lazy('overview')

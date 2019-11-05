@@ -9,7 +9,7 @@ urlpatterns = [
     path('expenditures_dashboard/', views.expenditures_dashboard, name='expenditures_dashboard'),
 
     #Expenditure 'Planning' app views
-    path('overview', views.overview, name='overview'),
+    path('hornescalculator_base', views.hornescalculator_base, name='hornescalculator_base'),
 
     path('tax', views.tax, name='tax'),
     path('housing', views.housing, name='housing'),
@@ -33,6 +33,7 @@ urlpatterns = [
     path('utilities/<int:pk>/update', views.UpdateUtilities.as_view(), name='utilities_update'),
     path('food/<int:pk>/update', views.UpdateFood.as_view(), name='food_update'),
     path('miscellaneous/<int:pk>/update', views.UpdateMiscellaneous.as_view(), name='miscellaneous_update'),
+    path('display/<int:pk>/update', views.UpdateDisplay.as_view(), name='display_update')
 
 ]
 
