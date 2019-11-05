@@ -37,40 +37,55 @@ class ChartData():
                 "name": currency,
                 "data": chart_series_data
             })
-        print(chart_series, "1")
+        # print(chart_series, "1")
 
         if chart_name == "Your student loan debt total over time":
-            student_loans = StudentLoan.objects.filter(user_institution__user = user, user_institution__is_active=True)
+            student_loans = StudentLoan.objects.filter(user_institution__user=user, user_institution__is_active=True)
             amortization_series = list()
             amortization_dates = list()
+
             for loan in student_loans:
                 amortization_data = loan.amortize(30, loan.minimum_payment_amount)
+                amortization_points_data = amortization_data[0]
+                amortization_dates_data = amortization_data[1]
                 counter = 0
-                for value in amortization_data[0]: #[val1, val2, ...]
+                for value in amortization_points_data: #[val1, val2, ...]
                     if (len(amortization_series) - 1) <= counter:
                         amortization_series.append(value)
-                        print(counter)
-                        print(value, len(amortization_series), "append")
+                        # print(counter)
+                        # print(value, len(amortization_series), "append")
                         counter += 1
                     else:
                         amortization_series[counter] += amount
-                        print(counter)
-                        print(value, len(amortization_series), "aggregate")
+                        # print(counter)
+                        # print(value, len(amortization_series), "aggregate")
                         counter += 1
 
+                for date in amortization_dates_data: #[date1, date2, ...]
+                    if not date in chart_categories:
+                        chart_categories.append(date)
 
-                for date in amortization_data[1]: #[date1, date2, ...]
-                    chart_categories.append(date)
-                    # print(date)
+                print(type(amortization_dates_data[0]), type(chart_categories[0]))
+
+                for snapshot_date in chart_categories:
+                    if amortization_dates_data[0] > snapshot_date:
+                        amortization_series.insert(0, [])
+                    # print(date, "XX")
+
+            if amortization_series[-1] > amortization_series[-2]: #If slope is increasing
+                print(amortization_series[-1], amortization_series[-2])
+                color = 'red'
+            else: # slope decreasing
+                color = 'green'
 
             chart_series.append({
                 "name": "Projection of your loan balance at minimum payment amount",
                 "data": amortization_series,
-                "color":'red'
+                "color":color
                 })
 
         # print(chart_categories)
-        print(chart_series, "2")
+        print(chart_categories, chart_series)
         chart_categories = [item.strftime("%m/%d/%Y") for item in chart_categories]
         chart_data = {"title": chart_name, "type": chart_type, "categories": chart_categories,
                       "chart_series": chart_series}
@@ -225,7 +240,7 @@ class ChartData():
                 .values('date', 'account__currency__code')\
                 .annotate(field=Sum('last_statement_balance'))
 
-        data = dict()
+        data = dict() #Finishes as {Currency:{date1:val1},{date2:val2}}
         for snapshot in snapshots:
             currency_code = snapshot["account__currency__code"]
             date = snapshot["date"]
@@ -237,7 +252,7 @@ class ChartData():
             data[currency_code][date] += val #Sets the value of date key to the 'val' of specified snapshot field.
 
         for k,v in data.items():
-            #(Check) -- Aggregates items with same date in data dict. to create a pretty series and returns it.
+            #(Check) -- Aggregates items with same date in <data> dictionary to create a pretty series and returns it.
             v_mod = dict(sorted(v.items()))
             total_value = 0
             for key, value in v_mod.items():

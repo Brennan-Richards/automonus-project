@@ -56,19 +56,20 @@
           </li>
       {% endif %}
 
+      {% if request.user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <button class="nav-link dropdown-toggle btn btn-secondary" id="navbarDropdown" role="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Your Profile
+          </button>
 
-      <li class="nav-item dropdown">
-        <button class="nav-link dropdown-toggle btn btn-secondary" id="navbarDropdown" role="button"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Your Profile
-        </button>
-
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Account: ({{ request.user }}) </a>
-          <a class="dropdown-item" href="{% url 'user_institutions' %}">Connected Institutions</a>
-          <a class="dropdown-item" href="{% url 'account_logout' %}">Log Out</a>
-        </div>
-      </li>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#">Account: ({{ request.user }}) </a>
+            <a class="dropdown-item" href="{% url 'user_institutions' %}">Connected Institutions</a>
+            <a class="dropdown-item" href="{% url 'account_logout' %}">Log Out</a>
+          </div>
+        </li>
+      {% endif %}
     </ul>
   </div>
 </nav>

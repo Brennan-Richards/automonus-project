@@ -68,7 +68,7 @@ class StudentLoan(models.Model):
         payments_per_year = self.get_payments_per_year()
         days_between_payments = 365 / payments_per_year
         balance = remaining_principal_balance
-        start_date = datetime.now() + timedelta(days=30)
+        start_date = date.today()
         """ TODO: Add feature to this method so that each value in amortization_series
             represents a date one month apart, even if the user pays per week or per day
             (self.get_payments_per_year) """
@@ -80,7 +80,7 @@ class StudentLoan(models.Model):
             dates_as_categories.append(start_date)
             balance -= principal_paid
             start_date += timedelta(days=days_between_payments)
-        #print("XX", dates_as_categories)
+        print(amortization_series, dates_as_categories, "AA")
         return amortization_series, dates_as_categories
 
 
