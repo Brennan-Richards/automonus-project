@@ -34,17 +34,16 @@ class ChartData():
                 chart_series_data.append(amount)
             # print(chart_series_data)
             chart_series.append({
-                "name": currency,
+                "name": "Current Total Balance",
                 "data": chart_series_data
             })
         # print(chart_series, "1")
 
         if chart_name == "Your student loan debt total over time":
             student_loans = StudentLoan.objects.filter(user_institution__user=user, user_institution__is_active=True)
-            amortization_series = list()
-            amortization_dates = list()
-
             for loan in student_loans:
+                amortization_series = list()
+                amortization_dates = list()
                 amortization_data = loan.amortize(30, loan.minimum_payment_amount)
                 amortization_points_data = amortization_data[0]
                 amortization_dates_data = amortization_data[1]
@@ -65,27 +64,26 @@ class ChartData():
                     if not date in chart_categories:
                         chart_categories.append(date)
 
-                print(type(amortization_dates_data[0]), type(chart_categories[0]))
+                # print(type(amortization_dates_data[0]), type(chart_categories[0]))
 
                 for snapshot_date in chart_categories:
                     if amortization_dates_data[0] > snapshot_date:
                         amortization_series.insert(0, [])
                     # print(date, "XX")
 
-            if amortization_series[-1] > amortization_series[-2]: #If slope is increasing
-                print(amortization_series[-1], amortization_series[-2])
-                color = 'red'
-            else: # slope decreasing
-                color = 'green'
+                if amortization_series[-1] > amortization_series[-2]: #If slope is increasing
+                    # print(amortization_series[-1], amortization_series[-2])
+                    color = 'red'
+                else: # slope decreasing
+                    color = 'green'
 
-            chart_series.append({
-                "name": "Projection of your loan balance at minimum payment amount",
-                "data": amortization_series,
-                "color":color
-                })
+                chart_series.append({
+                    "name": "Projection of your {} loan balance at minimum payment amount".format(loan.guarantor),
+                    "data": amortization_series,
+                    "color":color
+                    })
 
         # print(chart_categories)
-        print(chart_categories, chart_series)
         chart_categories = [item.strftime("%m/%d/%Y") for item in chart_categories]
         chart_data = {"title": chart_name, "type": chart_type, "categories": chart_categories,
                       "chart_series": chart_series}

@@ -80,7 +80,7 @@ class StudentLoan(models.Model):
             dates_as_categories.append(start_date)
             balance -= principal_paid
             start_date += timedelta(days=days_between_payments)
-        print(amortization_series, dates_as_categories, "AA")
+        # print(amortization_series, dates_as_categories, "AA")
         return amortization_series, dates_as_categories
 
 
