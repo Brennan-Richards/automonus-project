@@ -50,3 +50,9 @@ def liabilities_dashboard(request):
             credit_cards = None
 
     return render(request, 'liabilities/liabilities_dashboard.html', context)
+
+def liabilities_analysis(request):
+    user = request.user
+    if user.profile.get_user_institutions():
+        a = 0
+    return render(request, 'liabilities/liabilities_analysis.html')
