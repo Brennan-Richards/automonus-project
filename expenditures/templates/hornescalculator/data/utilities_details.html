@@ -3,7 +3,25 @@
 {% block content %}
 
 {% load mathfilters %}
-
+<div class="row">
+  <div class="col">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'hornescalculator_base' %}">Budget Overview</a></li>
+        <li class="breadcrumb-item active aria-current="page"">{{ object.name }} Details</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<br>
+<br>
+<div class="row text-center">
+  <div class="col">
+    <h2>{{ object.name }} Expense Details</h2>
+  </div>
+</div>
+<br>
+<br>
   <table class="table">
 
     <tr>
@@ -16,58 +34,48 @@
     </tr>
 
     <tr>
-      {% with electricity=user.utilities.electricity_yt %}
-      <td><p>Electricity</p></td>
-      <td> {{ electricity|div:365 }} </td>
-      <td> {{ electricity|div:52 }} </td>
-      <td> {{ electricity|div:26 }} </td>
-      <td> {{ electricity|div:12 }} </td>
-      <td> {{ electricity }} </td>
-      {% endwith %}
+      <td>Electricity</td>
+      <td>${{ object.electricity_total_costs.daily_total }} </td>
+      <td>${{ object.electricity_total_costs.weekly_total }} </td>
+      <td>${{ object.electricity_total_costs.biweekly_total }} </td>
+      <td>${{ object.electricity_total_costs.monthly_total }} </td>
+      <td>${{ object.electricity_total_costs.yearly_total }} </td>
     </tr>
 
     <tr>
-      {% with heating=user.utilities.heating_yt %}
       <td>Heating/Cooling</td>
-      <td> {{ heating|div:365 }} </td>
-      <td> {{ heating|div:52 }} </td>
-      <td> {{ heating|div:26 }} </td>
-      <td> {{ heating|div:12 }} </td>
-      <td> {{ heating }} </td>
-      {% endwith %}
+      <td>${{ object.heating_total_costs.daily_total }} </td>
+      <td>${{ object.heating_total_costs.weekly_total }} </td>
+      <td>${{ object.heating_total_costs.biweekly_total }} </td>
+      <td>${{ object.heating_total_costs.monthly_total }} </td>
+      <td>${{ object.heating_total_costs.yearly_total }} </td>
     </tr>
 
     <tr>
-      {% with phone=user.utilities.phone_yt %}
       <td>Phone</td>
-      <td> {{ phone|div:365 }} </td>
-      <td> {{ phone|div:52 }} </td>
-      <td> {{ phone|div:26 }} </td>
-      <td> {{ phone|div:12 }} </td>
-      <td> {{ phone }} </td>
-      {% endwith %}
+      <td>${{ object.phone_total_costs.daily_total }} </td>
+      <td>${{ object.phone_total_costs.weekly_total }} </td>
+      <td>${{ object.phone_total_costs.biweekly_total }} </td>
+      <td>${{ object.phone_total_costs.monthly_total }} </td>
+      <td>${{ object.phone_total_costs.yearly_total }} </td>
     </tr>
 
     <tr>
-      {% with cable=user.utilities.cable_yt %}
       <td>Cable</td>
-      <td> {{ cable|div:365 }} </td>
-      <td> {{ cable|div:52 }} </td>
-      <td> {{ cable|div:26 }} </td>
-      <td> {{ cable|div:12 }} </td>
-      <td> {{ cable }} </td>
-      {% endwith %}
+      <td>${{ object.cable_total_costs.daily_total }} </td>
+      <td>${{ object.cable_total_costs.weekly_total }} </td>
+      <td>${{ object.cable_total_costs.biweekly_total }} </td>
+      <td>${{ object.cable_total_costs.monthly_total }} </td>
+      <td>${{ object.cable_total_costs.yearly_total }} </td>
     </tr>
 
     <tr>
-      {% with internet=user.utilities.internet_yt %}
       <td>Internet</td>
-      <td> {{ internet|div:365 }} </td>
-      <td> {{ internet|div:52 }} </td>
-      <td> {{ internet|div:26 }} </td>
-      <td> {{ internet|div:12 }} </td>
-      <td> {{ internet }} </td>
-      {% endwith %}
+      <td>${{ object.internet_total_costs.daily_total }} </td>
+      <td>${{ object.internet_total_costs.weekly_total }} </td>
+      <td>${{ object.internet_total_costs.biweekly_total }} </td>
+      <td>${{ object.internet_total_costs.monthly_total }} </td>
+      <td>${{ object.internet_total_costs.yearly_total }} </td>
     </tr>
 
   </table>

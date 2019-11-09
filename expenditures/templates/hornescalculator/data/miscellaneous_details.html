@@ -3,7 +3,25 @@
 {% block content %}
 
 {% load mathfilters %}
-
+<div class="row">
+  <div class="col">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'hornescalculator_base' %}">Budget Overview</a></li>
+        <li class="breadcrumb-item active aria-current="page"">{{ object.name }} Details</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<br>
+<br>
+<div class="row text-center">
+  <div class="col">
+    <h2>{{ object.name }} Expense Details</h2>
+  </div>
+</div>
+<br>
+<br>
   <table class="table">
 
     <tr>
@@ -16,36 +34,30 @@
     </tr>
 
     <tr>
-      {% with healthinsurance=user.miscellaneous.healthinsurance_yt %}
       <td>Health Insurance</td>
-      <td> {{ healthinsurance|div:365 }} </td>
-      <td> {{ healthinsurance|div:52 }} </td>
-      <td> {{ healthinsurance|div:26 }} </td>
-      <td> {{ healthinsurance|div:12 }} </td>
-      <td> {{ healthinsurance }} </td>
-      {% endwith %}
+      <td>${{ object.healthinsurance_total_costs.daily_total }} </td>
+      <td>${{ object.healthinsurance_total_costs.weekly_total }} </td>
+      <td>${{ object.healthinsurance_total_costs.biweekly_total }} </td>
+      <td>${{ object.healthinsurance_total_costs.monthly_total }} </td>
+      <td>${{  object.healthinsurance_total_costs.yearly_total}} </td>
     </tr>
 
     <tr>
-      {% with lifeinsurance=user.miscellaneous.lifeinsurance_yt %}
-      <td>Restaurant Food Costs</td>
-      <td> {{ lifeinsurance|div:365 }} </td>
-      <td> {{ lifeinsurance|div:52 }} </td>
-      <td> {{ lifeinsurance|div:26 }} </td>
-      <td> {{ lifeinsurance|div:12 }} </td>
-      <td> {{ lifeinsurance }} </td>
-      {% endwith %}
+      <td>Life Insurance Costs</td>
+      <td>${{ object.lifeinsurance_total_costs.daily_total }} </td>
+      <td>${{ object.lifeinsurance_total_costs.weekly_total }} </td>
+      <td>${{ object.lifeinsurance_total_costs.biweekly_total }} </td>
+      <td>${{ object.lifeinsurance_total_costs.monthly_total }} </td>
+      <td>${{  object.lifeinsurance_total_costs.yearly_total}} </td>
     </tr>
 
     <tr>
-      {% with clothing=user.miscellaneous.clothing_yt %}
-      <td>Restaurant Food Costs</td>
-      <td> {{ clothing|div:365 }} </td>
-      <td> {{ clothing|div:52 }} </td>
-      <td> {{ clothing|div:26 }} </td>
-      <td> {{ clothing|div:12 }} </td>
-      <td> {{ clothing }} </td>
-      {% endwith %}
+      <td>Clothing Costs</td>
+      <td>${{ object.clothing_total_costs.daily_total }} </td>
+      <td>${{ object.clothing_total_costs.weekly_total }} </td>
+      <td>${{ object.clothing_total_costs.biweekly_total }} </td>
+      <td>${{ object.clothing_total_costs.monthly_total }} </td>
+      <td>${{  object.clothing_total_costs.yearly_total}} </td>
     </tr>
 
   </table>

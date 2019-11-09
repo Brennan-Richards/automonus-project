@@ -1,11 +1,11 @@
 from django import forms
-from .models import Display, Tax, Housing, Car, Utilities, Food, Miscellaneous
+from .models import Display, Housing, Car, Utilities, Food, Miscellaneous
 
 
-class TaxForm(forms.ModelForm):
-    class Meta:
-        model = Tax
-        fields = ['dependents', 'state', 'filing_status', 'periods', 'pay_rate']
+# class TaxForm(forms.ModelForm):
+#     class Meta:
+#         model = Tax
+#         fields = ['dependents', 'state', 'filing_status', 'periods', 'pay_rate']
 
 class HousingForm(forms.ModelForm):
     class Meta:

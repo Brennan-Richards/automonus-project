@@ -3,7 +3,26 @@
 {% block content %}
 
 {% load mathfilters %}
-
+<div class="row">
+  <div class="col">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'hornescalculator_base' %}">Budget Overview</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'car_list' %}">Manage Cars</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Car Details</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<br>
+<br>
+  <div class="row text-center">
+    <div class="col">
+      <h2>{{ object.name }} Expense Details</h2>
+    </div>
+  </div>
+  <br>
+  <br>
   <table class="table">
 
     <tr>
@@ -16,47 +35,39 @@
     </tr>
 
     <tr>
-      {% with gas=user.car.gas_yt %}
       <td>Gas</td>
-      <td> {{ gas|div:365 }} </td>
-      <td> {{ gas|div:52 }} </td>
-      <td> {{ gas|div:26 }} </td>
-      <td> {{ gas|div:12 }} </td>
-      <td> {{ gas }} </td>
-      {% endwith %}
+      <td>$ {{ object.gas_total_costs.daily_total }} </td>
+      <td>$ {{ object.gas_total_costs.weekly_total }} </td>
+      <td>$ {{ object.gas_total_costs.biweekly_total }} </td>
+      <td>$ {{ object.gas_total_costs.monthly_total }} </td>
+      <td>$ {{ object.gas_total_costs.yearly_total }} </td>
     </tr>
 
     <tr>
-      {% with maintenance=user.car.maintenance_yt %}
       <td>Maintenance</td>
-      <td> {{ maintenance|div:365 }} </td>
-      <td> {{ maintenance|div:52 }} </td>
-      <td> {{ maintenance|div:26 }} </td>
-      <td> {{ maintenance|div:12 }} </td>
-      <td> {{ maintenance }} </td>
-      {% endwith %}
+      <td>$ {{ object.maintenance_total_costs.daily_total }} </td>
+      <td>$ {{ object.maintenance_total_costs.weekly_total }} </td>
+      <td>$ {{ object.maintenance_total_costs.biweekly_total }} </td>
+      <td>$ {{ object.maintenance_total_costs.monthly_total }} </td>
+      <td>$ {{ object.maintenance_total_costs.yearly_total }} </td>
     </tr>
 
     <tr>
-      {% with insurance=user.car.carinsurance_yt %}
       <td>Insurance</td>
-      <td> {{ insurance|div:365 }} </td>
-      <td> {{ insurance|div:52 }} </td>
-      <td> {{ insurance|div:26 }} </td>
-      <td> {{ insurance|div:12 }} </td>
-      <td> {{ insurance }} </td>
-      {% endwith %}
+      <td>$ {{ object.carinsurance_total_costs.daily_total }} </td>
+      <td>$ {{ object.carinsurance_total_costs.weekly_total }} </td>
+      <td>$ {{ object.carinsurance_total_costs.biweekly_total }} </td>
+      <td>$ {{ object.carinsurance_total_costs.monthly_total }} </td>
+      <td>$ {{ object.carinsurance_total_costs.yearly_total }} </td>
     </tr>
 
     <tr>
-      {% with carproptax=user.car.carproptax_yt %}
       <td>Car Property Tax</td>
-      <td> {{ carproptax|div:365 }} </td>
-      <td> {{ carproptax|div:52 }} </td>
-      <td> {{ carproptax|div:26 }} </td>
-      <td> {{ carproptax|div:12 }} </td>
-      <td> {{ carproptax }} </td>
-      {% endwith %}
+      <td>$ {{ object.carproptax_total_costs.daily_total }} </td>
+      <td>$ {{ object.carproptax_total_costs.weekly_total }} </td>
+      <td>$ {{ object.carproptax_total_costs.biweekly_total }} </td>
+      <td>$ {{ object.carproptax_total_costs.monthly_total }} </td>
+      <td>$ {{ object.carproptax_total_costs.yearly_total }} </td>
     </tr>
 
   </table>

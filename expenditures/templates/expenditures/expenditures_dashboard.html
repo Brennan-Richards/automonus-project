@@ -1,5 +1,4 @@
 {% extends "charts/base.html" %}
-
 {% block page_content %}
 
 
@@ -31,6 +30,37 @@
       </div>
   </div>
   <br>
+  <hr>
+  <br>
+  <div class="row text-center">
+    <div class="col-sm-6 offset-sm-3">
+      <p>Each month your living expenses cost you approximately:
+        {% if user.profile.planned_life_expenses %}
+          <table class="table">
+            <tr>
+              <th>Daily</th>
+              <th>Weekly</th>
+              <th>Monthly</th>
+              <th>Yearly</th>
+            </tr>
+            <tr>
+              <td>${{ daily_l_e }}</td>
+              <td>${{ weekly_l_e }}</td>
+              <td>${{ monthly_l_e }}</td>
+              <td>${{ annual_living_expenses }}</td>
+            </tr>
+          </table>
+          <a href="{% url 'hornescalculator_base' %}" class="btn btn-sm btn-success">Edit your spending plan</a>
+        {% else %}
+          <a href="{% url 'hornescalculator_base' %}" class="btn btn-sm btn-danger">Create a spending plan</a>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+  <br>
+  <hr>
+  <br>
+
   <div class="row">
       <div class="col-lg-12">
           <div id="chart_container_2" class="mt-3"></div>
@@ -93,11 +123,6 @@
   <br>
   <hr>
   <br>
-  <div class="row">
-    <div class="col-lg-6 offset-lg-3">
-      <a href="{% url 'hornescalculator_base' %}" class="btn btn-lg btn-block btn-danger">Create a spending plan</a>
-    </div>
-  </div>
 {% else %}
 
 <br>

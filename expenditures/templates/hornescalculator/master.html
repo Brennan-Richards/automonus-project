@@ -2,255 +2,300 @@
 {% load mathfilters %}
 
 <div class="row">
-  <!-- Display -->
-  {% if user.display %}
-  <div class="col-md-4">
-    <div class="card mb-4 bg-dark text-white box-shadow">
-      <br>
-      <h4>Currently showing your costs per: <strong>{{ user.display.display_string }}</strong>. </h4>
-      <div class="card-body">
-        <a href="{% url 'display_update' user.display.id %}" class="btn btn-sm btn-outline-light">Update display period.</a>
-      </div>
-    </div>
-  </div>
-  {% else %}
-  <div class="col-md-4">
-    <div class="card mb-4 bg-dark text-white box-shadow">
-      <br>
-      <p class="text-muted">Set the default period for displaying your expense overview:</p>
-      <div class="card-body">
-        <form class="form text-center" action="#" method="POST">
-          {% csrf_token %}
-          <div class="form-group">
-            <div class="form-field">
-                {{ form.display }}
-            </div>
-          </div>
-          <div class="form-group">
-            <input class="btn btn-primary form-field" type="submit" value="Submit" />
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  {% endif %}
-
-
       <!-- Housing -->
-        {% if user.housing %}
-          <div class="col-md-4">
+        {% if user.profile.added_housing %}
+          <div class="col">
             <div class="card mb-4 box-shadow">
               <div class="card-header">
                 <ul class="nav nav-pills card-header-pills">
                   <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'housing_update' user.housing.id %}">Update</a>
+                    <a class="nav-link active" href="{% url 'housing_list' %}">Manage Housing</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{% url 'housing_details' user.housing.id%}">Details</a>
+                    <a class="nav-link" href="{% url 'housing_create' %}">Add New</a>
                   </li>
                 </ul>
               </div>
-              <h4 class="text-muted">Housing</h4>
+              <h4 class="card-title mt-3">Housing</h4>
               <div class="card-body">
-                {% if user.display %}
-                  {% with operator=user.display.display_operator %}
-                    <p class="card-text">
-                        You spend <strong>${{ user.housing.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on housing.
-                    </p>
-                  {% endwith %}
-                {% else %}
-                  <p class="card-text">
-                      You spend <strong>${{ user.housing.yearly_total }}</strong> each <strong>year</strong> on housing.
-                  </p>
-                {% endif %}
+                <p>Total housing costs across all your properties are:</p>
+                <table class="table table-sm">
+                  <tr>
+                    <th>Daily</th>
+                    <th>Weekly</th>
+                    <th>Monthly</th>
+                    <th>Yearly</th>
+                  </tr>
+                  <tr>
+                    <td>${{ housings_costs.daily_total }}</td>
+                    <td>${{ housings_costs.weekly_total }}</td>
+                    <td>${{ housings_costs.monthly_total }}</td>
+                    <td>${{ housings_costs.yearly_total }}</td>
+                  </tr>
+                </table>
               </div>
             </div>
           </div>
         {% else %}
-            <div class="col-md-4">
+            <div class="col">
               <div class="card mb-4 box-shadow">
-                <h4 class="text-muted">Housing</h4>
+                <h4 class="card-title mt-3">Housing</h4>
                 <div class="card-body">
                   <p>You have not yet added your housing expense information. </p>
-                  <a href="{% url 'housing' %}" class="btn btn-success">Complete the housing module.</a>
+                  <a href="{% url 'housing_create' %}" class="btn btn-sm btn-success">Complete the housing module.</a>
                 </div>
               </div>
             </div>
         {% endif %}
 
-
-      <!-- Utilities -->
-        {% if user.utilities %}
-        <div class="col-md-4">
-          <div class="card mb-4 box-shadow">
-            <div class="card-header">
-              <ul class="nav nav-pills card-header-pills">
-                <li class="nav-item">
-                  <a class="nav-link active" href="{% url 'utilities_update' user.utilities.id %}">Update</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'utilities_details' user.utilities.id %}">Details</a>
-                </li>
-              </ul>
-            </div>
-            <h4 class="text-muted">Utilities</h4>
-            <div class="card-body">
-              {% if user.display %}
-                {% with operator=user.display.display_operator %}
-                  <p class="card-text">
-                      You spend <strong>${{ user.utilities.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on your utilities.
-                  </p>
-                {% endwith %}
-              {% else %}
-                <p class="card-text">
-                    You spend <strong>${{ user.utilities.yearly_total }}</strong> each <strong>year</strong> on your utilities.
-                </p>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-        {% else %}
-        <div class="col-md-4">
-          <div class="card mb-4 box-shadow">
-            <h4 class="text-muted">Utilities</h4>
-            <div class="card-body">
-              <p>You have not yet added your utility expenses.</p>
-              <a href="{% url 'utilities' %}" class="btn btn-success">Complete the utility expenses module.</a>
-            </div>
-          </div>
-        </div>
-        {% endif %}
-
-</div>
-
-<div class="row">
-      <!-- Food -->
-        {% if user.food %}
-        <div class="col-md-4">
-          <div class="card mb-4 box-shadow">
-            <div class="card-header">
-              <ul class="nav nav-pills card-header-pills">
-                <li class="nav-item">
-                  <a class="nav-link active" href="{% url 'food_update' user.food.id %}">Update</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'food_details' user.food.id %}">Details</a>
-                </li>
-              </ul>
-            </div>
-            <h4 class="text-muted">Food</h4>
-            <div class="card-body">
-              {% if user.display %}
-                {% with operator=user.display.display_operator %}
-                  <p class="card-text">
-                      You spend <strong>${{ user.food.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on your groceries and restaurant food.
-                  </p>
-                {% endwith %}
-              {% else %}
-                <p class="card-text">
-                    You spend <strong>${{ user.food.yearly_total }}</strong> each <strong>year</strong> on your groceries and restaurant food.
-                </p>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-        {% else %}
-        <div class="col-md-4">
-          <div class="card mb-4 box-shadow">
-            <h4 class="text-muted">Food</h4>
-            <div class="card-body">
-              <p>You have not yet entered your food expenses.</p>
-              <a href="{% url 'food' %}" class="btn btn-success">Complete the food expenses module.</a>
-            </div>
-          </div>
-        </div>
-        {% endif %}
-
         <!-- Transportation -->
-          {% if user.car %}
-              <div class="col-md-4">
+          {% if user.profile.added_car %}
+              <div class="col">
                 <div class="card mb-4 box-shadow">
                   <div class="card-header">
                     <ul class="nav nav-pills card-header-pills">
                       <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'car_update' user.car.id %}">Update</a>
+                        <a class="nav-link active" href="{% url 'car_list' %}">Manage Cars</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="{% url 'car_details' user.car.id %}">Details</a>
+                        <a class="nav-link" href="{% url 'car_create' %}">Add New</a>
                       </li>
                     </ul>
                   </div>
-                  <h4 class="text-muted">Transportation</h4>
+                  <h4 class="card-title mt-3">Transportation</h4>
                   <div class="card-body">
-                    {% if user.display %}
-                      {% with operator=user.display.display_operator %}
-                        <p class="card-text">
-                            You spend <strong>${{ user.car.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on your transportation.
-                        </p>
-                      {% endwith %}
-                    {% else %}
-                      <p class="card-text">
-                          You spend <strong>${{ user.car.yearly_total }}</strong> each <strong>year</strong> on your transportation.
-                      </p>
-                    {% endif %}
+                    <p>Total costs across all your vehicles are:</p>
+                    <table class="table table-sm">
+                      <tr>
+                        <th>Daily</th>
+                        <th>Weekly</th>
+                        <th>Monthly</th>
+                        <th>Yearly</th>
+                      </tr>
+                      <tr>
+                        <td>${{ cars_costs.daily_total }}</td>
+                        <td>${{ cars_costs.weekly_total }}</td>
+                        <td>${{ cars_costs.monthly_total }}</td>
+                        <td>${{ cars_costs.yearly_total }}</td>
+                      </tr>
+                    </table>
                   </div>
                 </div>
               </div>
           {% else %}
-              <div class="col-md-4">
+              <div class="col">
                 <div class="card mb-4 box-shadow">
-                  <h4 class="text-muted">Transportation</h4>
+                  <h4 class="card-title mt-3">Transportation</h4>
                   <div class="card-body">
                     <p class="card-text">You have not yet added your transportation expenses.</p>
-                    <a href="{% url 'car' %}" class="btn btn-success">Complete the transportation module.</a>
+                    <a href="{% url 'car_create' %}" class="btn btn-sm btn-success">Complete the transportation module.</a>
                   </div>
                 </div>
               </div>
           {% endif %}
+</div>
 
+<div class="row">
 
-
-      <!-- Miscellaneous -->
-        {% if user.miscellaneous %}
-        <div class="col-md-4">
-          <div class="card mb-4 box-shadow">
-            <div class="card-header">
-              <ul class="nav nav-pills card-header-pills">
-                <li class="nav-item">
-                  <a class="nav-link active" href="{% url 'miscellaneous_update' user.miscellaneous.id %}">Update</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'miscellaneous_details' user.miscellaneous.id %}">Details</a>
-                </li>
-              </ul>
-            </div>
-            <h4 class="text-muted">Miscellaneous</h4>
-            <div class="card-body">
-              {% if user.display %}
-                {% with operator=user.display.display_operator %}
-                  <p class="card-text">
-                      You spend <strong>${{ user.miscellaneous.yearly_total|div:operator }}</strong> each <strong>{{ user.display.display_string }}</strong> on your health insurance, life insurance, and clothing.
-                  </p>
-                {% endwith %}
-              {% else %}
-                <p class="card-text">
-                    You spend <strong>${{ user.miscellaneous.yearly_total }}</strong> each <strong>year</strong> on your health insurance, life insurance, and clothing.
-                </p>
-              {% endif %}
+        <!-- Utilities -->
+          {% if user.utilities %}
+          <div class="col">
+            <div class="card mb-4 box-shadow">
+              <div class="card-header">
+                <ul class="nav nav-pills card-header-pills">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'utilities_update' user.utilities.id %}">Update</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'utilities_delete' user.utilities.id %}">Delete</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'utilities_details' user.utilities.id %}">Details</a>
+                  </li>
+                </ul>
+              </div>
+              <h4 class="card-title mt-3">Utilities</h4>
+              <div class="card-body">
+                <p>Total costs across all your vehicles are:</p>
+                <table class="table table-sm">
+                  <tr>
+                    <th>Daily</th>
+                    <th>Weekly</th>
+                    <th>Monthly</th>
+                    <th>Yearly</th>
+                  </tr>
+                  <tr>
+                    <td>${{ user.utilities.daily_cost }}</td>
+                    <td>${{ user.utilities.weekly_cost }}</td>
+                    <td>${{ user.utilities.monthly_cost }}</td>
+                    <td>${{ user.utilities.annual_cost }}</td>
+                  </tr>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
-        {% else %}
-        <div class="col-md-4">
-          <div class="card mb-4 box-shadow">
-            <h4 class="text-muted">Miscellaneous</h4>
-            <div class="card-body">
-              <p>You have not yet entered your miscellaneous expenses.</p>
-              <a href="{% url 'miscellaneous' %}" class="btn btn-success">Complete this module on miscellaneous expenses.</a>
+          {% else %}
+          <div class="col">
+            <div class="card mb-4 box-shadow">
+              <h4 class="card-title mt-3">Utilities</h4>
+              <div class="card-body">
+                <p>You have not yet added your utility expenses.</p>
+                <a href="{% url 'utilities_create' %}" class="btn btn-sm btn-success">Complete the utility expenses module.</a>
+              </div>
             </div>
           </div>
-        </div>
-        {% endif %}
-
+          {% endif %}
+          <!-- Food -->
+            {% if user.food %}
+            <div class="col">
+              <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                  <ul class="nav nav-pills card-header-pills">
+                    <li class="nav-item">
+                      <a class="nav-link active" href="{% url 'food_update' user.food.id %}">Update</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'food_delete' user.food.id %}">Delete</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'food_details' user.food.id %}">Details</a>
+                    </li>
+                  </ul>
+                </div>
+                <h4 class="card-title mt-3">Food</h4>
+                <div class="card-body">
+                  <table class="table table-sm">
+                    <p>Your grocery and restaurant costs are:</p>
+                    <tr>
+                      <th>Daily</th>
+                      <th>Weekly</th>
+                      <th>Monthly</th>
+                      <th>Yearly</th>
+                    </tr>
+                    <tr>
+                      <td>${{ user.food.daily_cost }}</td>
+                      <td>${{ user.food.weekly_cost }}</td>
+                      <td>${{ user.food.monthly_cost}}</td>
+                      <td>${{ user.food.annual_cost }}</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            {% else %}
+            <div class="col">
+              <div class="card mb-4 box-shadow">
+                <h4 class="card-title mt-3">Food</h4>
+                <div class="card-body">
+                  <p>You have not yet entered your food expenses.</p>
+                  <a href="{% url 'food_create' %}" class="btn btn-sm btn-success">Complete the food expenses module.</a>
+                </div>
+              </div>
+            </div>
+            {% endif %}
 
 </div>
+
+<div class="row ">
+  <!-- Miscellaneous -->
+    {% if user.miscellaneous %}
+    <div class="col-lg-6 offset-lg-3">
+      <div class="card mb-4 box-shadow">
+        <div class="card-header">
+          <ul class="nav nav-pills card-header-pills">
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'miscellaneous_update' user.miscellaneous.id %}">Update</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'miscellaneous_delete' user.miscellaneous.id %}">Delete</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'miscellaneous_details' user.miscellaneous.id %}">Details</a>
+            </li>
+          </ul>
+        </div>
+        <h4 class="card-title mt-3">Miscellaneous</h4>
+        <table class="table table-sm">
+          <p>Your common health costs are:</p>
+          <tr>
+            <th>Daily</th>
+            <th>Weekly</th>
+            <th>Monthly</th>
+            <th>Yearly</th>
+          </tr>
+          <tr>
+            <td>${{ user.miscellaneous.daily_cost }}</td>
+            <td>${{ user.miscellaneous.weekly_cost }}</td>
+            <td>${{ user.miscellaneous.monthly_cost}}</td>
+            <td>${{ user.miscellaneous.annual_cost }}</td>
+          </tr>
+        </table>
+        </div>
+      </div>
+    {% else %}
+    <div class="col-lg-6 offset-lg-3">
+      <div class="card mb-4 box-shadow">
+        <h4 class="card-title mt-3">Miscellaneous</h4>
+        <div class="card-body">
+          <p>You have not yet entered your miscellaneous expenses.</p>
+          <a href="{% url 'miscellaneous_create' %}" class="btn btn-sm btn-success">Complete this module on miscellaneous expenses.</a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+</div>
+<br>
+<hr>
+<br>
+<div class="row text-center">
+  <div class="col-lg-8 offset-lg-2">
+    <h3>Customize Your Spending Plan</h3>
+    <p>Have a few expenses not listed in Horne's Calculator? Add them below by creating any number of
+       custom expenses. <a href="{% url 'customexpense_create' %}" class="btn btn-sm btn-danger ml-2">Create a
+       custom expense</a></p>
+  </div>
+</div>
+<br>
+{% for expense in custom_expenses %}
+  {% if forloop.first %}
+    <div class="row">
+  {% endif %}
+    <div class="col">
+      <div class="card border-success mt-3 text-center">
+        <div class="card-header">
+          <ul class="nav nav-pills card-header-pills">
+            <li class="nav-item">
+              <a class="nav-link btn btn-sm btn-success" href="{% url 'customexpense_update' expense.id %}">Update</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-success" href="{% url 'customexpense_delete' expense.id %}">Delete</a>
+            </li>
+          </ul>
+        </div>
+        <h5 class="card-title mt-3">{{ expense.name }}</h5>
+        <div class="card-body">
+          <table class="table table-sm">
+            <tr>
+              <th>Daily</th>
+              <th>Weekly</th>
+              <th>Monthly</th>
+              <th>Yearly</th>
+            </tr>
+            <tr>
+              <td>${{ expense.daily_cost }}</td>
+              <td>${{ expense.weekly_cost }}</td>
+              <td>${{ expense.monthly_cost}}</td>
+              <td>${{ expense.annual_cost }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  {% if forloop.counter|divisibleby:3 %}
+    </div>
+    <div class="row">
+  {% endif %}
+  {% if forloop.last %}
+    </div>
+  {% endif %}
+{% endfor %}

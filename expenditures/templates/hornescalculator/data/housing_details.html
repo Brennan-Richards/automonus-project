@@ -3,7 +3,26 @@
 {% block content %}
 
 {% load mathfilters %}
-
+<div class="row">
+  <div class="col">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'hornescalculator_base' %}">Budget Overview</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'hornescalculator_base' %}">Manage Housing</a></li>
+        <li class="breadcrumb-item active aria-current="page"">{{ object.name }} Details</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<br>
+<br>
+<div class="row text-center">
+  <div class="col">
+    <h2>{{ object.name }} Expense Details</h2>
+  </div>
+</div>
+<br>
+<br>
   <table class="table">
 
     <tr>
@@ -16,41 +35,39 @@
     </tr>
 
     <tr>
-      {% with mortgage=user.housing.mortgage_yt %}
-      <td><p>Mortgage</p></td>
-      <td> {{ mortgage|div:365 }} </td>
-      <td> {{ mortgage|div:52 }} </td>
-      <td> {{ mortgage|div:26 }} </td>
-      <td> {{ mortgage|div:12 }} </td>
-      <td> {{ mortgage }} </td>
-      {% endwith %}
+      <td>Mortgage</td>
+      <td>$ {{ object.mortgage_total_costs.daily_total }} </td>
+      <td>$ {{ object.mortgage_total_costs.weekly_total }} </td>
+      <td>$ {{ object.mortgage_total_costs.biweekly_total }} </td>
+      <td>$ {{ object.mortgage_total_costs.monthly_total }} </td>
+      <td>$ {{ object.mortgage_total_costs.yearly_total }} </td>
     </tr>
 
     <tr>
-      <td><p>Home Property Tax</p></td>
-      <td> {{ user.housing.homeproptax_yt|div:365 }} </td>
-      <td> {{ user.housing.homeproptax_yt|div:52 }} </td>
-      <td> {{ user.housing.homeproptax_yt|div:26 }} </td>
-      <td> {{ user.housing.homeproptax_yt|div:12 }} </td>
-      <td> {{ user.housing.homeproptax_yt }} </td>
+      <td>Home Property Tax</td>
+      <td>$ {{ object.homeproptax_total_costs.daily_total }} </td>
+      <td>$ {{ object.homeproptax_total_costs.weekly_total }} </td>
+      <td>$ {{ object.homeproptax_total_costs.biweekly_total }} </td>
+      <td>$ {{ object.homeproptax_total_costs.monthly_total }} </td>
+      <td>$ {{ object.homeproptax_total_costs.yearly_total }} </td>
     </tr>
 
     <tr>
-      <td><p>Fire Tax</p></td>
-      <td> {{ user.housing.firetax_yt|div:365 }} </td>
-      <td> {{ user.housing.firetax_yt|div:52 }} </td>
-      <td> {{ user.housing.firetax_yt|div:26 }} </td>
-      <td> {{ user.housing.firetax_yt|div:12 }} </td>
-      <td> {{ user.housing.firetax_yt }} </td>
+      <td>Fire Tax</td>
+      <td>$ {{ object.firetax_total_costs.daily_total }} </td>
+      <td>$ {{ object.firetax_total_costs.weekly_total }} </td>
+      <td>$ {{ object.firetax_total_costs.biweekly_total }} </td>
+      <td>$ {{ object.firetax_total_costs.monthly_total }} </td>
+      <td>$ {{ object.firetax_total_costs.yearly_total }} </td>
     </tr>
 
     <tr>
-      <td><p>Homeowner's Insurance</p></td>
-      <td> {{ user.housing.homeinsurance_yt|div:365 }} </td>
-      <td> {{ user.housing.homeinsurance_yt|div:52 }} </td>
-      <td> {{ user.housing.homeinsurance_yt|div:26 }} </td>
-      <td> {{ user.housing.homeinsurance_yt|div:12 }} </td>
-      <td> {{ user.housing.homeinsurance_yt }} </td>
+      <td>Homeowner's Insurance</td>
+      <td>$ {{ object.homeinsurance_total_costs.daily_total }} </td>
+      <td>$ {{ object.homeinsurance_total_costs.weekly_total }} </td>
+      <td>$ {{ object.homeinsurance_total_costs.biweekly_total }} </td>
+      <td>$ {{ object.homeinsurance_total_costs.monthly_total }} </td>
+      <td>$ {{ object.homeinsurance_total_costs.yearly_total }} </td>
     </tr>
 
   </table>

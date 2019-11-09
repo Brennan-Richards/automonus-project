@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-lg-6 offset-lg-3">
+    <form action="#" method="POST" role="form">
+        {% csrf_token %}
+        <p>Name of your custom expense: {{ form.name }}.</p>
+        <p>Cost of your custom expense: ${{ form.cost_per_pay_period }}.</p>
+        <p>This expense must be paid on a {{ form.pay_period }} basis.</p>
+
+        <div class="text-center">
+          <input class="btn btn-primary" type="submit" value="Submit" />
+        </div>
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -8,23 +8,40 @@
 <title>Home</title>
 
 <div class="row">
+  <div class="col">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'hornescalculator_base' %}">Expenditures Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Budget Overview - Horne's Calculator</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<br>
+<br>
+
+<div class="row">
 
 <div class="col-sm-10 offset-sm-1 text-center">
 
   <!-- OVERVIEW -->
 
-  <h1>Horne's Calculator</h1>
+  <h1>How much does your life cost?</h1>
+  <h3 class="text-muted">Horne's Calculator</h3>
   <br>
   <div class="text-center">
-    <p>Horne's calculator is a tool for planning your living expenses. Fill in all of the modules below
-       and we will calculate your total cost of living.</p>
+    <div class="col-lg-8 offset-lg-2">
+      <p>Horne's calculator is a tool for planning your living expenses. Fill in all of the modules below
+         to learn how much of your income you must set aside over any given period of time in order to pay
+         for living expenses.</p>
+    </div>
   </div>
   <br>
   <hr>
 
   <!-- MASTER -->
 
-    <h2 align="left">Your Life Expenses</h2>
+    <h2 align="left">Budget Overview</h2>
     <br>
 
     {% include 'hornescalculator/master.html' %}
