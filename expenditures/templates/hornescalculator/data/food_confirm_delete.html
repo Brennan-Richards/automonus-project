@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class="col">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'hornescalculator_base' %}">Budget Overview</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Delete Food Expenses</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<br>
+<br>
+<div class="row text-center">
+  <div class="col-lg-6 offset-lg-3">
+    <form method="post">{% csrf_token %}
+        <p>Are you sure you want to delete "{{ object.name }}"?</p>
+        <input type="submit" value="Confirm" class="btn btn-sm btn-danger">
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -10,6 +10,7 @@ from accounts.models import Transaction, Account
 from investments.models import InvestmentTransaction
 from liabilities.models import StudentLoan, CreditCard
 from payments.models import MockSubscription
+from expenditures.models import Housing, Car, Miscellaneous, Utilities, Food
 from django.db.models import Sum
 from django.conf import settings
 from plaid import Client
@@ -28,7 +29,6 @@ def on_login(sender, user, request, **kwargs):
 
 
 def user_post_save(sender, instance, created, **kwargs):
-    print("user post save")
     if created:
         Profile.objects.get_or_create(user=instance)
 
@@ -105,10 +105,7 @@ class Profile(models.Model):
         investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user)
         if investment_transactions:
              return True
-    def has_liabilities(self):
-        products = self.get_user_products()
-        if "liabilities" in products:
-            return True
+
     def has_transactions_for_liabilities(self):
         account_types = ["loan"]
         liabilities_transactions = Transaction.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user,
@@ -131,4 +128,32 @@ class Profile(models.Model):
     def filled_mock_subscription(self):
         model = MockSubscription.objects.filter(user=self.user)
         if model:
+            return True
+
+    #Expenditure planning
+    def planned_life_expenses(self):
+        housing = Housing.objects.filter(user=self.user).aggregate(annual_cost=Sum("annual_cost"))
+        car = Car.objects.filter(user=self.user).aggregate(annual_cost=Sum("annual_cost"))
+        miscellaneous = Miscellaneous.objects.filter(user=self.user)
+        utilities = Utilities.objects.filter(user=self.user)
+        food = Food.objects.filter(user=self.user)
+
+        if len(housing) > 0 and len(car) > 0 and len(miscellaneous) > 0 and len(utilities) > 0 and len(food) > 0:
+            return True
+            # # print(housing["annual_cost"])
+            # total = housing["annual_cost"] + car["annual_cost"] \
+            #         + miscellaneous.annual_cost + utilities.annual_cost \
+            #         + food.annual_cost
+            # return round(total, 2)
+        else:
+            return False
+
+    def added_housing(self):
+        house_models = Housing.objects.filter(user=self.user)
+        if len(house_models) > 0:
+            return True
+
+    def added_car(self):
+        car_models = Car.objects.filter(user=self.user)
+        if car_models:
             return True

@@ -8,7 +8,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'hornescalculator_base' %}">Budget Overview</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Food Details</li>
+        <li class="breadcrumb-item active aria-current="page"">{{ object.name }} Details</li>
       </ol>
     </nav>
   </div>
@@ -40,15 +40,6 @@
       <td> ${{ object.groceries_total_costs.biweekly_total }} </td>
       <td> ${{ object.groceries_total_costs.monthly_total }} </td>
       <td> ${{ object.groceries_total_costs.yearly_total }} </td>
-    </tr>
-
-    <tr>
-      <td>Restaurant Food Costs</td>
-      <td> ${{ object.restaurant_total_costs.daily_total }} </td>
-      <td> ${{ object.restaurant_total_costs.weekly_total }} </td>
-      <td> ${{ object.restaurant_total_costs.biweekly_total }} </td>
-      <td> ${{ object.restaurant_total_costs.monthly_total }} </td>
-      <td> ${{ object.restaurant_total_costs.yearly_total }} </td>
     </tr>
 
   </table>

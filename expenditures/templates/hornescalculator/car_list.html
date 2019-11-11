@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class="col">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'hornescalculator_base' %}">Budget Overview</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Your Cars</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<br>
+<br>
+<div class="row">
+  <div class="col">
+    <h3 class="text-center">Your Cars</h3>
+  </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-lg-8 offset-lg-2">
+    <ul class="list-group">
+      {% for car in object_list %}
+      <li class="list-group-item">
+        {{ car.name }}
+        <a href="{% url 'car_update' car.id %}" class="btn btn-sm btn-success float-right mr-3">Update</a>
+        <a href="{% url 'car_delete' car.id %}" class="btn btn-sm btn-danger float-right mr-3">Delete</a>
+        <a href="{% url 'car_details' car.id %}" class="btn btn-sm btn-danger float-right mr-3">Details</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+{% endblock %}
