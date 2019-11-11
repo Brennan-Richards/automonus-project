@@ -44,10 +44,10 @@
               <th>Yearly</th>
             </tr>
             <tr>
-              <td>${{ daily_l_e }}</td>
-              <td>${{ weekly_l_e }}</td>
-              <td>${{ monthly_l_e }}</td>
-              <td>${{ annual_living_expenses }}</td>
+              <td>${{ total_living_expenses.daily_total }}</td>
+              <td>${{ total_living_expenses.weekly_total }}</td>
+              <td>${{ total_living_expenses.monthly_cost }}</td>
+              <td>${{ total_living_expenses.yearly_total }}</td>
             </tr>
           </table>
           <a href="{% url 'hornescalculator_base' %}" class="btn btn-sm btn-success">Edit your spending plan</a>
@@ -68,7 +68,7 @@
   </div>
   <div class="row">
       <div class="col-lg-4 offset-lg-4">
-        <p>Total spending this month: <b>${{ sum }}</b></p>
+        <p>Total spending this month: <b>${{ sum_transactions }}</b></p>
       </div>
   </div>
   <br>

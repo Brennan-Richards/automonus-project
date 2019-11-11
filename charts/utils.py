@@ -323,7 +323,6 @@ class ChartData():
             chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your monthly income by income stream", chart_type=chart_type)
             charts_data.append(chart_data)
         elif category == "income2":
-            print("income")
             chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Last year's income before and after taxes, cost of tax", chart_type=chart_type)
             charts_data.append(chart_data)
 
@@ -346,9 +345,8 @@ class ChartData():
             charts_data.append(chart_data)
 
         elif category == "accounts":
-            print("1")
             chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Progress of your cash balances", chart_type="line",
                                                               account_types=account_types)
             charts_data.append(chart_data)
-        print("5")
+
         return charts_data

@@ -51,39 +51,44 @@
       </div>
     </div>
   </div>
+
   <br>
   <br>
+
   {% for holding in holdings %}
-      {% if forloop.first %} <div class="row">{% endif %}
-        <div class="col">
-            <div class="card border-success mt-3 text-center" style="width: 18rem;">
-              <h4>{{ expense.name }}</h4>
-              <div class="card-body">
-                <table class="table table-sm">
-                  <tr>
-                    <th>Daily</th>
-                    <th>Weekly</th>
-                    <th>Monthly</th>
-                    <th>Yearly</th>
-                  </tr>
-                  <tr>
-                    <td>{{ expense.daily_cost }}</td>
-                    <td>{{ expense.weekly_cost }}</td>
-                    <td>{{ expense.monthly_cost }}</td>
-                    <td>{{ expense.annual_cost }}</td>
-                  </tr>
-                </table>
-              </div>
+    {% if forloop.first %} <div class="row">{% endif %}
+      <div class="col">
+        {% if holding.is_profitable %}
+          <div class="card border-success mt-3 text-center">
+            <h3 class="card-header border-success">({{ holding.user_security.security }})</h3>
+            <h5 class="card-header border-success">{{ holding.user_security }}</h5>
+            <div class="card-body">
+              <p><strong>Total Profit: ${{ holding.get_profit_or_loss_current }}</strong></p>
+              <p>Purchase Price/Share: ${{ holding.get_purchase_price }}</p>
+              <p>Purchase Cost: ${{ holding.cost_basis }}</p>
+              <p>Current Price/Share: ${{ holding.get_current_price }}</p>
+              <p>Total Value: ${{ holding.institution_value }}</p>
+              <p>Account Type: {{ holding.account.subtype }}</p>
             </div>
-        </div>
-      {% if forloop.counter|divisibleby:3 %}
-        </div>
-        <div class="row">
-      {% endif %}
-      {% if forloop.last %}
-        </div>
-      {% endif %}
+          </div>
+        {% else %}
+          <div class="card border-danger mt-3 text-center">
+            <h3 class="card-header border-danger">({{ holding.user_security.security }})</h3>
+            <h5 class="card-header border-danger">{{ holding.user_security }}</h5>
+            <div class="card-body">
+              <p class="card-text"><strong>Total Loss: {{ holding.get_profit_or_loss_current }}</strong></p>
+              <p class="card-text">Purchase Price/Share: {{ holding.get_purchase_price }}</p>
+              <p class="card-text">Current Price/Share: {{ holding.get_current_price }}</p>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
+    {% if forloop.last %}</div>{% endif %}
   {% endfor %}
+
+  <br>
+  <br>
 
   <br>
   <br>

@@ -94,6 +94,34 @@ class BudgetData():
         dictionary["daily_total"] = round(f, 2)
         return dictionary
 
+    def total_living_expenses(self, user):
+        housing = Housing.objects.filter(user=user).aggregate(annual_cost=Sum("annual_cost"))
+        car = Car.objects.filter(user=user).aggregate(annual_cost=Sum("annual_cost"))
+        miscellaneous = Miscellaneous.objects.get(user=user)
+        utilities = Utilities.objects.get(user=user)
+        food = Food.objects.get(user=user)
+
+        try:
+            customexpenses = CustomExpense.objects.filter(user=ruser)
+            custom_expense_agg_ann = customexpenses.aggregate(annual_cost=Sum("annual_cost"))
+        except len(CustomExpense.objects.filter(user=user).aggregate(annual_cost=Sum("annual_cost"))) < 0:
+            custom_expense_agg_ann = 0
+
+        if len(housing) > 0 and len(car) > 0 and miscellaneous and utilities and food:
+            yearly_total = round((housing["annual_cost"] + car["annual_cost"] + miscellaneous.annual_cost\
+                                  + utilities.annual_cost + food.annual_cost + custom_expense_agg_ann), 2)
+            monthly_total = round((yearly_total/12), 2)
+            semimonthly_total = round((yearly_total/24), 2)
+            biweekly_total = round((yearly_total/26), 2)
+            weekly_total = round((weekly_total/52), 2)
+            daily_total = round((yearly_total/365), 2)
+
+            return { "yearly_total":yearly_total,
+                     "monthly_total":monthly_total,
+                     "semimonthly_total":semimonthly_total,
+                     "biweekly_total":biweekly_total,
+                     "weekly_total":weekly_total,
+                     "daily_total":daily_total }
 
 # Definitions for PAY_PERIOD_CHOICES below.
 DAILY = 'Daily'

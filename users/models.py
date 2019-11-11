@@ -134,11 +134,11 @@ class Profile(models.Model):
     def planned_life_expenses(self):
         housing = Housing.objects.filter(user=self.user).aggregate(annual_cost=Sum("annual_cost"))
         car = Car.objects.filter(user=self.user).aggregate(annual_cost=Sum("annual_cost"))
-        miscellaneous = Miscellaneous.objects.get(user=self.user)
-        utilities = Utilities.objects.get(user=self.user)
-        food = Food.objects.get(user=self.user)
+        miscellaneous = Miscellaneous.objects.filter(user=self.user)
+        utilities = Utilities.objects.filter(user=self.user)
+        food = Food.objects.filter(user=self.user)
 
-        if len(housing) > 0 and len(car) > 0 and miscellaneous and utilities and food:
+        if len(housing) > 0 and len(car) > 0 and len(miscellaneous) > 0 and len(utilities) > 0 and len(food) > 0:
             return True
             # # print(housing["annual_cost"])
             # total = housing["annual_cost"] + car["annual_cost"] \

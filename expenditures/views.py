@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 from accounts.models import Transaction
+from expenditures.models import BudgetData
 from django.db.models import Sum
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -33,16 +34,14 @@ def expenditures_dashboard(request):
                                                   account__type__name__in=account_types, amount__gt=0,
                                                   account__user_institution__is_active=True
                                                   ).order_by("-date")
+
         context = {"charts_data": charts_data,
                    "all_transactions": all_transactions,
                    "sum_transactions": sum_transactions,
                    }
 
         if user.profile.planned_life_expenses():
-            context["annual_living_expenses"] = user.profile.planned_life_expenses() #Returns a YEARLY total
-            context["monthly_l_e"] = round((user.profile.planned_life_expenses() / 12), 2)
-            context["weekly_l_e"] = round((user.profile.planned_life_expenses() / 52), 2)
-            context["daily_l_e"] = round((user.profile.planned_life_expenses() / 365), 2)
+            context["total_living_expenses"] = BudgetData().total_living_expenses(user)
 
     return render(request, 'expenditures/expenditures_dashboard.html', context)
 

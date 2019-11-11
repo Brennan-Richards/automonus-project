@@ -5,6 +5,7 @@ import uuid
 from django.utils import timezone
 from datetime import datetime, date, timedelta
 from django.forms.models import model_to_dict
+from decimal import Decimal
 # Create your models here.
 
 class StudentLoan(models.Model):
@@ -59,29 +60,82 @@ class StudentLoan(models.Model):
 
         return payments_per_year
 
-    def amortize(self, steps, payment_amount): #To show how changing payment affects speed of paydown, add :payment_amount: param
+    def amortize(self, steps, payment_amount):
         amortization_series = []
         dates_as_categories = []
-        remaining_principal_balance = self.account.current_balance
         interest_rate_percentage = self.interest_rate_percentage / 100
-        payment_amount = self.minimum_payment_amount
+        if payment_amount is not None:
+            payment_amount = payment_amount
+        else:
+            payment_amount = self.minimum_payment_amount
         payments_per_year = self.get_payments_per_year()
         days_between_payments = 365 / payments_per_year
-        balance = remaining_principal_balance
-        start_date = date.today()
-        """ TODO: Add feature to this method so that each value in amortization_series
-            represents a date one month apart, even if the user pays per week or per day
-            (self.get_payments_per_year) """
+        balance = self.account.current_balance
+        payment_date = date.today()
         for i in range(0, steps):
-            #amortize steps times and push the value of remaining principal to amortiz.Series each time
+            #Date increases by one full payment period
+            payment_date += timedelta(days=days_between_payments)
+
+            #Calculate interest paid this period
             interest_paid = balance * (interest_rate_percentage / payments_per_year)
+
+            #Calculate principal paid this period
             principal_paid = payment_amount - interest_paid
+
+            #Add current balance to amortization_series
             amortization_series.append(round(float(balance), 2))
-            dates_as_categories.append(start_date)
+            #Add dates to categories for X-Axis of frontend chart
+            dates_as_categories.append(payment_date)
+
+            #Balance decreases by principal amount paid
             balance -= principal_paid
-            start_date += timedelta(days=days_between_payments)
-        # print(amortization_series, dates_as_categories, "AA")
+
         return amortization_series, dates_as_categories
+
+    def amortize_to_zero(self, payment_amount=None):
+        amortization_series = []
+        dates_as_categories = []
+        interest_rate_percentage = self.interest_rate_percentage / 100
+        if payment_amount is not None:
+            payment = payment_amount
+        else:
+            payment = self.minimum_payment_amount
+        payments_per_year = self.get_payments_per_year()
+        days_between_payments = 365 / payments_per_year
+        balance = self.account.current_balance
+        payment_date = date.today()
+        total_interest = 0
+        total_principal = 0
+        if payment > (balance * interest_rate_percentage):
+            while balance > 0:
+                #Date increases by the numbers of days until the next payment is due
+                payment_date += timedelta(days=days_between_payments)
+
+                #Calculate interest paid this period and add to total interest paid
+                interest_paid = balance * (interest_rate_percentage / payments_per_year)
+                total_interest += interest_paid
+
+                #Calculate principal paid this period and add to total principal paid
+                principal_paid = payment_amount - interest_paid
+                total_principal += principal_paid
+
+                #Add current balance to amortization_series
+                amortization_series.append(round(float(balance), 2))
+                #Add dates to categories for X-Axis of frontend chart
+                dates_as_categories.append(payment_date)
+
+                #Balance decreases by principal amount paid
+                balance -= principal_paid
+
+            total_cost_of_loan = total_interest + total_principal
+            dates_as_categories = [item.strftime("%m/%d/%Y") for item in dates_as_categories]
+
+            return {"date":date, "total_principal":total_principal, "total_interest":total_interest,
+                    "amortization_series":amortization_series, "dates_as_categories":dates_as_categories,
+                    "total_cost_of_loan":total_cost_of_loan}
+        else:
+            return False
+
 
 
     # def get_current_balance(self):
