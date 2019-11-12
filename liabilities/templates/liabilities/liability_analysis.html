@@ -7,7 +7,91 @@
   </div>
 </div>
 <br>
-<div id="charts_container"></div>
+{% if reduces %}
+<div class="row">
+  <div class="col-lg-12">
+    <div id="charts_container"></div>
+  </div>
+</div>
+<br>
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2">
+      <ul class="list-group">
+        <li class="list-group-item active">At a payment amount of: ${{ payment_amount }}:</li>
+        <li class="list-group-item">Your loan will be paid off on {{ payoff_date }}.</li>
+        <li class="list-group-item">You will pay <strong>${{ total_interest }}</strong> in interest on your loan by the payoff date, on top of the
+           <strong>${{ total_principal }}</strong> you must pay in principal.</li>
+        <li class="list-group-item">In total, between interest and principal, your loan will cost <strong>${{ total_cost_of_loan }}</strong></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row text-center">
+    <div class="col-sm-6 offset-sm-3">
+      <form action="/liabilities/liability_analysis/" method="POST" id="payment-form">
+        {% csrf_token %}
+        {{ form.mock_payment_amount }}
+        <button type="submit" class="btn btn-sm btn-success">Submit</button>
+      </form>
+    </div>
+  </div>
+{% else %}
+<div class="row text-center">
+  <div class="col-lg-8 offset-lg-2">
+    <p>At a payment amount of {{ payment_amount }}, your loan principal balance will <strong>only increase</strong>.
+       Therefore, you <em>must</em> make a payment of at least ${{ minimum_payment_amount }} to avoid this. </p>
+  </div>
+</div>
+<div class="row text-center">
+  <div class="col-sm-6 offset-sm-3">
+    <form action="/liabilities/liability_analysis/" method="POST" id="payment-form">
+      {% csrf_token %}
+      {{ form.mock_payment_amount }}
+      <button type="submit" class="btn btn-sm btn-success">Submit</button>
+    </form>
+  </div>
+</div>
 
-<p>{{ total_interest }}</p>
+{% endif %}
 {% endblock page_content %}
+
+
+<!-- <script type="text/javascript">
+  $('#payment-form').on('submit', function(event){
+    event.preventDefault();
+    console.log("form submitted!")  // sanity check
+    send_payment_amount();
+  });
+
+  function send_payment_amount() {
+    console.log("send payment is working!") // sanity check
+    console.log($('#payment_amount').val()) // sanity check
+    csrf_token = "{{ csrf_token }}";
+    data = {
+        payment_amount: $('#payment_amount').val(),
+        csrfmiddlewaretoken: csrf_token,
+    };
+    console.log(data["payment_amount"])
+    $.ajax({
+        url : "/liabilities/liability_analysis/", // the endpoint
+        type : "POST", // http method
+        data : data, // data sent with the post request
+
+        // handle a successful response
+        success : function(json) {
+            $('#payment-amount').val(''); // remove the value from the input
+            console.log(json); // log the returned json to the console
+            console.log("success"); // another sanity check
+            document.location.reload();
+
+        },
+
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+    });
+  };
+
+</script> -->

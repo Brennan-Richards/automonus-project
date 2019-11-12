@@ -103,53 +103,56 @@ class StudentLoan(models.Model):
         payments_per_year = self.get_payments_per_year()
         days_between_payments = 365 / payments_per_year
         balance = self.account.current_balance
+        amortization_series.append(float(balance)) #Setting original balance as first balance
         payment_date = date.today()
+        dates_as_categories.append(payment_date) #Setting date of payment 0 as today
+
         total_interest = 0
         total_principal = 0
-        if payment > (balance * interest_rate_percentage):
+        if self.payments_reduces_balance(payment):
             while balance > 0:
-                #Date increases by the numbers of days until the next payment is due
-                payment_date += timedelta(days=days_between_payments)
+                    #Date increases by the numbers of days until the next payment is due
+                    payment_date += timedelta(days=days_between_payments)
 
-                #Calculate interest paid this period and add to total interest paid
-                interest_paid = balance * (interest_rate_percentage / payments_per_year)
-                total_interest += interest_paid
+                    #Calculate interest paid this period and add to total interest paid
+                    interest_paid = balance * (interest_rate_percentage / payments_per_year)
 
-                #Calculate principal paid this period and add to total principal paid
-                principal_paid = payment_amount - interest_paid
-                total_principal += principal_paid
+                    #Calculate principal paid this period and add to total principal paid
+                    principal_paid = payment - interest_paid
 
-                #Add current balance to amortization_series
-                amortization_series.append(round(float(balance), 2))
-                #Add dates to categories for X-Axis of frontend chart
-                dates_as_categories.append(payment_date)
+                    if balance > payment:
+                        balance -= principal_paid
+                        total_interest += interest_paid
+                        total_principal += principal_paid
 
-                #Balance decreases by principal amount paid
-                balance -= principal_paid
+                    else:
+                        total_principal += balance
+                        balance = 0
+
+                    #Add current balance to amortization_series
+                    amortization_series.append(round(float(balance), 2))
+                    #Add dates to categories for X-Axis of frontend chart
+                    dates_as_categories.append(payment_date)
+
 
             total_cost_of_loan = total_interest + total_principal
             dates_as_categories = [item.strftime("%m/%d/%Y") for item in dates_as_categories]
 
-            return {"date":date, "total_principal":total_principal, "total_interest":total_interest,
+            return {"payoff_date":payment_date, "total_principal":round(total_principal, 2), "total_interest":round(total_interest, 2),
                     "amortization_series":amortization_series, "dates_as_categories":dates_as_categories,
-                    "total_cost_of_loan":total_cost_of_loan}
+                    "total_cost_of_loan":round(total_cost_of_loan, 2)}
+        else:
+            return round((balance * interest_rate_percentage / payments_per_year), 2)
+
+    def payments_reduces_balance(self, payment_amount):
+        balance = self.account.current_balance
+        interest_rate_percentage = self.interest_rate_percentage / 100
+        payments_per_year = self.get_payments_per_year()
+
+        if payment_amount > (balance * interest_rate_percentage / payments_per_year): #Checks if the loan will decrease with payments, returns False if not.
+            return True
         else:
             return False
-
-
-
-    # def get_current_balance(self):
-    #     #get number of months between end date and now (a.k.a number of payments)
-    #     remaining_loan_term = date(self.end_date).days - date(self.last_statement_issue_date).days #returns remaining term of loan
-    #     payment_period = self.get_payment_period()
-    #     print(remaining_loan_term)
-    #     remaining_years_loan_term = remaining_loan_term / 12
-    #     print(remaining_years_loan_term)
-    #     if payment_period == "month":
-    #         remaining_payments = remaining_loan_term.days / 12
-    #     elif payment_period == "biweek":
-    #         remaining_payments = remaining_loan_term / 24
-
 
     def create_snapshot(self):
         StudentLoanSnapshot.objects.get_or_create(student_loan=self,
@@ -317,3 +320,7 @@ class APR(models.Model):
 
     def __str__(self):
         return "{}".format(self.credit_card)
+
+class LiabilityAnalysis(models.Model):
+    student_loan = models.OneToOneField(StudentLoan, on_delete=models.CASCADE, default=False)
+    mock_payment_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0, blank=True, null=True)

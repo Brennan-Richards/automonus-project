@@ -46,3 +46,9 @@ class APRAdmin(admin.ModelAdmin):
 
 
 admin.site.register(APR, APRAdmin)
+
+class LiabilityAnalysisAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in LiabilityAnalysis._meta.fields]
+
+
+admin.site.register(LiabilityAnalysis, LiabilityAnalysisAdmin)

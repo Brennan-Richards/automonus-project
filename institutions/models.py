@@ -1,4 +1,4 @@
-from liabilities.models import StudentLoan, DisbursementDate, ServicerAddress, CreditCard, APR
+from liabilities.models import StudentLoan, DisbursementDate, ServicerAddress, CreditCard, APR, LiabilityAnalysis
 from investments.models import UserSecurity, InvestmentTransaction, InvestmentTransactionType, Security, Holding, SecurityType
 import datetime
 from django.utils import timezone
@@ -361,61 +361,63 @@ class UserInstitution(ModelBaseFieldsAbstract):
         try:
             response = client.Liabilities.get(self.access_token)
             student_loans = response["liabilities"]["student"][0]
-            account = Account.objects.get(account_id=student_loans["account_id"])
             print("populating student loan data")
         except Exception as e:
             print(e)
             return False
+        for object in student_loans:
+            account = Account.objects.get(account_id=student_loans["account_id"])
+            student_loan_defaults = {
+                "account": account,
+                "account_number": student_loans.get("account_number", ""),
+                "expected_payoff_date": student_loans.get("expected_payoff_date", ""),
+                "guarantor": student_loans.get("guarantor", ""),
+                "interest_rate_percentage": student_loans.get("interest_rate_percentage", ""),
+                "is_overdue": student_loans.get("is_overdue", ""),
+                "last_payment_amount": student_loans.get("last_payment_amount", ""),
+                "last_payment_date": student_loans.get("last_payment_date", ""),
+                "last_statement_balance": student_loans.get("last_statement_balance", ""),
+                "last_statement_issue_date": student_loans.get("last_statement_issue_date", ""),
+                "loan_name": student_loans.get("loan_name", ""),
+                "end_date": student_loans["loan_status"].get("end_date", ""),
+                "type": student_loans["loan_status"].get("type", "none"),
+                "minimum_payment_amount": student_loans.get("minimum_payment_amount", ""),
+                "next_payment_due_date": student_loans.get("next_payment_due_date", ""),
+                "origination_date": student_loans.get("origination_date", ""),
+                "origination_principal_amount": student_loans.get("origination_principal_amount", ""),
+                "outstanding_interest_amount": student_loans.get("outstanding_interest_amount", ""),
+                "payment_reference_number": student_loans.get("payment_reference_number", ""),
+                "estimated_pslf_eligibility_date": student_loans["pslf_status"].get("estimated_eligibility_date", ""),
+                "payments_made": student_loans["pslf_status"].get("payments_made", ""),
+                "pslf_payments_remaining": student_loans["pslf_status"].get("payments_remaining", ""),
+                "repayment_description": student_loans["repayment_plan"].get("description", ""),
+                "repayment_type": student_loans["repayment_plan"].get("type", ""),
+                "sequence_number": student_loans.get("sequence_number", ""),
+                "ytd_interest_paid": student_loans.get("ytd_interest_paid", ""),
+                "ytd_principal_paid": student_loans.get("ytd_principal_paid", ""),
+            }
 
-        student_loan_defaults = {
-            "account": account,
-            "account_number": student_loans.get("account_number", ""),
-            "expected_payoff_date": student_loans.get("expected_payoff_date", ""),
-            "guarantor": student_loans.get("guarantor", ""),
-            "interest_rate_percentage": student_loans.get("interest_rate_percentage", ""),
-            "is_overdue": student_loans.get("is_overdue", ""),
-            "last_payment_amount": student_loans.get("last_payment_amount", ""),
-            "last_payment_date": student_loans.get("last_payment_date", ""),
-            "last_statement_balance": student_loans.get("last_statement_balance", ""),
-            "last_statement_issue_date": student_loans.get("last_statement_issue_date", ""),
-            "loan_name": student_loans.get("loan_name", ""),
-            "end_date": student_loans["loan_status"].get("end_date", ""),
-            "type": student_loans["loan_status"].get("type", "none"),
-            "minimum_payment_amount": student_loans.get("minimum_payment_amount", ""),
-            "next_payment_due_date": student_loans.get("next_payment_due_date", ""),
-            "origination_date": student_loans.get("origination_date", ""),
-            "origination_principal_amount": student_loans.get("origination_principal_amount", ""),
-            "outstanding_interest_amount": student_loans.get("outstanding_interest_amount", ""),
-            "payment_reference_number": student_loans.get("payment_reference_number", ""),
-            "estimated_pslf_eligibility_date": student_loans["pslf_status"].get("estimated_eligibility_date", ""),
-            "payments_made": student_loans["pslf_status"].get("payments_made", ""),
-            "pslf_payments_remaining": student_loans["pslf_status"].get("payments_remaining", ""),
-            "repayment_description": student_loans["repayment_plan"].get("description", ""),
-            "repayment_type": student_loans["repayment_plan"].get("type", ""),
-            "sequence_number": student_loans.get("sequence_number", ""),
-            "ytd_interest_paid": student_loans.get("ytd_interest_paid", ""),
-            "ytd_principal_paid": student_loans.get("ytd_principal_paid", ""),
-        }
+            loan_instance, created = StudentLoan.objects.update_or_create(user_institution=self, defaults=student_loan_defaults)
 
-        loan_instance, created = StudentLoan.objects.update_or_create(user_institution=self, defaults=student_loan_defaults)
+            loan_instance.create_snapshot()
 
-        loan_instance.create_snapshot()
+            disbursement_dates = list()
+            for date in student_loans["disbursement_dates"]:
+                disbursement_dates.append(date)
+                for date in disbursement_dates:
+                    DisbursementDate.objects.update_or_create(loan_instance=loan_instance, date_of_disbursement=date)
 
-        disbursement_dates = list()
-        for date in student_loans["disbursement_dates"]:
-            disbursement_dates.append(date)
-            for date in disbursement_dates:
-                DisbursementDate.objects.update_or_create(loan_instance=loan_instance, date_of_disbursement=date)
+            servicer_address_defaults = {
+                "city": student_loans["servicer_address"].get("city", ""),
+                "country": student_loans["servicer_address"].get("country", ""),
+                "postal_code": student_loans["servicer_address"].get("postal_code", ""),
+                "region": student_loans["servicer_address"].get("region", ""),
+                "street": student_loans["servicer_address"].get("street", "")
+            }
 
-        servicer_address_defaults = {
-            "city": student_loans["servicer_address"].get("city", ""),
-            "country": student_loans["servicer_address"].get("country", ""),
-            "postal_code": student_loans["servicer_address"].get("postal_code", ""),
-            "region": student_loans["servicer_address"].get("region", ""),
-            "street": student_loans["servicer_address"].get("street", "")
-        }
-
-        ServicerAddress.objects.get_or_create(loan_instance=loan_instance, defaults=servicer_address_defaults)
+            ServicerAddress.objects.update_or_create(loan_instance=loan_instance, defaults=servicer_address_defaults)
+            loan_min_payment = student_loans.get("minimum_payment_amount", 0)
+            LiabilityAnalysis.objects.update_or_create(student_loan=loan_instance, mock_payment_amount=loan_min_payment)
 
     def populate_credit_card_data(self):
         try:

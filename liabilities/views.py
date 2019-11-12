@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from .models import StudentLoan, CreditCard, APR
+from .models import StudentLoan, CreditCard, APR, LiabilityAnalysis
 from accounts.models import Account, Transaction
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
-
+from .forms import UpdateLiabilityAnalysisForm
 from charts.utils import ChartData
 
 # Create your views here.
@@ -54,21 +54,38 @@ def liabilities_dashboard(request):
 def liability_analysis(request):
     user = request.user
     context = dict()
-
     student_loan = StudentLoan.objects.get(account__user_institution__user=user, user_institution__is_active=True)
+    # if request.method == 'POST':
+    #     data = request.POST.copy()
+    #     print(data)
+    #     payment_amount = data['payment_amount']
+    #     print(payment_amount)
+
+    liability_analysis = LiabilityAnalysis.objects.get(student_loan=student_loan)
+    form = UpdateLiabilityAnalysisForm(request.POST, instance=liability_analysis)
+    if form.is_valid():
+    	form.save()
+    context["form"] = form
+    payment_amount = liability_analysis.mock_payment_amount
+    context["payment_amount"] = payment_amount
+
+
     #Variables for charts_data dictionary
-    payment_amount = 10000
-    if student_loan.amortize_to_zero(payment_amount=payment_amount) is not False:
-        chart_name = "Path of your student loan up until the payoff date"
+    if student_loan.payments_reduces_balance(payment_amount=payment_amount):
+        context["reduces"] = True
+        chart_name = "Path of your student loans up until the payoff date at ${} payments".format(payment_amount)
         chart_type = "line"
         chart_categories = student_loan.amortize_to_zero(payment_amount=payment_amount)["dates_as_categories"]
         data = student_loan.amortize_to_zero(payment_amount=payment_amount)["amortization_series"]
-        chart_series = [{"name":"Student Loan Balance","data":data}]
+        chart_series = [{"name":"Your {} Loan Remaining Principal Balance".format(student_loan.guarantor),"data":data}]
         context["charts_data"] = [{"title": chart_name, "type": chart_type, "categories": chart_categories,
                       "chart_series": chart_series}]
         #Data for written description of loan.
         context["total_interest"] = student_loan.amortize_to_zero(payment_amount=payment_amount)["total_interest"]
         context["total_principal"] = student_loan.amortize_to_zero(payment_amount=payment_amount)["total_principal"]
         context["total_cost_of_loan"] = student_loan.amortize_to_zero(payment_amount=payment_amount)["total_cost_of_loan"]
-    print(context)
+        context["payoff_date"] = student_loan.amortize_to_zero(payment_amount=payment_amount)["payoff_date"]
+    else:
+        context["reduces"] = False
+        context["minimum_payment_amount"] = student_loan.amortize_to_zero(payment_amount=payment_amount)
     return render(request, 'liabilities/liability_analysis.html', context)
