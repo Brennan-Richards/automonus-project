@@ -102,4 +102,5 @@ class StudentLoanListView(ListView):
     template_name = "liabilities/studentloan_list.html"
 
     def get_queryset(self):
-        return StudentLoan.objects.filter(account__user_institution__is_active=True)
+        user = self.request.user
+        return StudentLoan.objects.filter(account__user_institution__is_active=True, account__user_institution__user=user)

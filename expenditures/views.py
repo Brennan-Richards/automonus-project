@@ -61,18 +61,17 @@ def hornescalculator_base(request):
     #     display.user = user
     #     display.save()
     #     return redirect('hornescalculator_base')
-
-    user_cars = Car.objects.filter(user=user).aggregate(annual_cost=Sum("annual_cost"))
-    cars_costs = BudgetData.get_queryset_costs(user, "Car")
-    user_housings = Housing.objects.filter(user=user).aggregate(annual_cost=Sum("annual_cost"))
-    housings_costs = BudgetData.get_queryset_costs(user, "Housing")
+    user_cars = Car.objects.filter(user=user)
+    user_housings = Housing.objects.filter(user=user)
     custom_expenses = CustomExpense.objects.filter(user=user)
 
     context = { 'user_cars': user_cars,
-                'cars_costs': cars_costs,
                 'user_housings': user_housings,
-                'housings_costs': housings_costs,
                 'custom_expenses': custom_expenses }
+    if user_cars:
+        context["cars_costs"] = BudgetData.get_queryset_costs(user, "Car")
+    if user_housings:
+        context["housings_costs"] = BudgetData.get_queryset_costs(user, "Housing")
 
     return render(request, 'hornescalculator/hornescalculator_base.html', context)
 
@@ -85,10 +84,16 @@ def hornescalculator_base(request):
 class HousingListView(ListView):
     model = Housing
     template_name = "hornescalculator/housing_list.html"
+    def get_queryset(self):
+        user = self.request.user
+        return Housing.objects.filter(account__user_institution__user=user)
 
 class CarListView(ListView):
     model = Car
     template_name = "hornescalculator/car_list.html"
+    def get_queryset(self):
+        user = self.request.user
+        return Car.objects.filter(account__user_institution__user=user)
 
 class CreateCustomExpense(LoginRequiredMixin, CreateView):
     model = CustomExpense
