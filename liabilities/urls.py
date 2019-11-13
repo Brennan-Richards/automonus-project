@@ -7,7 +7,8 @@ from . import views
 
 urlpatterns = [
     path('liabilities_dashboard/', views.liabilities_dashboard, name='liabilities_dashboard'),
-    path('liability_analysis/', views.liability_analysis, name='liability_analysis'),
+    path('liability_analysis/<int:student_loan_id>/', views.liability_analysis, name='liability_analysis'),
+    path('yourloans/', views.StudentLoanListView.as_view(), name="student_loan_list"),
 ]
 
 if settings.DEBUG:

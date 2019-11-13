@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views.generic.list import ListView
 from .models import StudentLoan, CreditCard, APR, LiabilityAnalysis
 from accounts.models import Account, Transaction
 from django.contrib.auth.decorators import login_required
@@ -39,6 +40,10 @@ def liabilities_dashboard(request):
         try:
             student_loans = StudentLoan.objects.filter(**query_kwargs)
             context["student_loans"] = student_loans
+            if len(student_loans) > 1:
+                context["multiple_loans"] = True
+            else:
+                context["student_loan"] = student_loans[0]
         except StudentLoan.objects.get(**query_kwargs).DoesNotExist:
             student_loans = None
 
@@ -51,10 +56,11 @@ def liabilities_dashboard(request):
     return render(request, 'liabilities/liabilities_dashboard.html', context)
 
 @login_required
-def liability_analysis(request):
+def liability_analysis(request, student_loan_id):
     user = request.user
     context = dict()
-    student_loan = StudentLoan.objects.get(account__user_institution__user=user, user_institution__is_active=True)
+    student_loan = StudentLoan.objects.get(account__user_institution__user=user, id=student_loan_id)
+    context["student_loan"] = student_loan
     # if request.method == 'POST':
     #     data = request.POST.copy()
     #     print(data)
@@ -62,6 +68,7 @@ def liability_analysis(request):
     #     print(payment_amount)
 
     liability_analysis = LiabilityAnalysis.objects.get(student_loan=student_loan)
+    context["liability_analysis"] = liability_analysis
     form = UpdateLiabilityAnalysisForm(request.POST, instance=liability_analysis)
     if form.is_valid():
     	form.save()
@@ -89,3 +96,10 @@ def liability_analysis(request):
         context["reduces"] = False
         context["minimum_payment_amount"] = student_loan.amortize_to_zero(payment_amount=payment_amount)
     return render(request, 'liabilities/liability_analysis.html', context)
+
+class StudentLoanListView(ListView):
+    model = StudentLoan
+    template_name = "liabilities/studentloan_list.html"
+
+    def get_queryset(self):
+        return StudentLoan.objects.filter(account__user_institution__is_active=True)

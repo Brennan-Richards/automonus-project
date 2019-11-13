@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row text-center">
+  <div class="col">
+    <h1>Choose a loan to analyze.</h1>
+    <h3 class="text-muted">Your student loans:</h3>
+  </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-lg-8 offset-lg-2">
+    <ul class="list-group">
+      {% for loan in object_list %}
+      <li class="list-group-item mt-3">
+        <strong>#{{ forloop.counter }} -</strong>
+        {{ loan.account.name }},
+        {{ loan.guarantor }}
+        <a href="{% url 'liability_analysis' loan.id %}" class="btn btn-sm btn-success float-right mr-3">Analyze</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+{% endblock %}

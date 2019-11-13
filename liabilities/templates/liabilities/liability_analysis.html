@@ -27,7 +27,7 @@
   </div>
   <div class="row text-center">
     <div class="col-sm-6 offset-sm-3">
-      <form action="/liabilities/liability_analysis/" method="POST" id="payment-form">
+      <form action="{% url 'liability_analysis' student_loan.id %}" method="POST" id="payment-form">
         {% csrf_token %}
         {{ form.mock_payment_amount }}
         <button type="submit" class="btn btn-sm btn-success">Submit</button>
@@ -43,7 +43,7 @@
 </div>
 <div class="row text-center">
   <div class="col-sm-6 offset-sm-3">
-    <form action="/liabilities/liability_analysis/" method="POST" id="payment-form">
+    <form action="{% url 'liability_analysis' student_loan.id %}" method="POST" id="payment-form">
       {% csrf_token %}
       {{ form.mock_payment_amount }}
       <button type="submit" class="btn btn-sm btn-success">Submit</button>
