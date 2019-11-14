@@ -26,6 +26,11 @@
     </div>
   </div>
   <div class="row text-center">
+    <div class="col">
+      <p class="text-muted">Update loan payment amount:</p>
+    </div>
+  </div>
+  <div class="row text-center">
     <div class="col-sm-6 offset-sm-3">
       <form action="{% url 'liability_analysis' student_loan.id %}" method="POST" id="payment-form">
         {% csrf_token %}
@@ -37,8 +42,14 @@
 {% else %}
 <div class="row text-center">
   <div class="col-lg-8 offset-lg-2">
-    <p>At a payment amount of {{ payment_amount }}, your loan principal balance will <strong>only increase</strong>.
-       Therefore, you <em>must</em> make a payment of at least ${{ minimum_payment_amount }} to avoid this. </p>
+    <p>At a payment amount of {{ payment_amount }}, your loan principal balance will <strong>only increase
+      in perpetuity.</strong></p>
+    <p>Therefore, you <em>must</em> make a payment of at least ${{ minimum_payment_amount }} to avoid this. </p>
+  </div>
+</div>
+<div class="row text-center">
+  <div class="col">
+    <p class="text-muted">Update loan payment amount:</p>
   </div>
 </div>
 <div class="row text-center">

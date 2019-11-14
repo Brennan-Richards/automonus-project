@@ -5,4 +5,3 @@ class UpdateLiabilityAnalysisForm(ModelForm):
     class Meta:
         model = LiabilityAnalysis
         fields = ['mock_payment_amount']
-        widgets={'mock_payment_amount': TextInput(attrs={'placeholder':'Update payment'})}

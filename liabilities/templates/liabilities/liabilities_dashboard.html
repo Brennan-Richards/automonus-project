@@ -69,9 +69,9 @@
     <div class="row text-center">
       <div class="col-sm-6 offset-sm-3">
         {% if multiple_loans %}
-          <a href="{% url 'student_loan_list' %}" class="btn btn-lg btn-block btn-danger">Pay Your Loans Off Faster</a>
+          <a href="{% url 'student_loan_list' %}" class="btn btn-sm btn-block btn-danger">Pay Your Loans Off Faster</a>
         {% else %}
-          <a href="{% url 'liability_analysis' student_loan.id %}" class="btn btn-lg btn-block btn-danger">Pay Your Loan Off Faster</a>
+          <a href="{% url 'liability_analysis' student_loan.id %}" class="btn btn-sm btn-block btn-danger">Pay Your Loan Off Faster</a>
         {% endif %}
       </div>
     </div>
