@@ -53,3 +53,9 @@ class InvestmentTransactionTypeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(InvestmentTransactionType, InvestmentTransactionTypeAdmin)
+
+class MockInvestmentAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in MockInvestment._meta.fields]
+
+
+admin.site.register(MockInvestment, MockInvestmentAdmin)

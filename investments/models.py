@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import uuid
 from django.utils import timezone
+from datetime import date, timedelta
 from accounts.models import Currency, ModelBaseFieldsAbstract, Account
 
 class SecurityType(ModelBaseFieldsAbstract):
@@ -187,3 +188,99 @@ class InvestmentTransaction(models.Model):
             return "{}".format(self.plaid_inv_transaction_id)
         else:
             return "{}".format(self.id)
+
+# Definitions for PAY_PERIOD_CHOICES below.
+DAILY = 1
+WEEKLY = 7
+BIWEEKLY = 14
+SEMIMONTHLY = 15
+MONTHLY = 30
+YEARLY = 365
+
+# Choices variables for pay_period.
+PAY_PERIOD_CHOICES = [
+    (DAILY, 'Daily'),
+    (WEEKLY, 'Weekly'),
+    (BIWEEKLY, 'Biweekly'),
+    (SEMIMONTHLY, 'Semi-monthly'),
+    (MONTHLY, 'Monthly'),
+    (YEARLY, 'Yearly'),
+]
+
+# For setting compounding period
+DAILY = 365
+WEEKLY = 52
+BIWEEKLY = 26
+SEMIMONTHLY = 24
+MONTHLY = 12
+YEARLY = 1
+
+# Compounding period
+COMPOUNDING_PERIOD_CHOICES = [
+    (DAILY, 'Daily'),
+    (WEEKLY, 'Weekly'),
+    (BIWEEKLY, 'Biweekly'),
+    (SEMIMONTHLY, 'Semi-monthly'),
+    (MONTHLY, 'Monthly'),
+    (YEARLY, 'Yearly'),
+]
+
+class MockInvestment(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+    user = models.OneToOneField(User, blank=True, null=True, default=None, on_delete=models.CASCADE)
+    initial_principal = models.DecimalField(max_digits=14, decimal_places=2, default=0, blank=True, null=True)
+    interest_rate = models.DecimalField(max_digits=14, decimal_places=2, default=0, blank=True, null=True)
+    time_in_years = models.IntegerField(default=0, blank=True, null=True)
+    input_amount_per_period = models.DecimalField(max_digits=14, decimal_places=2, default=0, blank=True, null=True)
+    input_period_in_days = models.IntegerField(
+            choices=PAY_PERIOD_CHOICES,
+            default=MONTHLY,
+        )
+    times_compounded_per_year = models.IntegerField(
+            choices=COMPOUNDING_PERIOD_CHOICES,
+            default=MONTHLY,
+    )
+
+    def calculate_return(self):
+        interest_rate = self.interest_rate / 100
+        time_in_years = self.time_in_years
+        payment_amount_per_period = float(self.input_amount_per_period)
+        payment_period_in_days = self.input_period_in_days # Weekly = 7 Days
+        principal = float(self.initial_principal)
+        compounding_periods = self.times_compounded_per_year
+        compound_date = date.today()
+        payments_per_year = 365 / payment_period_in_days
+        periods = time_in_years * compounding_periods
+
+        total_investment_value = principal
+        growth_series = []
+        growth_series.append(principal)
+        growth_series_dates = []
+        growth_series_dates.append(compound_date)
+        total_interest_earned = 0
+
+        for period in range(0, periods): #For each year in time in years
+            """Each period, principal increases by payment amount,
+               Total investment value is compounded using new principal,
+               total investment value becomes the new principal
+               """
+            previous_value = total_investment_value
+
+            principal += payment_amount_per_period
+            total_investment_value = principal * (1 + float(interest_rate/compounding_periods))
+            principal = total_investment_value
+
+            interest_earned = (total_investment_value - previous_value) - payment_amount_per_period
+            total_interest_earned += interest_earned
+
+            compound_date += timedelta(days=payment_period_in_days)
+
+            growth_series.append(total_investment_value)
+            growth_series_dates.append(compound_date)
+
+        growth_series_dates = [item.strftime("%m/%d/%Y") for item in growth_series_dates]
+
+        return { "final_value":round(total_investment_value, 2), "growth_series":growth_series, "growth_series_dates":growth_series_dates,
+                "total_interest_earned":round(total_interest_earned, 2), "last_date":date }

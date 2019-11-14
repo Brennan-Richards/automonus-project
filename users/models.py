@@ -7,7 +7,7 @@ import uuid
 from income.models import Income, IncomeStream
 from institutions.models import UserInstitution
 from accounts.models import Transaction, Account
-from investments.models import InvestmentTransaction
+from investments.models import InvestmentTransaction, MockInvestment
 from liabilities.models import StudentLoan, CreditCard
 from payments.models import MockSubscription
 from expenditures.models import Housing, Car, Miscellaneous, Utilities, Food
@@ -157,3 +157,8 @@ class Profile(models.Model):
         car_models = Car.objects.filter(user=self.user)
         if car_models:
             return True
+    # 
+    # def has_mock_investment(self):
+    #     mock_investment = MockInvestment.objects.get(user=self.user)
+    #     if mock_investment:
+    #         return True

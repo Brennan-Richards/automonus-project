@@ -5,8 +5,9 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from charts.utils import ChartData
 from django.db.models import Sum
-from .models import Holding, InvestmentTransaction
+from .models import Holding, InvestmentTransaction, MockInvestment
 from accounts.models import Account
+from .forms import UpdateMockInvestmentForm
 
 @login_required
 def investments_dashboard(request):
@@ -31,3 +32,48 @@ def investments_dashboard(request):
                    "investment_transactions": investment_transactions, "holdings":holdings
                    }
     return render(request, 'investments/investments_dashboard.html', context)
+
+@login_required
+def investment_analysis(request):
+    user = request.user
+    context = {}
+
+    mock_investment = MockInvestment.objects.filter(user=user).first()
+
+    if mock_investment:
+        form = UpdateMockInvestmentForm(request.POST, instance=mock_investment)
+    else:
+        form = UpdateMockInvestmentForm(request.POST)
+
+    context["form"] = form
+    
+    if form.is_valid():
+        investment = form.save(commit=False)
+        investment.user = user
+        investment.save()
+
+    if mock_investment:
+        context["mock_investment"] = mock_investment
+        final_value = mock_investment.calculate_return()["final_value"]
+        context["final_value"] = final_value
+        total_interest_earned = mock_investment.calculate_return()["total_interest_earned"]
+        context["total_interest_earned"] = total_interest_earned
+        context["total_principal_input"] = round(final_value - total_interest_earned, 2)
+        context["last_date"] = mock_investment.calculate_return()["last_date"]
+        chart_name = "Projection of mock investment"
+        chart_type = "line"
+        chart_categories = mock_investment.calculate_return()["growth_series_dates"]
+        data = mock_investment.calculate_return()["growth_series"]
+        chart_series = [{"name":"Investment Value ($)", "data":data}]
+        context["charts_data"] = [{"title": chart_name, "type": chart_type, "categories": chart_categories,
+                      "chart_series": chart_series}]
+
+    # else:
+    #     create_form = UpdateMockInvestmentForm(request.POST)
+    #     context["create_form"] = create_form
+    #     if create_form.is_valid():
+    #         print(create_form)
+    #         create_form.save()
+
+
+    return render(request, 'investments/investment_analysis.html', context)

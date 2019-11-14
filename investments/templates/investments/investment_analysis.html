@@ -1,0 +1,90 @@
+{% extends 'charts/base.html' %}
+
+{% block page_content %}
+
+<div class="row">
+  <div class="col text-center">
+    <h1>Investment Analysis</h1>
+  </div>
+</div>
+{% if mock_investment %}
+<div class="row">
+  <div class="col-lg-12">
+    <div id="charts_container"></div>
+  </div>
+</div>
+<br>
+<div class="row text-center">
+  <div class="col-lg-8 offset-lg-2">
+    <ul class="list-group">
+      <li class="list-group-item active">With: initial principal = ${{ mock_investment.initial_principal }}, payment = ${{ mock_investment.input_amount_per_period }},
+         payments per year = {{ mock_investment.input_period_in_days }}, interest rate = {{ mock_investment.interest_rate }}%,
+         compounding periods per year = {{ mock_investment.times_compounded_per_year }}, after {{ mock_investment.time_in_years }} years. . .</li>
+      <li class="list-group-item">Your investment is projected to be worth ${{ final_value }}.</li>
+      <li class="list-group-item">You will have earned ${{ total_interest_earned }} in interest, after having put in ${{ total_principal_input }}
+                                  in total principal.</li>
+    </ul>
+  </div>
+</div>
+<br>
+<div class="row text-center">
+  <div class="col">
+    <p class='text-muted'>Update Mock Investment Specs:</p>
+  </div>
+</div>
+<div class="row text-center">
+  <div class="col-lg-6 offset-lg-3 card p-4">
+    <form action="/investments/investment_analysis/" method="POST" id="payment-form">
+      {% csrf_token %}
+      <p>How much will you add as a downpayment? ${{ form.initial_principal }}</p>
+      <p>How often will you add money from your income? {{ form.input_period_in_days }}</p>
+      <p>How much will you add? {{ form.input_amount_per_period }}</p>
+      <hr>
+      <p>Set the market interest rate (%): {{ form.interest_rate }}</p>
+      <p>How often will your loan be compounded? {{ form.times_compounded_per_year }}</p>
+      <hr>
+      <p>For how many years do you want the simulation to run? {{ form.time_in_years }}</p>
+      <button type="submit" class="btn btn-sm btn-success">Submit</button>
+    </form>
+  </div>
+</div>
+<!-- initial_principal = models.DecimalField(max_digits=14, decimal_places=2, default=0, blank=True, null=True)
+  interest_rate = models.DecimalField(max_digits=14, decimal_places=2, default=0, blank=True, null=True)
+  time_in_years = models.IntegerField(default=0, blank=True, null=True)
+  input_amount_per_period = models.DecimalField(max_digits=14, decimal_places=2, default=0, blank=True, null=True)
+  input_period_in_days = models.IntegerField(
+          choices=PAY_PERIOD_CHOICES,
+          default=MONTHLY,
+      )
+  times_compounded_per_year = models.IntegerField(
+          choices=COMPOUNDING_PERIOD_CHOICES,
+          default=MONTHLY,
+  ) -->
+
+<!-- {{ charts_data }} -->
+<!-- {{ mock_investment.times_compounded_per_year }} -->
+{% else %}
+<div class="row text-center">
+  <div class="col">
+    <p class='text-muted'>Fill Out Specs for a Mock Investment:</p>
+  </div>
+</div>
+<div class="row text-center">
+  <div class="col-lg-6 offset-lg-3 card p-4">
+    <form action="/investments/investment_analysis/" method="POST" id="payment-form">
+      {% csrf_token %}
+      <p>How much will you add as a downpayment? ${{ form.initial_principal }}</p>
+      <p>How often will you add money from your income? {{ form.input_period_in_days }}</p>
+      <p>How much will you add? {{ form.input_amount_per_period }}</p>
+      <hr>
+      <p>Set the market interest rate (%): {{ form.interest_rate }}</p>
+      <p>How often will your loan be compounded? {{ form.times_compounded_per_year }}</p>
+      <hr>
+      <p>For how many years do you want the simulation to run? {{ form.time_in_years }}</p>
+      <button type="submit" class="btn btn-sm btn-success">Submit</button>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+{% endblock page_content %}
