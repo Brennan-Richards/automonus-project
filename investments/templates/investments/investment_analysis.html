@@ -17,9 +17,28 @@
 <div class="row text-center">
   <div class="col-lg-8 offset-lg-2">
     <ul class="list-group">
-      <li class="list-group-item active">With: initial principal = ${{ mock_investment.initial_principal }}, payment = ${{ mock_investment.input_amount_per_period }},
-         payments per year = {{ mock_investment.input_period_in_days }}, interest rate = {{ mock_investment.interest_rate }}%,
-         compounding periods per year = {{ mock_investment.times_compounded_per_year }}, after {{ mock_investment.time_in_years }} years. . .</li>
+
+      <li class="list-group-item active">
+        <p>Investment Specs:</p>
+        <table class="table table-sm text-white">
+          <tr>
+            <th>Initial Principal</th>
+            <th>Payment</th>
+            <th>Payments per year</th>
+            <th>Interest Rate</th>
+            <th>Compounding Periods per year</th>
+            <th>Simulation Length</th>
+          </tr>
+          <tr>
+            <td>${{ mock_investment.initial_principal }}</td>
+            <td>${{ mock_investment.input_amount_per_period }}</td>
+            <td>{{ mock_investment.input_period_in_days }}</td>
+            <td>{{ mock_investment.interest_rate }}%</td>
+            <td>{{ mock_investment.times_compounded_per_year }}</td>
+            <td>{{ mock_investment.time_in_years }} years</td>
+          </tr>
+        </table>
+      </li>
       <li class="list-group-item">Your investment is projected to be worth ${{ final_value }}.</li>
       <li class="list-group-item">You will have earned ${{ total_interest_earned }} in interest, after having put in ${{ total_principal_input }}
                                   in total principal.</li>

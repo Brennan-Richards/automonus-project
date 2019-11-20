@@ -7,7 +7,7 @@ from . import views
 
 urlpatterns = [
     path('investments_dashboard/', views.investments_dashboard, name='investments_dashboard'),
-    path('investment_analysis/', views.investment_analysis, name='investment_analysis'),
+    path('investment_calculator/', views.investment_calculator, name='investment_calculator'),
 ]
 
 if settings.DEBUG:

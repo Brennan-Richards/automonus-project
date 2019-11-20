@@ -34,7 +34,7 @@ def investments_dashboard(request):
     return render(request, 'investments/investments_dashboard.html', context)
 
 @login_required
-def investment_analysis(request):
+def investment_calculator(request):
     user = request.user
     context = {}
 
@@ -46,7 +46,7 @@ def investment_analysis(request):
         form = UpdateMockInvestmentForm(request.POST)
 
     context["form"] = form
-    
+
     if form.is_valid():
         investment = form.save(commit=False)
         investment.user = user

@@ -50,13 +50,21 @@
   <br>
   <div class="row text-center">
     <div class="col-sm-6 offset-sm-3">
+      <p class="text-muted">Use our investments calculator to predict how much return you will receive on a new investment.</p>
+      <a href="{% url 'investment_calculator' %}" class="btn btn-sm btn-danger">Calculate a New Investment</a>
+    </div>
+  </div>
+  <br>
+  <hr>
+  <br>
+  <div class="row text-center">
+    <div class="col-sm-6 offset-sm-3">
       <h2>Your Investment Portfolio</h2>
       <div>
           Total amount invested: $<b>{{ total_investments }}</b>
       </div>
     </div>
   </div>
-
   <br>
   <br>
 
