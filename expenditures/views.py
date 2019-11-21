@@ -7,7 +7,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 from accounts.models import Transaction
-from expenditures.models import BudgetData
+from .models import Display, Housing, Car, Utilities, Food, Miscellaneous, BudgetData, CustomExpense, Bill
+from .forms import DisplayForm, HousingForm, CarForm, UtilitiesForm, FoodForm, MiscellaneousForm
 from django.db.models import Sum
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -45,10 +46,42 @@ def expenditures_dashboard(request):
 
     return render(request, 'expenditures/expenditures_dashboard.html', context)
 
-#Horne's Calculator Views
+class CreateBill(LoginRequiredMixin, CreateView):
+    model = Bill
+    fields = ['name', 'pay_to_account', 'description', 'set_auto_pay', 'payment_period', 'amount']
+    template_name = 'bills/create_bill.html'
+    success_url = reverse_lazy("bill_list")
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-from .models import Display, Housing, Car, Utilities, Food, Miscellaneous, BudgetData, CustomExpense
-from .forms import DisplayForm, HousingForm, CarForm, UtilitiesForm, FoodForm, MiscellaneousForm
+class BillListView(LoginRequiredMixin, ListView):
+    model = Bill
+    template_name = "bills/bill_list.html"
+    def get_queryset(self):
+        user = self.request.user
+        return Bill.objects.filter(user=user)
+
+class BillDetailView(LoginRequiredMixin, DetailView):
+    model = Bill
+    template_name = 'bills/bill_detail.html'
+
+class BillUpdateView(LoginRequiredMixin, UpdateView):
+    model = Bill
+    template_name = 'bills/bill_update.html'
+    fields = ['name', 'pay_to_account', 'description', 'set_auto_pay', 'payment_period', 'amount']
+    success_url = reverse_lazy("bill_list")
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class BillDelete(LoginRequiredMixin, DeleteView):
+    model = Bill
+    template_name = 'bills/bill_delete.html'
+    success_url = reverse_lazy("bill_list")
+
+
+#Horne's Calculator Views
 
 @login_required
 def hornescalculator_base(request):
@@ -86,14 +119,14 @@ class HousingListView(ListView):
     template_name = "hornescalculator/housing_list.html"
     def get_queryset(self):
         user = self.request.user
-        return Housing.objects.filter(account__user_institution__user=user)
+        return Housing.objects.filter(user=user)
 
 class CarListView(ListView):
     model = Car
     template_name = "hornescalculator/car_list.html"
     def get_queryset(self):
         user = self.request.user
-        return Car.objects.filter(account__user_institution__user=user)
+        return Car.objects.filter(user=user)
 
 class CreateCustomExpense(LoginRequiredMixin, CreateView):
     model = CustomExpense
