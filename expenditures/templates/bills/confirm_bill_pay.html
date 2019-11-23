@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row text-center">
+  <div class="col-lg-6 offset-lg-3">
+
+    <form action="#" method="post">
+      {% csrf_token %}
+
+      {% with field="src_accounts" %}
+      <div class="form-group">
+          <label class="col-form-label" for="src_accounts">
+            From account:
+          </label>
+          <select name="src_accounts" id="src_accounts" class="form-control">
+              {% for item in src_user_institutions %}
+              {% for account in item.accounts_user_institution.all %}
+              {% if account.subtype.name == 'savings' or account.subtype.name == 'checking' %}
+              {% if account.accounts_number_to_account.all %}
+              <option value='{{ account.uuid }}'>
+                  {{ account.user_institution.institution.name }} {{ account.name }}, balance:
+                  {{ account.current_balance }} $
+              </option>
+              {% endif %}
+              {% endif %}
+              {% endfor %}
+              {% endfor %}
+          </select>
+      </div>
+      {% endwith %}
+      <br>
+      <hr>
+      <p>I authorize Automonus to electronically debit my account for "{{ bill.name }}" and, if necessary,
+         electronically add money to my account to correct erroneous debits for this bill.
+         {{ form.user_confirmation }}</p>
+    </form>
+    <button type="submit" class="btn btn-primary">
+        Confirm
+    </button>
+  </div>
+</div>
+
+{% endblock %}

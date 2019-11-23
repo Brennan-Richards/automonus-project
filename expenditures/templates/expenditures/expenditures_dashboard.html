@@ -83,6 +83,16 @@
   <hr>
   <br>
   <div class="row text-center">
+    <div class="col">
+      <p><b><span class="text-muted">BETA</span></b></p>
+      <a href="{% url 'bill_list' %}" class="btn btn-danger">Your bills</a>
+    </div>
+  </div>
+  <br>
+  <hr>
+  <br>
+
+  <div class="row text-center">
     <div class="col-sm-6 offset-sm-3">
       <h3>Your Spending Transactions</h3>
     </div>
@@ -101,9 +111,6 @@
                   <tbody>
                       {% for transaction in all_transactions %}
                           <tr>
-                              <!-- <td>
-                                {{ transaction.id }}
-                              </td> -->
                               <td>
                                   {{ transaction.date|date:"m/d/Y" }}
                               </td>

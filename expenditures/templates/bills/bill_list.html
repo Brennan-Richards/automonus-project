@@ -18,6 +18,7 @@
         <div class="card border-success mt-3 text-center">
           <h3 class="card-header">{{ bill.name }}</h3>
           <div class="card-body">
+            <!-- <br>
             <table class="table table-sm">
               <tr>
                 <th>Amount</th>
@@ -28,6 +29,9 @@
                 <td>{{ bill.payment_period }}</td>
               </tr>
             </table>
+            <br> -->
+            <span><a href="{% url 'confirm_bill_pay' bill.id %}" class="btn btn-lg btn-block btn-success">Pay</a></span>
+            <br>
             <span><a href="{% url 'detail_bill' bill.id %}" class="btn btn-sm btn-secondary">Detail</a></span>
             <span><a href="{% url 'update_bill' bill.id %}" class="btn btn-sm btn-secondary">Update</a></span>
             <span><a href="{% url 'remove_bill' bill.id %}" class="btn btn-sm btn-secondary">Remove</a></span>

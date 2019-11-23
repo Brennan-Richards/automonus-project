@@ -1,19 +1,21 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 from accounts.models import Transaction
+from institutions.models import UserInstitution
 from .models import Display, Housing, Car, Utilities, Food, Miscellaneous, BudgetData, CustomExpense, Bill
-from .forms import DisplayForm, HousingForm, CarForm, UtilitiesForm, FoodForm, MiscellaneousForm
+from .forms import DisplayForm, HousingForm, CarForm, UtilitiesForm, FoodForm, MiscellaneousForm, ConfirmBillPayForm
 from django.db.models import Sum
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from charts.utils import ChartData
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 
@@ -46,9 +48,56 @@ def expenditures_dashboard(request):
 
     return render(request, 'expenditures/expenditures_dashboard.html', context)
 
+@method_decorator(login_required, name="dispatch")
+class ConfirmBillPay(FormView):
+    template_name = "bills/confirm_bill_pay.html"
+    form_class = ConfirmBillPayForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ConfirmBillPay, self).get_context_data(**kwargs)
+        src_user_institutions = UserInstitution.objects.filter(user=self.request.user)
+        context["src_user_institutions"] = src_user_institutions
+        bill = Bill.objects.get(id=self.kwargs['bill_id'])
+        context["bill"] = bill
+        return context
+
+    def get_success_url(self):
+        return reverse("bill_list")
+
+    # def get_form_kwargs(self):
+    #     kwargs = super(ConfirmBillPay, self).get_form_kwargs()
+    #     kwargs.update({"user": self.request.user})
+    #     return kwargs
+
+    # def form_valid(self, form):
+    #     # This method is called when valid form data has been POSTed.
+    #     # It should return an HttpResponse.
+    #     # params
+    #     currency = "usd"
+    #     amount = int(Decimal(form.amount) * 100)
+    #     app_fee = StripleManager.calculate_application_fee(
+    #         form.amount
+    #     )  # TODO STRIPE FEE
+    #     account_uuid = form.src_user_accounts.uuid
+    #     dest_account_number = Bill.objects.get(id=bill_id)
+    #     # init manager
+    #     sm = StripleManager(account_uuid=account_uuid)
+    #     # call deposit method
+    #     try:
+    #         resp = sm.transfer_between_accounts(
+    #             dest_account_uuid=dest_account_uuid,
+    #             currency=currency,
+    #             amount=amount,
+    #             app_fee=app_fee,
+    #         )
+    #     except Exception as e:
+    #         return HttpResponseRedirect(reverse("try_again_later"))
+    #     return HttpResponseRedirect(self.get_success_url())
+
+
 class CreateBill(LoginRequiredMixin, CreateView):
     model = Bill
-    fields = ['name', 'pay_to_account', 'description', 'set_auto_pay', 'payment_period', 'amount']
+    fields = ['name', 'pay_to_account', 'description', 'set_auto_pay', 'next_due_date', 'payment_period', 'amount']
     template_name = 'bills/create_bill.html'
     success_url = reverse_lazy("bill_list")
     def form_valid(self, form):
