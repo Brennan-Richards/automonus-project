@@ -76,4 +76,4 @@ def investment_calculator(request):
     #         create_form.save()
 
 
-    return render(request, 'investments/investment_analysis.html', context)
+    return render(request, 'investments/investment_calculator.html', context)
