@@ -23,25 +23,27 @@
         <table class="table table-sm text-white">
           <tr>
             <th>Initial Principal</th>
-            <th>Payment</th>
-            <th>Payments per year</th>
+            <th>Payment amount</th>
+            <th>Days between payments</th>
             <th>Interest Rate</th>
             <th>Compounding Periods per year</th>
             <th>Simulation Length</th>
           </tr>
           <tr>
             <td>${{ mock_investment.initial_principal }}</td>
-            <td>${{ mock_investment.input_amount_per_period }}</td>
-            <td>{{ mock_investment.input_period_in_days }}</td>
+            <td>${{ mock_investment.payment_amount_per_period }}</td>
+            <td>{{ mock_investment.payment_period_in_days }}</td>
             <td>{{ mock_investment.interest_rate }}%</td>
             <td>{{ mock_investment.times_compounded_per_year }}</td>
             <td>{{ mock_investment.time_in_years }} years</td>
           </tr>
         </table>
       </li>
-      <li class="list-group-item">Your investment is projected to be worth ${{ final_value }}.</li>
-      <li class="list-group-item">You will have earned ${{ total_interest_earned }} in interest, after having put in ${{ total_principal_input }}
-                                  in total principal.</li>
+      <li class="list-group-item">After {{ mock_investment.time_in_years }} years, your investment is projected
+                                  to be worth <b>${{ final_value }}.</b>
+      </li>
+      <li class="list-group-item">You will have earned <b>${{ total_interest_earned }}</b> in interest,
+        on top of the <b>${{ total_principal_input }}</b> that you will have invested.</li>
     </ul>
   </div>
 </div>
@@ -55,7 +57,7 @@
   <div class="col-lg-6 offset-lg-3 card p-4">
     <form action="/investments/investment_calculator/" method="POST" id="payment-form">
       {% csrf_token %}
-      <p>How much will you add as a downpayment? ${{ form.initial_principal }}</p>
+      <p placeholder="0">How much will you add as a downpayment? ${{ form.initial_principal }}</p>
       <p>How often will you add money from your income? {{ form.payment_period_in_days }}</p>
       <p>How much will you add? {{ form.payment_amount_per_period }}</p>
       <hr>
@@ -67,21 +69,6 @@
     </form>
   </div>
 </div>
-<!-- initial_principal = models.DecimalField(max_digits=14, decimal_places=2, default=0, blank=True, null=True)
-  interest_rate = models.DecimalField(max_digits=14, decimal_places=2, default=0, blank=True, null=True)
-  time_in_years = models.IntegerField(default=0, blank=True, null=True)
-  input_amount_per_period = models.DecimalField(max_digits=14, decimal_places=2, default=0, blank=True, null=True)
-  input_period_in_days = models.IntegerField(
-          choices=PAY_PERIOD_CHOICES,
-          default=MONTHLY,
-      )
-  times_compounded_per_year = models.IntegerField(
-          choices=COMPOUNDING_PERIOD_CHOICES,
-          default=MONTHLY,
-  ) -->
-
-<!-- {{ charts_data }} -->
-<!-- {{ mock_investment.times_compounded_per_year }} -->
 {% else %}
 <div class="row text-center">
   <div class="col">

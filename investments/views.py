@@ -39,12 +39,14 @@ def investment_calculator(request):
     context = {}
 
     mock_investment = MockInvestment.objects.filter(user=user).first()
-
     if mock_investment:
         form = UpdateMockInvestmentForm(request.POST, instance=mock_investment)
+        print("update")
+        print(mock_investment)
     else:
         form = UpdateMockInvestmentForm(request.POST)
-
+    if request.method == 'POST':
+        form = form
     context["form"] = form
 
     if form.is_valid():
