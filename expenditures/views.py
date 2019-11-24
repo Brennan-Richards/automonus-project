@@ -97,7 +97,7 @@ class ConfirmBillPay(FormView):
 
 class CreateBill(LoginRequiredMixin, CreateView):
     model = Bill
-    fields = ['name', 'pay_to_account', 'description', 'set_auto_pay', 'next_due_date', 'payment_period', 'amount']
+    fields = ['name', 'pay_to_account', 'description', 'set_auto_pay', 'payment_period', 'amount']
     template_name = 'bills/create_bill.html'
     success_url = reverse_lazy("bill_list")
     def form_valid(self, form):
