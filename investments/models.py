@@ -233,8 +233,8 @@ class MockInvestment(models.Model):
     initial_principal = models.DecimalField(max_digits=14, decimal_places=2, default=0, blank=True, null=True)
     interest_rate = models.DecimalField(max_digits=14, decimal_places=2, default=0, blank=True, null=True)
     time_in_years = models.IntegerField(default=0, blank=True, null=True)
-    input_amount_per_period = models.DecimalField(max_digits=14, decimal_places=2, default=0, blank=True, null=True)
-    input_period_in_days = models.IntegerField(
+    payment_amount_per_period = models.DecimalField(max_digits=14, decimal_places=2, default=0, blank=True, null=True)
+    payment_period_in_days = models.IntegerField(
             choices=PAY_PERIOD_CHOICES,
             default=MONTHLY,
         )
@@ -244,43 +244,41 @@ class MockInvestment(models.Model):
     )
 
     def calculate_return(self):
-        interest_rate = self.interest_rate / 100
-        time_in_years = self.time_in_years
-        payment_amount_per_period = float(self.input_amount_per_period)
-        payment_period_in_days = self.input_period_in_days # Weekly = 7 Days
-        principal = float(self.initial_principal)
-        compounding_periods = self.times_compounded_per_year
-        compound_date = date.today()
-        payments_per_year = 365 / payment_period_in_days
-        periods = time_in_years * compounding_periods
+        growth_series = list()
+        growth_series_dates = list()
+        total_interest = 0
+        sim_current_date = date.today()
 
-        total_investment_value = principal
-        growth_series = []
-        growth_series.append(principal)
-        growth_series_dates = []
-        growth_series_dates.append(compound_date)
-        total_interest_earned = 0
+        # Variables to work with in the compound interest calculation.
+        A = float(self.initial_principal)
+        r = self.interest_rate / 100
+        # t = self.time_in_years
+        t_in_days = self.time_in_years * 365
+        payment = float(self.payment_amount_per_period)
+        days_between_payments = round(self.payment_period_in_days)
+        m = self.times_compounded_per_year
+        days_between_m = round(365 / self.times_compounded_per_year)
 
-        for period in range(0, periods): #For each year in time in years
-            """Each period, principal increases by payment amount,
-               Total investment value is compounded using new principal,
-               total investment value becomes the new principal
-               """
-            previous_value = total_investment_value
+        for i in range(0, t_in_days):
+            sim_current_date += timedelta(days=1)
+            if i % days_between_payments is 0:
+                # Investment value increases by payment amount each time a payment is made.
+                A += payment
 
-            principal += payment_amount_per_period
-            total_investment_value = principal * (1 + float(interest_rate/compounding_periods))
-            principal = total_investment_value
+            if i % days_between_m is 0:
 
-            interest_earned = (total_investment_value - previous_value) - payment_amount_per_period
-            total_interest_earned += interest_earned
+                # Calculating interest earned, then setting investment value to account for interest earned.
+                newA = A * float(1 + r/m)
+                interest_earned = newA - A
+                total_interest += interest_earned
+                A = round(newA, 2)
 
-            compound_date += timedelta(days=payment_period_in_days)
+                # Pushing data to arrays.
+                growth_series.append(A)
+                growth_series_dates.append(sim_current_date)
 
-            growth_series.append(total_investment_value)
-            growth_series_dates.append(compound_date)
-
+        #Reformatting growth_series_dates.
         growth_series_dates = [item.strftime("%m/%d/%Y") for item in growth_series_dates]
 
-        return { "final_value":round(total_investment_value, 2), "growth_series":growth_series, "growth_series_dates":growth_series_dates,
-                "total_interest_earned":round(total_interest_earned, 2), "last_date":date }
+        return { "final_value":A, "growth_series":growth_series, "growth_series_dates":growth_series_dates,
+                "total_interest_earned":round(total_interest, 2), "last_date":date}

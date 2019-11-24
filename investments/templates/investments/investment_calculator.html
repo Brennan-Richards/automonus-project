@@ -53,17 +53,17 @@
 </div>
 <div class="row text-center">
   <div class="col-lg-6 offset-lg-3 card p-4">
-    <form action="/investments/investment_analysis/" method="POST" id="payment-form">
+    <form action="/investments/investment_calculator/" method="POST" id="payment-form">
       {% csrf_token %}
       <p>How much will you add as a downpayment? ${{ form.initial_principal }}</p>
-      <p>How often will you add money from your income? {{ form.input_period_in_days }}</p>
-      <p>How much will you add? {{ form.input_amount_per_period }}</p>
+      <p>How often will you add money from your income? {{ form.payment_period_in_days }}</p>
+      <p>How much will you add? {{ form.payment_amount_per_period }}</p>
       <hr>
       <p>Set the market interest rate (%): {{ form.interest_rate }}</p>
       <p>How often will your loan be compounded? {{ form.times_compounded_per_year }}</p>
       <hr>
       <p>For how many years do you want the simulation to run? {{ form.time_in_years }}</p>
-      <button type="submit" class="btn btn-sm btn-success">Submit</button>
+      <button type="submit" class="btn btn-sm btn-success">Update</button>
     </form>
   </div>
 </div>
@@ -90,11 +90,11 @@
 </div>
 <div class="row text-center">
   <div class="col-lg-6 offset-lg-3 card p-4">
-    <form action="/investments/investment_analysis/" method="POST" id="payment-form">
+    <form action="/investments/investment_calculator/" method="POST" id="payment-form">
       {% csrf_token %}
       <p>How much will you add as a downpayment? ${{ form.initial_principal }}</p>
-      <p>How often will you add money from your income? {{ form.input_period_in_days }}</p>
-      <p>How much will you add? {{ form.input_amount_per_period }}</p>
+      <p>How often will you add money from your income? {{ form.payment_period_in_days }}</p>
+      <p>How much will you add? {{ form.payment_amount_per_period }}</p>
       <hr>
       <p>Set the market interest rate (%): {{ form.interest_rate }}</p>
       <p>How often will your loan be compounded? {{ form.times_compounded_per_year }}</p>
