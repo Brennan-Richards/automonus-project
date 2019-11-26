@@ -221,7 +221,7 @@ COMPOUNDING_PERIOD_CHOICES = [
     (WEEKLY, 'Weekly'),
     (BIWEEKLY, 'Biweekly'),
     (SEMIMONTHLY, 'Semi-monthly'),
-    (MONTHLY, 'Monthly'),
+    (MONTHLY,  'Monthly'),
     (YEARLY, 'Yearly'),
 ]
 
