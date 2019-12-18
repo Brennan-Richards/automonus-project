@@ -23,11 +23,22 @@
   {% if user.profile.get_user_institutions %}
   <br>
   <br>
-    <div class="row text-center">
-      <div class="col-sm-6 offset-sm-3">
-        <h1 class="text-center">Your Master Dashboard</h1>
+    <div class="row">
+      <div class="col-lg-8">
+          <div class="jumbotron">Your Master Dashboard</div>
+      </div>
+      <div class="col-lg-3">
+        <div class="card mt-2 bg-danger">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Make a payment:</strong></li>
+            <a class="list-group-item" href="{% url 'external_transfer_create' %}">To Another User</a>
+            <a class="list-group-item" href="{% url 'internal_transfer_value' %}">Between Your Accounts</a>
+          </ul>
+        </div>
       </div>
     </div>
+    <br>
+    <hr>
     <br>
     <div class="row">
         <div class="col-lg-12 text-center">
@@ -85,14 +96,6 @@
     <br>
     <hr>
     <br>
-    <div class="row text-center">
-      <div class="col-sm-4 offset-sm-4">
-        <h3>Make a Payment</h3>
-        <a href="{% url 'external_transfer_create' %}" class="btn btn-block btn-lg btn-success">To Another User</a>
-        <a href="{% url 'internal_transfer_value' %}" class="btn btn-block btn-lg btn-success">Amongst Your Accounts</a>
-      </div>
-    </div>
-
   {% else %}
 
     <div class="row">

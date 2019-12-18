@@ -19,23 +19,39 @@
     <a class="nav-link" href="{% url 'investments_dashboard' %}">Investments</a>
   </li>
 </ul>
+<br>
+<br>
 
 {% if request.user.profile.has_transactions %}
 
-<br>
-<br>
   <div class="row">
-      <div class="col-lg-12 text-center">
-          <div class="h1">Your Expenditures Dashboard</div>
+    <div class="col-lg-8">
+        <div class="jumbotron">Your Expenditures Dashboard</div>
+    </div>
+    <div class="col-lg-3">
+      <div class="card mt-4" style="">
+        <ul class="list-group list-group-flush">
+            <a class="list-group-item" href="{% url 'hornescalculator_base' %}">
+                {% if user.profile.planned_life_expenses %}
+                  Edit your spending plan
+                {% else %}
+                  Create a spending plan
+                {% endif %}
+            </a>
+            <a class="list-group-item" href="{% url 'bill_list' %}">Pay Your Bills</a>
+        </ul>
       </div>
+    </div>
   </div>
+  <br>
+  <br>
+
+  {% if user.profile.planned_life_expenses %}
   <br>
   <hr>
   <br>
-  <div class="row text-center">
     <div class="col-sm-6 offset-sm-3">
-      <p>Each month your living expenses cost you approximately:
-        {% if user.profile.planned_life_expenses %}
+          <p>Each month your living expenses cost you approximately:
           <table class="table">
             <tr>
               <th>Daily</th>
@@ -51,11 +67,9 @@
             </tr>
           </table>
           <a href="{% url 'hornescalculator_base' %}" class="btn btn-sm btn-success">Edit your spending plan</a>
-        {% else %}
-          <a href="{% url 'hornescalculator_base' %}" class="btn btn-sm btn-danger">Create a spending plan</a>
-        {% endif %}
       </p>
     </div>
+  {% endif %}
   </div>
   <br>
   <hr>
@@ -78,15 +92,6 @@
       <div class="col-lg-12">
           <div id="chart_container_1" class="mt-3"></div>
       </div>
-  </div>
-  <br>
-  <hr>
-  <br>
-  <div class="row text-center">
-    <div class="col">
-      <p><b><span class="text-muted">BETA</span></b></p>
-      <a href="{% url 'bill_list' %}" class="btn btn-danger">Your bills</a>
-    </div>
   </div>
   <br>
   <hr>

@@ -21,13 +21,22 @@
 </ul>
 
 {% if request.user.profile.has_liabilities %}
-<br>
-<br>
+  <br>
+  <br>
   <div class="row">
-      <div class="col-lg-12 text-center">
-          <div class="h1">Your Liabilities Dashboard</div>
+    <div class="col-lg-8">
+        <div class="jumbotron">Your Liabilities Dashboard</div>
+    </div>
+    <div class="col-lg-3">
+      <div class="card mt-2">
+        <ul class="list-group list-group-flush">
+          <a class="list-group-item" href="{% url 'student_loan_list' %}">Pay Your Loans Off Faster</a>
+        </ul>
       </div>
+    </div>
   </div>
+  <br>
+  <hr>
   <br>
   {% if user.profile.has_student_loans_data and user.profile.has_credit_card_data%}
     <div class="row text-center">
@@ -63,16 +72,6 @@
             {% endfor %}
           </tbody>
         </table>
-      </div>
-    </div>
-    <br>
-    <div class="row text-center">
-      <div class="col-sm-6 offset-sm-3">
-        {% if multiple_loans %}
-          <a href="{% url 'student_loan_list' %}" class="btn btn-sm btn-block btn-danger">Pay Your Loans Off Faster</a>
-        {% else %}
-          <a href="{% url 'liability_analysis' student_loan.id %}" class="btn btn-sm btn-block btn-danger">Pay Your Loan Off Faster</a>
-        {% endif %}
       </div>
     </div>
     <br>
@@ -185,11 +184,6 @@
     </div>
   </div>
   <br>
-  <div class="row text-center">
-    <div class="col-sm-6 offset-sm-3">
-      <a href="{% url 'liabilities_analysis' %}" class="btn btn-lg btn-block btn-danger">Pay Your Loans Off Faster</a>
-    </div>
-  </div>
 
 {% endif %}
 
