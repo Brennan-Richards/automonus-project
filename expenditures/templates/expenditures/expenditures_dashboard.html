@@ -23,13 +23,13 @@
 <br>
 
 {% if request.user.profile.has_transactions %}
-
+<div class="container">
   <div class="row">
     <div class="col-lg-8">
         <div class="jumbotron">Your Expenditures Dashboard</div>
     </div>
     <div class="col-lg-3">
-      <div class="card mt-4" style="">
+      <div class="card mt-4 bg-danger">
         <ul class="list-group list-group-flush">
             <a class="list-group-item" href="{% url 'hornescalculator_base' %}">
                 {% if user.profile.planned_life_expenses %}
@@ -50,6 +50,7 @@
   <br>
   <hr>
   <br>
+  <div class="row text-center">
     <div class="col-sm-6 offset-sm-3">
           <p>Each month your living expenses cost you approximately:
           <table class="table">
@@ -80,7 +81,7 @@
           <div id="chart_container_2" class="mt-3"></div>
       </div>
   </div>
-  <div class="row">
+  <div class="row text-center">
       <div class="col-lg-4 offset-lg-4">
         <p>Total spending this month: <b>${{ sum_transactions }}</b></p>
       </div>
@@ -103,8 +104,8 @@
     </div>
   </div>
   <div class="row mt-3">
-      <div class="col-lg-12">
-          <div class="table-responsive">
+      <div class="col-lg-10 offset-lg-1">
+          <div class="table-responsive table-striped table-bordered p-4">
               <table id="table" class="table table-bordered">
                   <thead>
                       <tr>
@@ -116,7 +117,7 @@
                   <tbody>
                       {% for transaction in all_transactions %}
                           <tr>
-                              <td>
+                              <td data-sort="YYYYMMDD">
                                   {{ transaction.date|date:"m/d/Y" }}
                               </td>
                               <td>
@@ -135,6 +136,7 @@
   <br>
   <hr>
   <br>
+  </div>
 {% else %}
 
 <br>

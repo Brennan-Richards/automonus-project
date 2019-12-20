@@ -21,7 +21,10 @@ class StripleManager:
     def __init__(
         self,
         account_uuid,
+
+        # Default Plaid client for testing
         client=default_client,
+
         stripe_pk=settings.STRIPE_PUBLIC_KEY,
         stripe_sk=settings.STRIPE_SECRET_KEY,
     ):
@@ -117,6 +120,7 @@ class StripleManager:
         return individual_external_account
 
     def deposit_payment(self, currency, amount, app_fee=0):
+        # Creates a charge on user account where deposit goes to the Automonus Stripe Account
         account = Account.objects.get(uuid=self.account_uuid)
         pub_resp = self.client.Item.public_token.create(
             account.user_institution.access_token
@@ -140,6 +144,38 @@ class StripleManager:
             customer=customer_id,  # Previously stored, then retrieved
         )
         return charge
+
+    # def pay_to_biller(self, dest_account_uuid, amount, currency="usd", app_fee=0):
+    #
+    #     external_account_test = {
+    #         #External account is a bank account OUTSIDE of Stripe to which payouts (etc.) can be made.
+    #         "object": "bank_account",
+    #         "country": "US",  # US ACH support only for USA accounts
+    #         "account_number": "000123456789",
+    #         "routing_number": "110000000",
+    #         "currency": dest_account.currency.code,
+    #     }
+    #
+    #     external_account = {
+    #         "object": "bank_account",
+    #         "country": "US",  # US ACH support only for USA accounts
+    #         "account_number": des_number.number_id,
+    #         "routing_number": des_number.number_routing,
+    #         "currency": dest_account.currency.code,
+    #     }
+    #
+    #     dest_connect_account = stripe.Account.create(
+    #         #Connect account is an account linked to Stripe.
+    #         country="US",
+    #         type="custom",
+    #         default_currency="usd",
+    #         business_type="individual",
+    #         external_account=external_account_test
+    #         if settings.ACH_STRIPE_TEST
+    #         else external_account,
+    #         individual=individual_data,
+    #         requested_capabilities=["legacy_payments"],
+    #     )
 
     def transfer_between_accounts(
         self, dest_account_uuid, amount, currency="usd", app_fee=0

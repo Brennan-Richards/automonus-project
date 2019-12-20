@@ -567,17 +567,3 @@ class Display(models.Model):
             return 12.00
         else:
             return 1.00
-
-
-class Bill(ModelBaseFieldsAbstract):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=False)
-    name = models.CharField(max_length=100)
-    pay_to_account = models.CharField(max_length=64, blank=True, null=True, default=None)
-    description = models.TextField(default=None)
-    set_auto_pay = models.BooleanField(default=False)
-    payment_period = models.CharField(
-            max_length=7,
-            choices=PAY_PERIOD_CHOICES,
-            default=WEEKLY,
-        )
-    amount = models.DecimalField(max_digits=18, decimal_places=2, default=0, blank=True, null=True)

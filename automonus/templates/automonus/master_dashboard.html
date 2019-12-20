@@ -1,5 +1,5 @@
 {% extends "charts/base.html" %}
-
+{% load static %}
 {% block page_content %}
 
 <ul class="nav nav-tabs">
@@ -30,7 +30,11 @@
       <div class="col-lg-3">
         <div class="card mt-2 bg-danger">
           <ul class="list-group list-group-flush">
-            <li class="list-group-item"><strong>Make a payment:</strong></li>
+            <li class="list-group-item text-center">
+              <img src="{% static 'img/aurum.jpeg' %}" alt="Aurum" height=140 width=140 >
+              <br>
+              <strong>Make a payment:</strong>
+            </li>
             <a class="list-group-item" href="{% url 'external_transfer_create' %}">To Another User</a>
             <a class="list-group-item" href="{% url 'internal_transfer_value' %}">Between Your Accounts</a>
           </ul>

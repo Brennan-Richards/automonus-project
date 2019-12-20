@@ -16,7 +16,9 @@ import json
 import stripe
 from payments.stripe_manager import StripleManager
 from decimal import Decimal
-from .models import MockSubscription
+from .models import MockSubscription, Bill, BillDestination
+from .forms import ConfirmBillPayForm, BillModelForm
+
 from institutions.models import UserInstitution
 from accounts.models import Account
 
@@ -25,7 +27,8 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView, CreateView, UpdateView
+from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
+from django.views.generic.list import ListView
 from django import forms
 from payments.forms import (
     ExternalTransferFirstForm,
@@ -38,6 +41,7 @@ from django.utils.decorators import method_decorator
 
 @login_required
 def enable_payments(request):
+    #obsolete . . .
     user = request.user
     available_subtypes = ["savings", "checking"]
     user_institution = UserInstitution.objects.filter(user=user)
@@ -49,6 +53,118 @@ def enable_payments(request):
 
 
 @method_decorator(login_required, name="dispatch")
+class ConfirmBillPay(FormView):
+    template_name = "bills/confirm_bill_pay.html"
+    form_class = ConfirmBillPayForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ConfirmBillPay, self).get_context_data(**kwargs)
+        src_user_institutions = UserInstitution.objects.filter(user=self.request.user)
+        context["src_user_institutions"] = src_user_institutions
+        bill = Bill.objects.get(id=self.kwargs['bill_id'])
+        context["bill"] = bill
+        return context
+
+    def get_success_url(self):
+        return reverse("bill_list")
+
+    # def get_form_kwargs(self):
+    #     kwargs = super(ConfirmBillPay, self).get_form_kwargs()
+    #     kwargs.update({"user": self.request.user})
+    #     return kwargs
+
+    # def form_valid(self, form):
+    #     # This method is called when valid form data has been POSTed.
+    #     # It should return an HttpResponse.
+    #     # params
+    #     currency = "usd"
+    #     amount = int(Decimal(form.amount) * 100)
+    #     app_fee = StripleManager.calculate_application_fee(
+    #         form.amount
+    #     )  # TODO STRIPE FEE
+    #     account_uuid = form.src_user_accounts.uuid
+    #     dest_account_number = Bill.objects.get(id=bill_id)
+    #     # init manager
+    #     sm = StripleManager(account_uuid=account_uuid)
+    #     # call deposit method
+    #     try:
+    #         resp = sm.transfer_between_accounts(
+    #             dest_account_uuid=dest_account_uuid,
+    #             currency=currency,
+    #             amount=amount,
+    #             app_fee=app_fee,
+    #         )
+    #     except Exception as e:
+    #         return HttpResponseRedirect(reverse("try_again_later"))
+    #     return HttpResponseRedirect(self.get_success_url())
+
+class CreateBillDestination(LoginRequiredMixin, CreateView):
+    model = BillDestination
+    fields = ['biller_name', 'mailing_address', 'home_address', 'ach_account_number']
+    template_name = 'bills/bill_destination_create.html'
+    success_url = reverse_lazy("create_bill")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class CreateBill(LoginRequiredMixin, CreateView):
+    # bill_destinations = BillDestination.objects.filter(user = self.request.user).first()
+    # if bill_destinations:
+    model = Bill
+    form_class = BillModelForm
+    template_name = 'bills/create_bill.html'
+    success_url = reverse_lazy("bill_list")
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateBill, self).get_context_data(**kwargs)
+        user = self.request.user
+        bill_destinations = BillDestination.objects.filter(user=user)
+        context["bill_destinations"] = bill_destinations
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(CreateBill, self).get_form_kwargs()
+        kwargs.update({'request_user': self.request.user})
+        return kwargs
+
+    def form_valid(self, form):
+        print("111")
+        print(self.request.user)
+        form.instance.user = self.request.user
+        # bill_dest_uuid = self.bill_destination
+        # form.instance.bill_destination =  form.bill_destination #BillDestination.objects.get(uuid=bill_dest_uuid)
+        return super().form_valid(form)
+
+    # def post(self, request):
+    #     print(request.POST.copy())
+
+class BillListView(LoginRequiredMixin, ListView):
+    model = Bill
+    template_name = "bills/bill_list.html"
+    def get_queryset(self):
+        user = self.request.user
+        return Bill.objects.filter(user=user)
+
+class BillDetailView(LoginRequiredMixin, DetailView):
+    model = Bill
+    template_name = 'bills/bill_detail.html'
+
+class BillUpdateView(LoginRequiredMixin, UpdateView):
+    model = Bill
+    template_name = 'bills/bill_update.html'
+    fields = ['name', 'description', 'set_auto_pay', 'payment_period', 'amount']
+    success_url = reverse_lazy("bill_list")
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class BillDelete(LoginRequiredMixin, DeleteView):
+    model = Bill
+    template_name = 'bills/bill_delete.html'
+    success_url = reverse_lazy("bill_list")
+
+@method_decorator(login_required, name="dispatch")
 class StripeChecker(View):
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -58,7 +174,7 @@ class StripeChecker(View):
         amount = int(Decimal(request.POST.get("amount", None)) * 100)
         account_uuid = request.POST.get("account_uuid", None)
         # if amount < 50:
-        #     return HttpResponseBadRequest(content='amount must be more than 0.5$')
+        #     return HttpResponseBadRequest(content='amount must be more than $0.5')
         sm = StripleManager(account_uuid=account_uuid)
         try:
             a = 1

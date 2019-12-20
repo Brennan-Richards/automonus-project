@@ -5,15 +5,15 @@
 {% block content %}
 <div class="row text-center">
   <div class="col">
-    <h1>Add a New Bill</h1>
+    <h1>Add a New Biller</h1>
   </div>
 </div>
 <br>
 <div class="row">
   <div class="col-lg-6 offset-lg-3">
-    <form action="#" method="POST" role="form">
+    <form method="post" novalidate>
       {% csrf_token %}
-      {{ form.as_p }}
+      {{ form|crispy }}
       <div class="text-center">
         <input class="btn btn-primary" type="submit" value="Submit" />
       </div>

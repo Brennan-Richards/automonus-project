@@ -30,11 +30,6 @@ class FoodAdmin(admin.ModelAdmin):
 
 admin.site.register(Food, FoodAdmin)
 
-class BillAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Bill._meta.fields]\
-
-admin.site.register(Bill, BillAdmin)
-
 
 class MiscellaneousAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Miscellaneous._meta.fields]

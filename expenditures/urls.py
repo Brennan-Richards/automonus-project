@@ -8,13 +8,6 @@ from . import views
 urlpatterns = [
     path('expenditures_dashboard/', views.expenditures_dashboard, name='expenditures_dashboard'),
 
-    path('bills/your-bills/', views.BillListView.as_view(), name="bill_list"),
-    path('bills/new-bill/', views.CreateBill.as_view(), name="create_bill"),
-    path('bills/<int:pk>/', views.BillDetailView.as_view(), name="detail_bill"),
-    path('bills/<int:pk>/update-bill/', views.BillUpdateView.as_view(), name="update_bill"),
-    path('bills/<int:pk>/remove-bill/', views.BillDelete.as_view(), name="remove_bill"),
-    path('bills/confirm_bill_pay/<int:bill_id>/', views.ConfirmBillPay.as_view(), name="confirm_bill_pay"),
-
     #Horne's calculator views
     path('hornescalculator_base', views.hornescalculator_base, name='hornescalculator_base'),
 

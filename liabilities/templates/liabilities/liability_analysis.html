@@ -1,5 +1,5 @@
 {% extends 'charts/base.html' %}
-
+{% load crispy_forms_tags %}
 {% block page_content %}
 <div class="row text-center">
   <div class="col">
@@ -34,7 +34,7 @@
     <div class="col-sm-6 offset-sm-3">
       <form action="{% url 'liability_analysis' student_loan.id %}" method="POST" id="payment-form">
         {% csrf_token %}
-        {{ form.mock_payment_amount }}
+        {{ form.mock_payment_amount|crispy }}
         <button type="submit" class="btn btn-sm btn-success">Submit</button>
       </form>
     </div>
@@ -56,7 +56,7 @@
   <div class="col-sm-6 offset-sm-3">
     <form action="{% url 'liability_analysis' student_loan.id %}" method="POST" id="payment-form">
       {% csrf_token %}
-      {{ form.mock_payment_amount }}
+      {{ form.mock_payment_amount|crispy }}
       <button type="submit" class="btn btn-sm btn-success">Submit</button>
     </form>
   </div>

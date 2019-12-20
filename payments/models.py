@@ -5,7 +5,7 @@ from accounts.models import Account
 import uuid
 # Create your models here.
 class ModelBaseFieldsAbstract(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, blank=True, null=True, default=None)
     is_active = models.BooleanField(default=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
@@ -16,6 +16,45 @@ class ModelBaseFieldsAbstract(models.Model):
 
     class Meta:
         abstract = True
+
+class BillDestination(ModelBaseFieldsAbstract):
+    user = models.ForeignKey(User, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    biller_name = models.CharField(max_length=128, blank=False, null=False, default=None)
+    mailing_address = models.CharField(max_length=256, blank=False, null=False, default=None)
+    home_address = models.CharField(max_length=256, blank=False, null=False, default=None)
+    ach_account_number = models.CharField(max_length=32, blank=False, null=False)
+    def __str__(self):
+        return self.biller_name
+
+# Definitions for PAY_PERIOD_CHOICES below.
+DAILY = 'Daily'
+WEEKLY = 'Weekly'
+MONTHLY = 'Monthly'
+YEARLY = 'Yearly'
+
+# Choices variables for pay_period.
+PAY_PERIOD_CHOICES = [
+    (DAILY, 'Daily'),
+    (WEEKLY, 'Weekly'),
+    (MONTHLY, 'Monthly'),
+    (YEARLY, 'Yearly'),
+]
+
+class Bill(ModelBaseFieldsAbstract):
+    bill_destination = models.ForeignKey(BillDestination, blank=False, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL)
+    name = models.CharField(max_length=100)
+    description = models.TextField(default=None)
+    set_auto_pay = models.BooleanField(default=False)
+    payment_period = models.CharField(
+            max_length=7,
+            choices=PAY_PERIOD_CHOICES,
+            default=WEEKLY,
+        )
+    amount = models.DecimalField(max_digits=18, decimal_places=2, default=0, blank=False, null=True)
+
+    def __str__(self):
+        return f"{self.name} : '{self.bill_destination.biller_name }' "
 
 class PaymentOrder(ModelBaseFieldsAbstract):
     from_account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL, related_name='payment_order_from_account')

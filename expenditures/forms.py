@@ -7,11 +7,6 @@ from .models import Display, Housing, Car, Utilities, Food, Miscellaneous
 #         model = Tax
 #         fields = ['dependents', 'state', 'filing_status', 'periods', 'pay_rate']
 
-class ConfirmBillPayForm(forms.Form):
-    src_accounts = forms.CharField(label="Choose source account", required=True)
-    user_confirmation = forms.BooleanField(label="I consent to pay this bill", required=True)
-
-
 class HousingForm(forms.ModelForm):
     class Meta:
         model = Housing
