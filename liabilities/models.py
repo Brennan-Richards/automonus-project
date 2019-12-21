@@ -8,12 +8,21 @@ from django.forms.models import model_to_dict
 from decimal import Decimal
 # Create your models here.
 
+class ModelBaseFieldsAbstract(models.Model):
+    is_active = models.BooleanField(default=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    class Meta:
+        abstract = True
+
 class StudentLoan(models.Model):
     account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     user_institution = models.ForeignKey("institutions.UserInstitution", blank=True, null=True, default=None, on_delete=models.SET_NULL)
     account_number = models.CharField(max_length=32, blank=True, null=True, default=None)
     expected_payoff_date = models.DateField(blank=True, null=True, default=None)
-    guarantor = models.CharField(max_length=128, blank=True, null=True, default=None)
+    guarantor_name = models.CharField(max_length=128, blank=True, null=True, default=None)
     interest_rate_percentage = models.DecimalField(max_digits=4, decimal_places=2, default=0)
     is_overdue = models.BooleanField(default=False, blank=True, null=True)
     last_payment_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0, blank=True, null=True)
@@ -42,7 +51,7 @@ class StudentLoan(models.Model):
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
     def __str__(self):
-        return "{}: {}".format(self.user_institution.user.username, self.guarantor)
+        return "{}: {}".format(self.user_institution.user.username, self.guarantor_name)
 
     def get_payments_per_year(self):
         if self.next_payment_due_date and self.last_statement_issue_date:
@@ -162,7 +171,7 @@ class StudentLoan(models.Model):
                                                     'user_institution': self.user_institution,
                                                     'account_number': self.account_number,
                                                     'expected_payoff_date': self.expected_payoff_date,
-                                                    'guarantor': self.guarantor,
+                                                    'guarantor': self.guarantor_name,
                                                     'interest_rate_percentage': self.interest_rate_percentage,
                                                     'is_overdue': self.is_overdue,
                                                     'last_payment_amount': self.last_payment_amount,
@@ -195,7 +204,7 @@ class StudentLoanSnapshot(models.Model):
     user_institution = models.ForeignKey("institutions.UserInstitution", blank=True, null=True, default=None, on_delete=models.SET_NULL)
     account_number = models.CharField(max_length=32, blank=True, null=True, default=None)
     expected_payoff_date = models.DateField(blank=True, null=True, default=None)
-    guarantor = models.CharField(max_length=128, blank=True, null=True, default=None)
+    guarantor_name = models.CharField(max_length=128, blank=True, null=True, default=None)
     interest_rate_percentage = models.DecimalField(max_digits=4, decimal_places=2, default=0)
     is_overdue = models.BooleanField(default=False, blank=True, null=True)
     last_payment_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0, blank=True, null=True)
@@ -225,7 +234,17 @@ class StudentLoanSnapshot(models.Model):
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
     def __str__(self):
-        return "{}: {}".format(self.user_institution.user.username, self.guarantor)
+        return "{}: {}".format(self.user_institution.user.username, self.guarantor_name)
+
+class Guarantor(models.Model):
+    # Object with guarantor data to be used for creating loan payments.
+    student_loan = models.OneToOneField(StudentLoan, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    guarantor_name = models.CharField(max_length=128, blank=False, null=False, default=None)
+    mailing_address = models.CharField(max_length=256, blank=False, null=False, default=None)
+    home_address = models.CharField(max_length=256, blank=False, null=False, default=None)
+    ach_account_number = models.CharField(max_length=32, blank=False, null=False)
+    def __str__(self):
+        return self.guarantor_name
 
 class DisbursementDate(models.Model):
     loan_instance = models.ForeignKey(StudentLoan, blank=True, null=True, default=None, on_delete=models.SET_NULL)

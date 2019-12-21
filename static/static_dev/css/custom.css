@@ -1,26 +1,9 @@
 @import url("//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css");
 
-p, a {
 
-  size: 2em;
-
-}
-
-#total_spending {
-
-  border-style: solid;
-  border-width: 1px;
-  padding-top: 10px;
-
-}
-
-#student_debt_total {
-
-  border-style: solid;
-  border-width: 1px;
-  padding: 20px;
-  background-color: black;
-  color: white;
-  margin-top: 20px;
-
+.list-group{
+    max-height: 300px;
+    margin-bottom: 10px;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
 }

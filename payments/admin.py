@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import MockSubscription, Bill, BillDestination
+from .models import MockSubscription, PaymentOrder
 
 # Register your models here.
 
@@ -8,14 +8,7 @@ class MockSubscriptionAdmin(admin.ModelAdmin):
 
 admin.site.register(MockSubscription, MockSubscriptionAdmin)
 
+class PaymentOrderAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in PaymentOrder._meta.fields]
 
-class BillAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Bill._meta.fields]\
-
-admin.site.register(Bill, BillAdmin)
-
-
-class BillDestinationAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in BillDestination._meta.fields]\
-
-admin.site.register(BillDestination, BillDestinationAdmin)
+admin.site.register(PaymentOrder, PaymentOrderAdmin)

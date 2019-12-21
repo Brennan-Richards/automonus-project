@@ -11,9 +11,16 @@
        <span><a href="{% url 'create_bill' %}" class="btn btn-sm btn-danger">Add a new bill</a></span></p>
   </div>
 </div>
+<br>
+<hr>
+<br>
 
 {% for bill in object_list %}
-  {% if forloop.first %} <div class="row">{% endif %}
+  {% if forloop.first %}
+    <div class="row"><div class="col-lg-6 offset-lg-3">
+  {% else %}
+    <div class="col">
+  {% endif %}
     <div class="col">
         <div class="card border-success mt-3 text-center">
           <h3 class="card-header">{{ bill.name }}</h3>

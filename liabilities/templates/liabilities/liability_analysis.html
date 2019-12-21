@@ -31,10 +31,10 @@
     </div>
   </div>
   <div class="row text-center">
-    <div class="col-sm-6 offset-sm-3">
+    <div class="col-sm-4 offset-sm-4">
       <form action="{% url 'liability_analysis' student_loan.id %}" method="POST" id="payment-form">
         {% csrf_token %}
-        {{ form.mock_payment_amount|crispy }}
+        {{ form.mock_payment_amount|as_crispy_field }}
         <button type="submit" class="btn btn-sm btn-success">Submit</button>
       </form>
     </div>
@@ -53,10 +53,10 @@
   </div>
 </div>
 <div class="row text-center">
-  <div class="col-sm-6 offset-sm-3">
+  <div class="col-sm-4 offset-sm-4">
     <form action="{% url 'liability_analysis' student_loan.id %}" method="POST" id="payment-form">
       {% csrf_token %}
-      {{ form.mock_payment_amount|crispy }}
+      {{ form.mock_payment_amount|as_crispy_field }}
       <button type="submit" class="btn btn-sm btn-success">Submit</button>
     </form>
   </div>

@@ -30,7 +30,7 @@
     <div class="col-lg-3">
       <div class="card mt-2 bg-danger">
         <ul class="list-group list-group-flush">
-          <a class="list-group-item" href="{% url 'student_loan_list' %}">Pay Your Loans Off Faster</a>
+          <a class="list-group-item" href="{% url 'student_loan_list' %}">Pay Your Loans</a>
         </ul>
       </div>
     </div>
@@ -63,7 +63,7 @@
             {% for student_loan in student_loans %}
               <tr>
                   <td>{{ forloop.counter }}</td>
-                  <td>{{ student_loan.guarantor }}</td>
+                  <td>{{ student_loan.guarantor_name }}</td>
                   <td>${{ student_loan.minimum_payment_amount }}</td>
                   <td>{{ student_loan.interest_rate_percentage }}%</td>
                   <td>${{ student_loan.last_statement_balance }}</td>
@@ -172,7 +172,7 @@
           {% for student_loan in student_loans %}
           <tr>
               <td>{{ forloop.counter }}</td>
-              <td>{{ student_loan.guarantor }}</td>
+              <td>{{ student_loan.guarantor_name }}</td>
               <td>${{ student_loan.minimum_payment_amount }}</td>
               <td>{{ student_loan.interest_rate_percentage }}%</td>
               <td>${{ student_loan.last_statement_balance }}</td>

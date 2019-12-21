@@ -11,7 +11,7 @@
 <br>
 {% if bill_destinations|length > 0 %}
   <div class="row">
-    <div class="col-lg-8 offset-lg-2 mt-1">
+    <div class="col-lg-8 offset-lg-2 mt-1 card shadow p-4">
       <form method="post" novalidate>
         {% csrf_token %}
         {% for field in form.visible_fields %}

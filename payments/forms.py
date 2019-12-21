@@ -2,19 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from accounts.models import Account
 from institutions.models import UserInstitution
-from .models import BillDestination, Bill
 from decimal import Decimal
-
-class BillModelForm(forms.ModelForm):
-    class Meta:
-        model = Bill
-        fields = ['name', 'bill_destination', 'description', 'set_auto_pay', 'payment_period', 'amount']
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('request_user')
-        print(kwargs)
-        super(BillModelForm, self).__init__(*args, **kwargs)
-        self.fields['bill_destination'].queryset = BillDestination.objects.filter(user=user)
 
 
 class ExternalTransferFirstForm(forms.Form):

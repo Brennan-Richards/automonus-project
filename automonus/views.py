@@ -10,6 +10,7 @@ import requests
 import json
 from institutions.models import Institution, UserInstitution
 from accounts.models import Account, Transaction
+from payments.models import PaymentOrder
 from django.contrib.auth.decorators import login_required
 from charts.utils import ChartData
 
@@ -34,5 +35,10 @@ def master_dashboard(request):
                                                             account_types=account_types)
         accounts = Account.objects.filter(user_institution__user=user, user_institution__is_active=True,
                                           type__name__in=account_types)
-        context = {"charts_data": charts_data, "accounts":accounts}
+        payment_orders = PaymentOrder.objects.filter(from_account__in=accounts)
+        context = {
+            "charts_data": charts_data,
+            "accounts":accounts,
+            "payment_orders": payment_orders
+        }
     return render(request, 'automonus/master_dashboard.html', context)

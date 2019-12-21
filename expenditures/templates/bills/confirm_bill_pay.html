@@ -13,7 +13,7 @@
           <label class="col-form-label" for="src_accounts">
             From account:
           </label>
-          <select name="src_accounts" id="src_accounts" class="form-control">
+          <select name="src_accounts" id="src_accounts" class="form-control card shadow p-4">
               {% for item in src_user_institutions %}
               {% for account in item.accounts_user_institution.all %}
               {% if account.subtype.name == 'savings' or account.subtype.name == 'checking' %}

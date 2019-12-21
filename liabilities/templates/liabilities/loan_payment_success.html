@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row text-center">
+  <div class="col-lg-6 offset-lg-3">
+    <div class="alert alert-success">
+      <h5>Your transfer to {{ loan.guarantor.guarantor_name }} was successful.</h5>
+    </div>
+    <a class="btn btn-sm btn-outline-dark" href="{% url 'student_loan_list' %}">Return To Student Loans</a>
+  </div>
+</div>
+
+{% endblock %}

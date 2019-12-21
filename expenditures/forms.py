@@ -1,11 +1,27 @@
 from django import forms
 from .models import Display, Housing, Car, Utilities, Food, Miscellaneous
+from .models import BillDestination, Bill
 
+
+class ConfirmBillPayForm(forms.Form):
+    src_accounts = forms.CharField(label="Choose source account", required=True)
+    user_confirmation = forms.BooleanField(label="I consent to pay this bill", required=True)
 
 # class TaxForm(forms.ModelForm):
 #     class Meta:
 #         model = Tax
 #         fields = ['dependents', 'state', 'filing_status', 'periods', 'pay_rate']
+
+class BillModelForm(forms.ModelForm):
+    class Meta:
+        model = Bill
+        fields = ['name', 'bill_destination', 'description', 'set_auto_pay', 'payment_period', 'amount']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('request_user')
+        print(kwargs)
+        super(BillModelForm, self).__init__(*args, **kwargs)
+        self.fields['bill_destination'].queryset = BillDestination.objects.filter(user=user)
 
 class HousingForm(forms.ModelForm):
     class Meta:
