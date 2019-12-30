@@ -25,8 +25,32 @@
   <br>
   <br>
     <div class="row">
-      <div class="col-lg-8">
+      <div class="col-lg-8 offset-lg-2">
           <div class="jumbotron">Your Master Dashboard</div>
+      </div>
+    </div>
+    <br>
+    <hr>
+    <br>
+    <br>
+    <br>
+    <div class="row">
+      <div class="col-lg-8">
+          <div class="panel panel-danger" id="result_panel">
+          <h3 class="panel-title panel-heading text-center">Your Aurum Payments</h3>
+          <div class="panel-body info">
+              <ul class="list-group">
+                {% for po in payment_orders %}
+                  <li class="list-group-item bg-light">
+                     <h6>Payment for ${{ po.amount }} to {{ po.to_account.user_institution.user }} - <strong>{{ po.created|date:"m/d/Y" }}</strong></h6>
+                     {% if po.description %}
+                     <p class="text-muted">{{ po.description }}</p>
+                     {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+          </div>
+        </div>
       </div>
       <div class="col-lg-3">
         <div class="card mt-2 bg-danger">
@@ -40,30 +64,6 @@
             <a class="list-group-item" href="{% url 'internal_transfer_value' %}">Between Your Accounts</a>
           </ul>
         </div>
-      </div>
-    </div>
-    <br>
-    <hr>
-    <br>
-    <br>
-    <br>
-    <div class="row">
-      <div class="col-lg-8 offset-lg-2">
-        <div class="panel panel-primary" id="result_panel">
-        <h3 class="panel-title panel-heading text-center">Your Aurum Payments</h3>
-        <div class="panel-body info">
-            <ul class="list-group">
-              {% for po in payment_orders %}
-                <li class="list-group-item bg-light">
-                   <h6>Payment for ${{ po.amount }} to {{ po.to_account.user }}</h6>
-                   {% if po.description %}
-                   <p class="text-muted">{{ po.description }}</p>
-                   {% endif %}
-                </li>
-              {% endfor %}
-            </ul>
-        </div>
-    </div>
       </div>
     </div>
     <br>
