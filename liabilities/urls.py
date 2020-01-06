@@ -6,9 +6,12 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    path('liabilities_dashboard/', views.liabilities_dashboard, name='liabilities_dashboard'),
-    path('liability_analysis/<int:student_loan_id>/', views.liability_analysis, name='liability_analysis'),
-    path('yourloans/', views.StudentLoanListView.as_view(), name="student_loan_list"),
+    path('liabilities-dashboard/', views.liabilities_dashboard, name='liabilities_dashboard'),
+    path('liability-analysis/<int:student_loan_id>/', views.liability_analysis, name='liability_analysis'),
+    path('your-student-loans/', views.StudentLoanListView.as_view(), name="student_loan_list"),
+    path('student-loans/make-a-payment/<int:student_loan_id>', views.StudentLoanPayView.as_view(), name="pay_student_loan"),
+    path('link-a-guarantor/<int:student_loan_id>', views.GuarantorCreate.as_view(), name="guarantor_link"),
+    path('transfer-success/<int:student_loan_id>', views.LoanPaymentSuccess.as_view(), name="loan_payment_success")
 ]
 
 if settings.DEBUG:

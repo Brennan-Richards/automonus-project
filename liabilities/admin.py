@@ -52,3 +52,9 @@ class LiabilityAnalysisAdmin(admin.ModelAdmin):
 
 
 admin.site.register(LiabilityAnalysis, LiabilityAnalysisAdmin)
+
+class GuarantorAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in Guarantor._meta.fields]
+
+
+admin.site.register(Guarantor, GuarantorAdmin)

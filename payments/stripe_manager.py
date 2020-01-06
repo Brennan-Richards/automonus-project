@@ -21,7 +21,10 @@ class StripleManager:
     def __init__(
         self,
         account_uuid,
+
+        # Default Plaid client for testing
         client=default_client,
+
         stripe_pk=settings.STRIPE_PUBLIC_KEY,
         stripe_sk=settings.STRIPE_SECRET_KEY,
     ):
@@ -117,6 +120,7 @@ class StripleManager:
         return individual_external_account
 
     def deposit_payment(self, currency, amount, app_fee=0):
+        # Creates a charge on user account where deposit goes to the Automonus Stripe Account
         account = Account.objects.get(uuid=self.account_uuid)
         pub_resp = self.client.Item.public_token.create(
             account.user_institution.access_token

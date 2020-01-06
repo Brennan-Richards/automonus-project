@@ -5,7 +5,7 @@ from accounts.models import Account
 import uuid
 # Create your models here.
 class ModelBaseFieldsAbstract(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, blank=True, null=True, default=None)
     is_active = models.BooleanField(default=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)

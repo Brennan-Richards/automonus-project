@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row text-center">
+  <div class="col">
+    <h1>Add a New Bill</h1>
+  </div>
+</div>
+<br>
+{% if bill_destinations|length > 0 %}
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2 mt-1 card shadow p-4">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+          {% if field.name == 'biller_destination' %}
+            {{ field|as_crispy_field }}
+            <p><strong>OR,</strong>
+               <a href="{% url 'create_bill_destination' %}" class="btn btn-sm btn-success">add a new biller</a>
+             </p>
+          {% else %}
+            {{ field|as_crispy_field }}
+          {% endif %}
+        {% endfor %}
+
+        <div class="text-center">
+          <input class="btn btn-primary" type="submit" value="Submit" />
+        </div>
+      </form>
+      </div>
+  </div>
+{% else %}
+<div class="row text-center">
+  <div class="col-lg-8 offset-lg-2">
+    <div class="alert alert-warning" role="alert">
+        <p>You must create a biller (destination) prior to adding a new bill.
+          <span><a href="{% url 'create_bill_destination' %}" class="btn btn-sm btn-secondary">Create one now</a></span>
+        </p>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

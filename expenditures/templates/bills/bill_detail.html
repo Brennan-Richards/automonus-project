@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row text-center">
+  <div class="col">
+    <h1>Your {{ object.name }}</h1>
+  </div>
+</div>
+<br>
+<div class="row text-center">
+  <div class="col-lg-12">
+    <table class="table">
+      <tr>
+        <th>Pay-To Account #</th>
+        <th>Description</th>
+        <th>Auto Pay On?</th>
+        <th>Payment Period</th>
+        <th>Amount</th>
+      </tr>
+      <tr>
+        <td>{{ object.description }}</td>
+        <td>{{ object.set_auto_pay }}</td>
+        <td>{{ object.payment_period }}</td>
+        <td>${{ object.amount }}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

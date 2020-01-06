@@ -19,6 +19,45 @@ class ModelBaseFieldsAbstract(models.Model):
     class Meta:
         abstract = True
 
+class BillDestination(ModelBaseFieldsAbstract):
+    user = models.ForeignKey(User, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    biller_name = models.CharField(max_length=128, blank=False, null=False, default=None)
+    mailing_address = models.CharField(max_length=256, blank=False, null=False, default=None)
+    home_address = models.CharField(max_length=256, blank=False, null=False, default=None)
+    ach_account_number = models.CharField(max_length=32, blank=False, null=False)
+    def __str__(self):
+        return self.biller_name
+
+# Definitions for PAY_PERIOD_CHOICES below.
+DAILY = 'Daily'
+WEEKLY = 'Weekly'
+MONTHLY = 'Monthly'
+YEARLY = 'Yearly'
+
+# Choices variables for pay_period.
+PAY_PERIOD_CHOICES = [
+    (DAILY, 'Daily'),
+    (WEEKLY, 'Weekly'),
+    (MONTHLY, 'Monthly'),
+    (YEARLY, 'Yearly'),
+]
+
+class Bill(ModelBaseFieldsAbstract):
+    bill_destination = models.ForeignKey(BillDestination, blank=False, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL)
+    name = models.CharField(max_length=100)
+    description = models.TextField(default=None)
+    set_auto_pay = models.BooleanField(default=False)
+    payment_period = models.CharField(
+            max_length=7,
+            choices=PAY_PERIOD_CHOICES,
+            default=WEEKLY,
+        )
+    amount = models.DecimalField(max_digits=18, decimal_places=2, default=0, blank=False, null=True)
+
+    def __str__(self):
+        return f"{self.name} : '{self.bill_destination.biller_name }' "
+
 class BudgetData():
     def calc_all_period_totals(expense, expense_period_choice):
         # Computes the total cost by period of any expense field regardless of the pay period.
@@ -567,71 +606,3 @@ class Display(models.Model):
             return 12.00
         else:
             return 1.00
-
-
-# class Tax(models.Model):
-#     name = 'Tax'
-#     user = models.OneToOneField(User, on_delete=models.CASCADE, default=False)
-#     dependents = models.IntegerField()
-#     state = models.CharField(max_length=2)
-#     pay_rate = models.DecimalField(max_digits=18, decimal_places=2, default=0, blank=True, null=True)
-#     fica = models.IntegerField(default=0)
-#     annual_state_tax = models.IntegerField(default=0)
-#     annual_federal_tax = models.IntegerField(default=0)
-#     SINGLE = 'single'
-#     MARRIED = 'married'
-#     MARRIED_SEPARATELY = 'married_separately'
-#     HEAD_OF_HOUSEHOLD = 'head_of_household'
-#
-#     FILING_STATUS_CHOICES = [
-#         (SINGLE, 'Single'),
-#         (MARRIED, 'Married'),
-#         (MARRIED_SEPARATELY, 'Married Separately'),
-#         (HEAD_OF_HOUSEHOLD, 'Head of Household')
-#     ]
-#
-#     filing_status = models.CharField(
-#         max_length=20,
-#         choices=FILING_STATUS_CHOICES,
-#         default=SINGLE,
-#     )
-#
-#     # Definitions for PERIODS_CHOICES below.
-#     DAILY = 365
-#     WEEKLY = 52
-#     BIWEEKLY = 26
-#     SEMIMONTHLY = 24
-#     MONTHLY = 12
-#     YEARLY = 1
-#
-#     # Choices variables for periods.
-#     PERIODS_CHOICES = [
-#         (DAILY, 'Daily'),
-#         (WEEKLY, 'Weekly'),
-#         (SEMIMONTHLY, 'Semi-monthly'),
-#         (BIWEEKLY, 'Biweekly'),
-#         (MONTHLY, 'Monthly'),
-#         (YEARLY, 'Yearly'),
-#     ]
-#
-#     periods = models.IntegerField(
-#         choices=PERIODS_CHOICES,
-#         default=52,
-#     )
-#
-#     def annual_cost(self):
-#         fica = self.fica
-#         state = self.annual_state_tax
-#         federal = self.annual_federal_tax
-#
-#         total = fica + state + federal
-#
-#         return total
-#
-#     def calc_income(self):
-#
-#         return self.pay_rate * self.periods
-#
-#     def income_after_tax_and_fica(self):
-#
-#         return self.calc_income() - self.annual_cost()

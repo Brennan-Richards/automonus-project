@@ -78,7 +78,7 @@ class ChartData():
                     color = 'green'
 
                 chart_series.append({
-                    "name": "Projection of your {} loan balance at minimum payment amount".format(loan.guarantor),
+                    "name": "Projection of your {} loan balance at minimum payment amount".format(loan.guarantor_name),
                     "data": amortization_series,
                     "color":color
                     })

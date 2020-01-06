@@ -16,16 +16,17 @@ import json
 import stripe
 from payments.stripe_manager import StripleManager
 from decimal import Decimal
-from .models import MockSubscription
 from institutions.models import UserInstitution
 from accounts.models import Account
+from .models import MockSubscription
 
 # Create your views here.
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView, CreateView, UpdateView
+from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
+from django.views.generic.list import ListView
 from django import forms
 from payments.forms import (
     ExternalTransferFirstForm,
@@ -38,6 +39,7 @@ from django.utils.decorators import method_decorator
 
 @login_required
 def enable_payments(request):
+    #obsolete . . .
     user = request.user
     available_subtypes = ["savings", "checking"]
     user_institution = UserInstitution.objects.filter(user=user)
@@ -46,7 +48,6 @@ def enable_payments(request):
     )
     context = {"user_institution": user_institution, "user_accounts": user_accounts}
     return render(request, "payments/enable.html", context=context)
-
 
 @method_decorator(login_required, name="dispatch")
 class StripeChecker(View):
@@ -58,7 +59,7 @@ class StripeChecker(View):
         amount = int(Decimal(request.POST.get("amount", None)) * 100)
         account_uuid = request.POST.get("account_uuid", None)
         # if amount < 50:
-        #     return HttpResponseBadRequest(content='amount must be more than 0.5$')
+        #     return HttpResponseBadRequest(content='amount must be more than $0.5')
         sm = StripleManager(account_uuid=account_uuid)
         try:
             a = 1

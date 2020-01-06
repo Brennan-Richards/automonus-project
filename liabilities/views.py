@@ -1,10 +1,13 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views.generic.list import ListView
-from .models import StudentLoan, CreditCard, APR, LiabilityAnalysis
+from django.views.generic.edit import FormView, CreateView
+from django.views.generic.base import TemplateView
+from .models import StudentLoan, CreditCard, APR, LiabilityAnalysis, Guarantor
 from accounts.models import Account, Transaction
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
-from .forms import UpdateLiabilityAnalysisForm
+from .forms import UpdateLiabilityAnalysisForm, StudentLoanPayForm
 from charts.utils import ChartData
 
 # Create your views here.
@@ -55,6 +58,64 @@ def liabilities_dashboard(request):
 
     return render(request, 'liabilities/liabilities_dashboard.html', context)
 
+class StudentLoanPayView(FormView):
+    form_class = StudentLoanPayForm
+    template_name = 'liabilities/pay_student_loan_form.html'
+
+    # loan_id = instance.kwargs.get('student_loan_id', None)
+    # instance = StudentLoan.objects.get(id=loan_id)
+    # def get(self):
+    #     if instance is None:
+    #         if instance.guarantor is not None:
+    #             return redirect("guarantor_create")
+
+    def get_success_url(self):
+        return reverse_lazy("loan_payment_success", args=[self.kwargs.get("student_loan_id")])
+
+    def get_form_kwargs(self):
+        kwargs = super(StudentLoanPayView, self).get_form_kwargs()
+        kwargs.update({"user": self.request.user})
+        kwargs.update({"loan_id": self.kwargs.get('student_loan_id', None)})
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['loan'] = StudentLoan.objects.get(id=self.kwargs["student_loan_id"])
+        return context
+
+    # def form_valid(self, form):
+    #     # StripleManager() call goes here. . .
+    #     # form.instance.user = self.request.user
+    #     return super().form_valid(form)
+
+
+class GuarantorCreate(CreateView):
+    model = Guarantor
+    fields = ['guarantor_name', 'mailing_address', 'home_address', 'ach_account_number']
+    template_name = 'liabilities/guarantor_create.html'
+
+
+    def get_success_url(self):
+        return reverse_lazy("pay_student_loan", args=[self.kwargs.get("student_loan_id", None)])
+
+    def form_valid(self, form):
+        form.instance.student_loan = StudentLoan.objects.get(id=self.kwargs.get("student_loan_id", None))
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['loan'] = StudentLoan.objects.get(id=self.kwargs["student_loan_id"])
+        return context
+
+class LoanPaymentSuccess(TemplateView):
+    template_name = "liabilities/loan_payment_success.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['loan'] = StudentLoan.objects.get(id=self.kwargs["student_loan_id"])
+        return context
+
+
 @login_required
 def liability_analysis(request, student_loan_id):
     user = request.user
@@ -84,7 +145,7 @@ def liability_analysis(request, student_loan_id):
         chart_type = "line"
         chart_categories = student_loan.amortize_to_zero(payment_amount=payment_amount)["dates_as_categories"]
         data = student_loan.amortize_to_zero(payment_amount=payment_amount)["amortization_series"]
-        chart_series = [{"name":"Your {} Loan Remaining Principal Balance".format(student_loan.guarantor),"data":data}]
+        chart_series = [{"name":"Your {} Loan Remaining Principal Balance".format(student_loan.guarantor_name),"data":data}]
         context["charts_data"] = [{"title": chart_name, "type": chart_type, "categories": chart_categories,
                       "chart_series": chart_series}]
         #Data for written description of loan.

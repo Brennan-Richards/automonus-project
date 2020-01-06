@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row text-center">
+  <div class="col-lg-6 offset-lg-3">
+    <h1>Your Bills</h1>
+    <br>
+    <p class="text-muted">A hub for all of your monthly bills. Click the pay button to pay your
+       bill from a previously connected and verified account, or
+       <span><a href="{% url 'create_bill' %}" class="btn btn-sm btn-danger">Add a new bill</a></span></p>
+  </div>
+</div>
+<br>
+<hr>
+<br>
+
+{% for bill in object_list %}
+  {% if forloop.first %}
+    <div class="row"><div class="col-lg-6 offset-lg-3">
+  {% else %}
+    <div class="col">
+  {% endif %}
+    <div class="col">
+        <div class="card border-success mt-3 text-center">
+          <h3 class="card-header">{{ bill.name }}</h3>
+          <div class="card-body">
+            <!-- <br>
+            <table class="table table-sm">
+              <tr>
+                <th>Amount</th>
+                <td>${{ bill.amount }}</td>
+              </tr>
+              <tr>
+                <th>Pay Period</th>
+                <td>{{ bill.payment_period }}</td>
+              </tr>
+            </table>
+            <br> -->
+            <span><a href="{% url 'confirm_bill_pay' bill.id %}" class="btn btn-lg btn-block btn-success">Pay</a></span>
+            <br>
+            <span><a href="{% url 'detail_bill' bill.id %}" class="btn btn-sm btn-secondary">Detail</a></span>
+            <span><a href="{% url 'update_bill' bill.id %}" class="btn btn-sm btn-secondary">Update</a></span>
+            <span><a href="{% url 'remove_bill' bill.id %}" class="btn btn-sm btn-secondary">Remove</a></span>
+          </div>
+        </div>
+    </div>
+  {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
+  {% if forloop.last %}</div>{% endif %}
+{% endfor %}
+
+{% endblock %}

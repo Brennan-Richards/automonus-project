@@ -3,6 +3,18 @@ from .models import *
 
 # Register your models here.
 
+class BillAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in Bill._meta.fields]\
+
+admin.site.register(Bill, BillAdmin)
+
+
+class BillDestinationAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in BillDestination._meta.fields]\
+
+admin.site.register(BillDestination, BillDestinationAdmin)
+
+
 class HousingAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Housing._meta.fields]
 

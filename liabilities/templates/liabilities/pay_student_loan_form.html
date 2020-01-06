@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+{% if loan.guarantor %}
+  <!-- Render pay form -->
+  <div class="row text-center">
+    <div class="col">
+      <h1>Pay Your {{ loan.guarantor_name }} Student Loan</h1>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-lg-6 offset-lg-3">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="text-center">
+          <input class="btn btn-primary" type="submit" value="Submit" />
+        </div>
+      </form>
+    </div>
+  </div>
+{% else %}
+<div class="row">
+  <div class="col-lg-6 offset-lg-3 text-center card shadow p-4 ">
+    <h6>You have not yet added information on your guarantor for this loan. You must link
+    a guarantor to this loan so we know where to send your payment.</h6>
+    <br>
+    <a href="{% url 'guarantor_link' loan.id %}" class="btn btn-lg btn-primary">Link guarantor now</a>
+
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

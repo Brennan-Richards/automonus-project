@@ -116,3 +116,8 @@ class InternalTransferSecondForm(forms.Form):
                 raise forms.ValidationError(
                     f"Balance of provide user account { self.src_user_accounts.name } less than amount"
                 )
+
+
+class ConfirmBillPayForm(forms.Form):
+    src_accounts = forms.CharField(label="Choose source account", required=True)
+    user_confirmation = forms.BooleanField(label="I consent to pay this bill", required=True)
