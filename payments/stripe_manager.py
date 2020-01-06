@@ -145,38 +145,6 @@ class StripleManager:
         )
         return charge
 
-    # def pay_to_biller(self, dest_account_uuid, amount, currency="usd", app_fee=0):
-    #
-    #     external_account_test = {
-    #         #External account is a bank account OUTSIDE of Stripe to which payouts (etc.) can be made.
-    #         "object": "bank_account",
-    #         "country": "US",  # US ACH support only for USA accounts
-    #         "account_number": "000123456789",
-    #         "routing_number": "110000000",
-    #         "currency": dest_account.currency.code,
-    #     }
-    #
-    #     external_account = {
-    #         "object": "bank_account",
-    #         "country": "US",  # US ACH support only for USA accounts
-    #         "account_number": des_number.number_id,
-    #         "routing_number": des_number.number_routing,
-    #         "currency": dest_account.currency.code,
-    #     }
-    #
-    #     dest_connect_account = stripe.Account.create(
-    #         #Connect account is an account linked to Stripe.
-    #         country="US",
-    #         type="custom",
-    #         default_currency="usd",
-    #         business_type="individual",
-    #         external_account=external_account_test
-    #         if settings.ACH_STRIPE_TEST
-    #         else external_account,
-    #         individual=individual_data,
-    #         requested_capabilities=["legacy_payments"],
-    #     )
-
     def transfer_between_accounts(
         self, dest_account_uuid, amount, currency="usd", app_fee=0
     ):
