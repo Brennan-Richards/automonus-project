@@ -12,9 +12,13 @@
   <meta name="description" content="The Automonus Project">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" type="image/png" href="{% static 'img/snake&brain.png' %}"/>
-
+  <script
+      src="https://kit.fontawesome.com/23dbe734f4.js"
+      crossorigin="anonymous"
+    ></script>
   <!-- Load static files -->
   <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}">
   <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 
   {% block header_stuff %}
@@ -37,9 +41,8 @@
   <div class="container">
 
     <!-- Website Content -->
-
-    {% block content %}
-    {% endblock %}
+      {% block content %}
+      {% endblock content %}
 
   </div>
 
@@ -47,11 +50,11 @@
 
 <br>
 
-<footer class="text-center">
+<footer class="text-center p-5">
 
   <hr>
 
-  <small class="text-muted"><em>©️ Automonus 2019</em></small>
+  <small class="text-muted"><em>©️ Automonus 2019-2020</em></small>
 
   <br>
 

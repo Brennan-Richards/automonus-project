@@ -3,39 +3,29 @@
 
 {% block content %}
 
-{% if user.profile.filled_mock_subscription %}
-  <div class="row text-center">
-    <div class="col-lg-6 offset-lg-3">
-      <div class="alert alert-warning" role="alert">
-        <p>You will be billed <strong>${{ user.mocksubscription.calculate_subscription_cost|floatformat:-2 }}</strong>
-           once you connect an institution. <br> Click the link to <a href="{% url 'mocksubscription_display' %}">
-           re-calculate how much your subscription will cost</a>.
-        </p>
+</div>
+  {% if not user.profile.must_upgrade_subscription %}
+    <br>
+    <div class="row text-center">
+      <div class="col-sm-4 offset-sm-4 card shadow p-4">
+        <h5>Connect an Institution</h5>
+        <p class="text-muted">Link Automonus to your bank account by providing your institution-specific username and password.</p>
+        <button id="link-button" class="btn btn-primary">Link Account</button>
+        {% if request.user.profile.get_user_institutions %}
+            <div class="mt-3">
+                <a href="{% url 'user_institutions' %}">View Connected Institutions</a>
+            </div>
+        {% endif %}
       </div>
     </div>
-  </div>
-{% endif %}
-<div class="row text-center">
-  <div class="col-lg-8 offset-lg-2">
-      <h1>Connect an Institution</h1>
-  </div>
-</div>
-<br>
+  {% else %}
     <div class="row">
-        <div class="col-lg-5 mx-auto">
-            <div>
-                <p>Link your financial institution accounts by the link below to analyze its data.</p>
-            </div>
-            <div class="text-center">
-                <button id="link-button" class="btn btn-primary">Link Account</button>
-                {% if request.user.profile.get_user_institutions %}
-                    <div class="mt-3">
-                        <a href="{% url 'user_institutions' %}">View Connected Institutions</a>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
+      <div class="col-sm-4 offset-sm-4 card shadow p-4">
+        <p>You have already connected {{ num_items_connected }} banking institutions. This is the maximum allowed on your current subscription.</p>
+        <p>To add another institution, you must <a href="{% url 'update_subscription' %}">upgrade your subscription</a>.</p>
+      </div>
     </div>
+  {% endif %}
 {% endblock %}
 
 {% block js_stuff %}
@@ -59,10 +49,13 @@
             webhook: '{{ webhook_url }}',
             // Optional, specify a language to localize Link
             language: 'en',
+
+
             // Optional, specify userLegalName and userEmailAddress to
             // enable all Auth features
             {#userLegalName: '{{ request.user.get_full_name }}',#}
             {#userEmailAddress: '{{ request.user.email }}',#}
+
             onLoad: function() {
               // Optional, called when Link loads
             },
@@ -86,6 +79,7 @@
                     }
               });
               toastr.success("Success!");
+              window.location.href = "{% url 'master_dashboard' %}";
             },
             onExit: function(err, metadata) {
               // The user exited the Link flow.

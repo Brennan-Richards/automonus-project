@@ -371,7 +371,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
                 "account": account,
                 "account_number": student_loans.get("account_number", ""),
                 "expected_payoff_date": student_loans.get("expected_payoff_date", ""),
-                "guarantor": student_loans.get("guarantor", ""),
+                "guarantor_name": student_loans.get("guarantor", ""),
                 "interest_rate_percentage": student_loans.get("interest_rate_percentage", ""),
                 "is_overdue": student_loans.get("is_overdue", ""),
                 "last_payment_amount": student_loans.get("last_payment_amount", ""),

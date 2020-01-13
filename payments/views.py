@@ -35,19 +35,174 @@ from payments.forms import (
 )
 from payments.stripe_manager import StripleManager
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 
-@login_required
-def enable_payments(request):
-    #obsolete . . .
+@csrf_exempt
+def stripe_create_customer(request):
+    context = dict()
     user = request.user
-    available_subtypes = ["savings", "checking"]
-    user_institution = UserInstitution.objects.filter(user=user)
-    user_accounts = Account.objects.filter(
-        user_institution__in=user_institution, subtype__name__in=available_subtypes
-    )
-    context = {"user_institution": user_institution, "user_accounts": user_accounts}
-    return render(request, "payments/enable.html", context=context)
+    if request.method == 'POST':
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        #Must decode body before converting to JSON
+        data_unicode = request.body.decode('utf-8')
+        #Convert to JSON
+        data = json.loads(data_unicode)
+        email = data['email'] if data['email'] else 'default_no_existing_email@example.com'
+        print(data)
+        payment_method = data['payment_method']
+
+        # This creates a new Customer and attaches the default PaymentMethod in one API call.
+        customer = stripe.Customer.create(
+            payment_method=payment_method,
+            email=email,
+            invoice_settings={
+            'default_payment_method': payment_method,
+            },
+        )
+
+        #Set user customer ID, saved later.
+        user.profile.stripe_customer_id = customer['id']
+
+        # This creates a subscription by adding a customer to an item.
+        subscription = stripe.Subscription.create(
+            customer=user.profile.stripe_customer_id,
+            items=[
+            {
+              'plan': 'plan_GV3Jk12u9FqN1c',
+            },
+            ],
+            expand=['latest_invoice.payment_intent'],
+        )
+
+        # print("subscription:", subscription)
+
+        #How to pass subscription back to the client?
+
+        #Save subscription id and the corresponding quantity of institutions the user is allowed to add
+        print(subscription)
+        if subscription['status'] == 'active':
+            user.profile.stripe_subscription_id = subscription['id']
+            user.profile.institutions_connectable = subscription['quantity']
+            user.profile.save()
+        return JsonResponse(subscription)
+
+class UpdateSubscriptionView(TemplateView, LoginRequiredMixin):
+    template_name='subscription/update_subscription.html'
+
+    def get(self, request, *args, **kwargs):
+        if (self.request.user.profile.institutions_connectable > 0) or self.request.user.profile.cancel_at_period_end:
+            return render(request, self.template_name)
+        else:
+            return redirect("subscribe")
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateSubscriptionView, self).get_context_data(**kwargs)
+        user = self.request.user
+        context['user'] = user
+        return context
+
+@csrf_exempt
+def stripe_upgrade_subscription(request):
+    user = request.user
+    #A view to update the quantity of institutions allowed on the account
+    if request.method == 'POST':
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        #Must decode body before converting to JSON
+        data_unicode = request.body.decode('utf-8')
+        #Convert to JSON
+        data = json.loads(data_unicode)
+        institution_quantity = data['quantity']
+
+        subscription = stripe.Subscription.retrieve(str(user.profile.stripe_subscription_id))
+
+        stripe.Subscription.modify(
+          subscription.id,
+          cancel_at_period_end=False,
+          items=[{
+            'id': subscription['items']['data'][0].id,
+            'quantity': institution_quantity,
+          }]
+        )
+
+        #Set user profile institutions allowed to reflect change in subscription
+        user.profile.institutions_connectable = institution_quantity
+        user.profile.save()
+        return JsonResponse({'status':'success'})
+
+@csrf_exempt
+def stripe_delete_subscription(request):
+    user = request.user
+    #A view to update the quantity of institutions allowed on the account
+    if request.method == 'POST':
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        # #Must decode body before converting to JSON
+        # data_unicode = request.body.decode('utf-8')
+        # #Convert to JSON
+        # data = json.loads(data_unicode)
+        # institution_quantity = data['quantity']
+
+        subscription = stripe.Subscription.retrieve(str(user.profile.stripe_subscription_id))
+
+        stripe.Subscription.modify(
+            subscription.id,
+            cancel_at_period_end=True
+        )
+        #Set user profile institutions allowed to reflect change in subscription
+        user.profile.institutions_connectable = 0
+        # user.profile.stripe_customer_id = ""
+        user.profile.cancel_at_period_end = True
+
+        #Deactivate all of a user's items
+        active_user_institutions = UserInstitution.objects.filter(user=user, is_active=True)
+        for item in active_user_institutions:
+            item.is_active = False
+            item.save()
+        user.profile.save()
+
+        return JsonResponse({'status':'success'})
+
+@csrf_exempt
+def stripe_reactivate_subscription(request):
+    user = request.user
+    if request.method == 'POST':
+        #Cancels request to cancel at the end of the current billing period.
+        stripe.api_key = 'sk_test_Cm8UAku0L4hL4G2aOpDMIM7r00iBv2frlo'
+
+        subscription = stripe.Subscription.retrieve(str(user.profile.stripe_subscription_id))
+
+        stripe.Subscription.modify(
+          subscription.id,
+          cancel_at_period_end=False,
+          items=[{
+            'id': subscription['items']['data'][0].id,
+            'plan': 'plan_GV3Jk12u9FqN1c',
+          }]
+        )
+        user.profile.institutions_connectable = subscription['quantity']
+        user.profile.cancel_at_period_end = False
+        user.profile.save()
+        return JsonResponse({'status':'success'})
+
+@method_decorator(login_required, name="dispatch")
+class Subscribe(TemplateView):
+    template_name = 'subscription/subscribe.html'
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+
+    def get(self, request, *args, **kwargs):
+        if request.user.profile.institutions_connectable > 0:
+            return render(request, 'institutions/link.html')
+        else:
+            return render(request, 'subscription/subscribe.html')
+
+    def get_context_data(self, **kwargs):
+        context = super(Subscribe, self).get_context_data(**kwargs)
+        user = self.request.user
+        if user.profile.stripe_subscription_id:
+            subscription = stripe.Subscription.retrieve(str(user.profile.stripe_subscription_id))
+            context['subscription'] =  subscription #How to send subscription object back to client?
+        return context
 
 @method_decorator(login_required, name="dispatch")
 class StripeChecker(View):
@@ -151,7 +306,7 @@ class ExternalTransferSuccessView(TemplateView):
         return self.render_to_response(context)
 
 
-# Internal methods
+# Internal transfer views
 
 
 class InternalTransferValueView(FormView):

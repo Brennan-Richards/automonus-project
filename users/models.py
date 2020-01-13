@@ -38,6 +38,10 @@ post_save.connect(user_post_save, sender=User)
 
 class Profile(models.Model):
     user = models.OneToOneField(User, blank=True, null=True, default=None, on_delete=models.SET_NULL, related_name='profile')
+    stripe_customer_id = models.CharField(max_length=64, blank=True, null=True, default=None)
+    stripe_subscription_id = models.CharField(max_length=64, blank=True, null=True, default=None)
+    institutions_connectable = models.IntegerField(default=0, blank=True, null=True)
+    cancel_at_period_end = models.BooleanField(default=False)
     agree_to_receive_emails = models.BooleanField(default=False)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
 
@@ -66,6 +70,23 @@ class Profile(models.Model):
     def get_user_institutions(self):
         #returns all of a user's connected items (userinstitutions) if they exist
         return self.user.userinstitution_set.filter(is_active=True)
+
+    def not_susbcribed(self):
+        return (self.institutions_connectable == 0)
+
+    def subscribed_no_items_yet(self):
+        items_connected = len(UserInstitution.objects.filter(user=self.user, is_active=True))
+        print("Items connected", items_connected)
+        items_connectable = self.institutions_connectable
+        if (items_connectable > 0):
+            return True
+
+    def num_items_connected(self):
+        items_connected = len(UserInstitution.objects.filter(user=self.user, is_active=True))
+        return items_connected
+
+    def must_upgrade_subscription(self):
+        return not(self.num_items_connected() < self.institutions_connectable)
 
     def get_user_products(self):
         #this method returns the available and billed products for all connected institutions
@@ -157,7 +178,7 @@ class Profile(models.Model):
         car_models = Car.objects.filter(user=self.user)
         if car_models:
             return True
-    # 
+    #
     # def has_mock_investment(self):
     #     mock_investment = MockInvestment.objects.get(user=self.user)
     #     if mock_investment:

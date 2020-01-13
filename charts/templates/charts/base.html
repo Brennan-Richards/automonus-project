@@ -12,25 +12,27 @@
       {% if request.user.profile.get_user_institutions %}
           {% block page_content %}
           {% endblock page_content %}
-      {% else %}
-      <div class="row text-center">
-        <div class="col-lg-6 offset-lg-3">
-          <div class="alert alert-warning">
-            <p>You have not subscribed to Automonus.</p>
+      {% elif user.profile.subscribed_no_items_yet %}
+        <!-- Subscribed, no items - should be able to visit Plaid link page. -->
+        <div class="row text-center">
+          <div class="col-lg-4 offset-lg-4 card shadow p-5">
+            <h6 class="alert alert-secondary">You have not yet connected a banking institution.</h6>
+            <br>
+            <a class="btn btn-sm btn-primary" href="{% url 'link_institution' %}">
+                Connect Your First Financial Institution
+            </a>
           </div>
         </div>
-      </div>
+      {% elif user.profile.not_susbcribed %}
+        <!-- Have not subscribed -->
         <div class="row text-center">
-          <div class="col-lg-10 mx-auto">
-              <a class="btn btn-lg btn-primary mb-3" href="{% url 'mocksubscription_create' %}">Calculate the Cost of Your Subscription</a>
+          <div class="col-lg-4 offset-lg-4 card shadow p-5">
+            <h6 class="alert alert-secondary">You have not subscribed to Automonus.</h6>
               <br>
-              <a class="btn btn-lg btn-success" href="{% url 'link_institution' %}">
-                  Connect Your First Financial Institution
-              </a>
+            <a href="{% url 'subscribe' %}" class="btn btn-sm btn-primary">Subscribe</a>
           </div>
         </div>
       {% endif %}
-
 {% endblock %}
 
 {% block js_stuff %}

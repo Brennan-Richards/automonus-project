@@ -3,19 +3,19 @@
 {% load static %}
 
 {% block content %}
-<div class="container">
-    <div class="row text-center">
-      <div class="col-sm-4 offset-sm-4">
-        <img src="{% static 'img/aurum.jpeg' %}" width=250>
-      </div>
+
+  <div class="col-sm-6 offset-sm-3 card shadow p-5 text-center">
+    <p class="text-muted">Aurum</p>
+    <div class="mx-auto">
+      <img src="{% static 'img/aurum.jpeg' %}" class="text-center" width=150>
     </div>
     <div class="progress mb-4">
         <div class="progress-bar w-75" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
         </div>
     </div>
-    <h1 class="mb-4">
-        Please provide data
-    </h1>
+    <h5 class="p-4">
+      Transfer to: {{ to_user.get_full_name }} ({{ to_user.email }})
+    </h5>
     <form method="post" novalidate>
         {% csrf_token %}
         {% if form.non_field_errors %}
@@ -37,8 +37,6 @@
         {% endif %}
         {{ hidden_field }}
         {% endfor %}
-        <div class="row">
-            <div class="col">
                 {% for field in form.visible_fields %}
                 {% if field.errors %}
                 {% for error in field.errors %}
@@ -47,11 +45,10 @@
                 </div>
                 {% endfor %}
                 {% endif %}
-                <div class="col-sm-10 mt-1">
                     {% if field.name == 'dest_accounts' %}
                     <div class="form-group">
-                        <label class="col-form-label" for="dest_accounts">
-                            {{ field.label_tag }} {{ to_user.email }}
+                        <label class="form-label mt-3" for="dest_accounts">
+                            {{ field.label_tag }}
                         </label>
                         <select name="dest_accounts" id="dest_accounts" class="form-control">
                             {% for item in dest_user_institutions %}
@@ -59,7 +56,7 @@
                             {% if account.subtype.name == 'savings' or account.subtype.name == 'checking' %}
                             {% if account.accounts_number_to_account.all %}
                             <option value='{{ account.uuid }}'>
-                                {{ account.user_institution.institution.name }} {{ account.name }}
+                              {{ to_user.email }}: {{ account.user_institution.institution.name }} {{ account.name }}
                             </option>
                             {% endif %}
                             {% endif %}
@@ -69,7 +66,7 @@
                     </div>
                     {% elif field.name == 'src_accounts' %}
                     <div class="form-group">
-                        <label class="col-form-label" for="src_accounts">
+                        <label class="form-label mt-3" for="src_accounts">
                             {{ field.label_tag }}
                         </label>
                         <select name="src_accounts" id="src_accounts" class="form-control">
@@ -88,14 +85,17 @@
                         </select>
                     </div>
                     {% else %}
-                    {{ field }}
+                    <div class="form-group">
+                        <label class="form-label mt-3" for="src_accounts">
+                            {{ field.label_tag }}
+                        </label>
+                        <div class="form-field">
+                            {{ field }}
+                        </div>
                     {% endif %}
-                </div>
                 {% if field.help_text %}
                 {% endif %}
                 {% endfor %}
-            </div>
-        </div>
         <div class="col mt-4">
             <button type="submit" class="btn btn-primary">
                 Next

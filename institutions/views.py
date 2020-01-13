@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, redirect
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Institution, UserInstitution
@@ -50,7 +50,19 @@ class DisconnectUserInstitution(LoginRequiredMixin, generic.View):
 @login_required
 def link(request):
     """A page for clicking on the button to start Plaid integration"""
-    context = {"webhook_url": settings.PLAID_WEBHOOK_URL}
+    user = request.user
+    items_connected = len(UserInstitution.objects.filter(user=request.user, is_active=True))
+    num_items_allowed = request.user.profile.institutions_connectable
+    can_connect = (items_connected < num_items_allowed)
+    if num_items_allowed == 0:
+        return redirect("subscribe")
+    elif not(user.profile.num_items_connected() < user.profile.institutions_connectable):
+        #User must upgrade subscription to connect more items.
+        return redirect("update_subscription")
+    context = {"webhook_url": settings.PLAID_WEBHOOK_URL,
+               "can_connect_another": can_connect,
+               "num_items_connected":items_connected,
+               "num_items_allowed": num_items_allowed}
     return render(request, 'institutions/link.html', context=context)
 
 
@@ -60,6 +72,7 @@ def get_access_token(request):
     user = request.user
     if request.method == 'POST':
         data = request.POST.copy()
+        print(data)
         public_token = data['public_token']
         account_id = data['account_id']
         print(account_id)

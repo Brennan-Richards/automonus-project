@@ -40,7 +40,7 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
 #URLs set for login defaults
 LOGIN_URL = "/login_signup/"
-LOGIN_REDIRECT_URL = "/master_dashboard/"
+LOGIN_REDIRECT_URL = "/institutions/link/"
 LOGOUT_REDIRECT_URL = "/"
 
 # Application definition

@@ -4,7 +4,6 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path("enable-payments/", views.enable_payments, name="enable_payments"),
     path("check-auth/", views.StripeChecker.as_view(), name="check_stripe"),
 
     #Creating internal and external transfers.
@@ -34,6 +33,32 @@ urlpatterns = [
         name="internal_transfer_success",
     ),
     path("try-again-later/", views.TryAgainErrorView.as_view(), name="try_again_later"),
+
+    #Subscription
+
+    #Client views
+    path("subscribe/", views.Subscribe.as_view(), name="subscribe"),
+    path("subscribe/update-subscription/", views.UpdateSubscriptionView.as_view(), name="update_subscription"),
+    #Stripe API
+        #Create customer
+    path("subscribe/stripe-api-create-customer/", views.stripe_create_customer, name="create_customer_stripe"),
+        #Update customer subscription
+    path(
+        "subscribe/update-subscription/stripe-api-upgrade-subscription/",
+        views.stripe_upgrade_subscription,
+        name="update_subscription_stripe"
+    ),
+        #Delete subscription
+    path(
+        "subscribe/update-subscription/stripe-api-delete-subscription/",
+        views.stripe_delete_subscription,
+        name="delete_susbcription_stripe"
+    ),
+    path(
+        "subscribe/update-subscription/stripe-api-reactivate-subscription/",
+        views.stripe_reactivate_subscription,
+        name="reactivate_susbcription_stripe"
+    ),
 
     #Subscription Cost Calculator
     path("mock-subscription-form/", views.MockSubscriptionCreate.as_view(), name="mocksubscription_create"),

@@ -20,7 +20,7 @@ class ExternalTransferFirstForm(forms.Form):
         except User.DoesNotExist as e:
             raise forms.ValidationError("User with this email does not exist")
         if not email:
-            raise forms.ValidationError("email requaried")
+            raise forms.ValidationError("Email address is required.")
 
 
 class ExternalTransferSecondForm(forms.Form):
@@ -29,11 +29,11 @@ class ExternalTransferSecondForm(forms.Form):
         super(ExternalTransferSecondForm, self).__init__(*args, **kwargs)
 
     dest_accounts = forms.CharField(
-        label="Choose account for transfer to user", required=True
+        label="Choose a destination:", required=True
     )
-    src_accounts = forms.CharField(label="Choose source account", required=True)
+    src_accounts = forms.CharField(label="Choose source from your accounts:", required=True)
     amount = forms.DecimalField(
-        label="Amount Transfer",
+        label="What is the amount of your transfer?",
         required=True,
         widget=forms.TextInput(
             attrs={

@@ -1,6 +1,6 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark shadow">
 
   <a class="navbar-brand" href="#">
 
@@ -20,8 +20,9 @@
     <ul class="navbar-nav mr-auto">
 
       <li class="nav-item">
-        <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'home' %}">
-          <img src="{% static 'img/house.png' %}" width=40>
+        <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'home' %}" style="width: 10rem">
+          <!-- <img src="{% static 'img/house.png' %}" width=40> -->
+          <i class="fab fa-fort-awesome-alt"></i>
           Home
         </a>
       </li>
@@ -29,51 +30,52 @@
       {% if user.profile.get_user_institutions %}
         <li class="nav-item">
           <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'master_dashboard' %}">
-            <img src="{% static 'img/dollar sign.png' %}" width=40>
+            <!-- <img src="{% static 'img/dollar sign.png' %}" width=40> -->
+            <i class="fas fa-tachometer-alt"></i>
             Dashboard
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'external_transfer_create' %}">
+            <!-- <img src="{% static 'img/aurum.jpeg' %}" width=40> -->
+            <i class="fas fa-comments-dollar"></i>
+            Payments
+          </a>
+        </li>
       {% else %}
-        {% if user.profile.filled_mock_subscription %}
-          <li>
-            <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'mocksubscription_display'%}">
-              <img src="{% static 'img/dollar sign.png' %}" width=40>
-              Step #1 - Subscription Cost
+          <li class="nav-item">
+            <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'master_dashboard' %}">
+              <i class="fas fa-tachometer-alt"></i>
+              Dashboard
             </a>
           </li>
-        {% else %}
-          <li>
-            <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'mocksubscription_create' %}">
-              <img src="{% static 'img/dollar sign.png' %}" width=40>
-              Step #1 - Calculate Subscription Cost
-            </a>
-          </li>
-        {% endif %}
           <li>
             <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'link_institution' %}">
-              Step #2 - Connect an Institution
+              Connect an Institution!
             </a>
           </li>
       {% endif %}
 
     </ul>
-    <ul class="nav navbar-nav navbar-right">
+    <ul class="nav navbar-nav navbar-right mr-5">
         <li class="nav-item dropdown">
-          <button class="nav-link dropdown-toggle btn btn-secondary" id="navbarDropdown" role="button"
+          <button class="nav-link dropdown-toggle btn btn-secondary mr-5" id="navbarDropdown" role="button"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="far fa-user"></i>
             Your Profile
           </button>
 
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Account: ({{ request.user }}) </a>
-            <a class="dropdown-item" href="{% url 'user_institutions' %}">Connected Institutions</a>
+          <div class="dropdown-menu card mr-5 p-1  text-center" aria-labelledby="navbarDropdown">
+            <p class="pt-3 text-muted"> ({{ request.user.email }})'s Account </p>
+            <a class="dropdown-item" href="{% url 'update_subscription' %}">Update Subscription</a>
+            <a class="dropdown-item" href="{% url 'user_institutions' %}">Manage Institutions</a>
             <a class="dropdown-item" href="{% url 'account_logout' %}">Log Out</a>
           </div>
         </li>
       {% else %}
         <li>
-          <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'login_signup' %}">
-            Log In / Create an Account
+          <a class="nav-item nav-link mr-sm-2 btn btn-secondary float-right" href="{% url 'login_signup' %}">
+            Log in / Create an account
           </a>
         </li>
       {% endif %}

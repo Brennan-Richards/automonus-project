@@ -9,14 +9,16 @@
 
 {% block content %}
 
-  <div class="row text-center">
 
-    <div class="col-lg-10 mx-auto">
-        <div class="h3">Connected Institutions</div>
-        <div class="text-center">
-            <a type="button" class="btn btn-primary" href="{% url 'link_institution' %}">Connect New</a>
-        </div>
-        <div class="table-responsive">
+    <div class="row text-center">
+      <div class="col">
+        <div class="h3 mb-5 pb-4">Connected Institutions</div>
+      </div>
+    </div>
+
+    <div class="row text-center">
+      <div class="col-lg-8">
+        <div class="table-responsive table-striped table-bordered p-4">
             <table id="table" class="table table-bordered">
                 <thead>
                     <tr>
@@ -38,6 +40,13 @@
                 </tbody>
             </table>
         </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card shadow m-3 p-3">
+        <p>You have connected <strong>{{ user.profile.num_items_connected }}/{{ user.profile.institutions_connectable }}</strong>
+          institutions allowed on your current subscription plan.</p>
+          <a class="btn btn-primary" href="{% url 'link_institution' %}">Connect New Institution</a>
+      </div>
     </div>
   </div>
 

@@ -171,7 +171,7 @@ class StudentLoan(models.Model):
                                                     'user_institution': self.user_institution,
                                                     'account_number': self.account_number,
                                                     'expected_payoff_date': self.expected_payoff_date,
-                                                    'guarantor': self.guarantor_name,
+                                                    'guarantor_name': self.guarantor_name,
                                                     'interest_rate_percentage': self.interest_rate_percentage,
                                                     'is_overdue': self.is_overdue,
                                                     'last_payment_amount': self.last_payment_amount,
