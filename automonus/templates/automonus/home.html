@@ -10,24 +10,25 @@
       <h1 class="text-center">The Automonus Project</h1>
       <br>
       <p>
-        Our goal is to create a system which gives you perfect clarity of where you stand financially
-        while helping you to handle your money more efficiently.
-      </p>
-      <p>The system as it stands is based on monitoring your income and planning your expenditures,
-         while keeping track of your liabilities, such as student loans and credit card debt, and your
-         investments.
+        Building a platform that allows you to lock yourself into your personal finances,
+        giving you the ability to track, plan, save and invest for <strong>all</strong> of your
+        institutions, all in one place.
       </p>
       {% if user.profile.get_user_institutions %}
       <br>
       <div class="row text-center">
         <div class="col-sm-6 offset-sm-3">
-          <a href="{% url 'master_dashboard' %}" class="btn btn-lg btn-block btn-warning">Go to master dashboard.</a>
+          <a href="{% url 'master_dashboard' %}" class="btn btn-lg btn-block btn-warning">
+            <i class="fas fa-brain"></i>
+            Go to master dashboard.</a>
         </div>
       </div>
       {% else %}
       <div class="row text-center">
         <div class="col-sm-6 offset-sm-3">
-          <a href="{% url 'link_institution' %}" class="btn btn-lg btn-block btn-primary">Link an institution.</a>
+          <a href="{% url 'link_institution' %}" class="btn btn-lg btn-block btn-primary">
+            <i class="fas fa-university"></i>
+            Link an institution.</a>
         </div>
       </div>
       {% endif %}
@@ -110,16 +111,6 @@
 <br>
 <hr>
 <br>
-{% if not user.profile.get_user_institutions %}
-  <div class="row">
-    <div class="col-lg-6 offset-lg-3">
-      <a href="{% url 'link_institution' %}" class="btn btn-lg btn-block btn-success">Add an Insitution</a>
-    </div>
-  </div>
-  <br>
-  <hr>
-  <br>
-{% endif %}
 
 <!-- <div class="row">
   <div class="col-sm-8 offset-sm-2">
@@ -131,19 +122,13 @@
   </div>
 </div> -->
 <div class="row text-center">
-  <div class="col-sm-4 offset-4">
+  <div class="col-sm-6 offset-3">
     <img src="{% static 'img/aurum.jpeg' %}" height=300>
-  </div>
-  <div class="col-sm-8 offset-2">
-    <br>
-    <br>
-    <br>
     <h3>Payments</h3>
     <p>
       Our payments system allows you to send money to any other user on our platform, as well as to
       move money across your own accounts. If it is possible, your accounts are immediately authorized
       upon adding an institution. The standard fee of any transaction made through Automonus is 1%.
-
     </p>
   </div>
 </div>

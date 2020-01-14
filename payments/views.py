@@ -38,6 +38,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
+class PaymentsHome(TemplateView):
+    pass
 
 @csrf_exempt
 def stripe_create_customer(request):

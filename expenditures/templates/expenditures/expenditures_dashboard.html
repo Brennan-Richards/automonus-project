@@ -2,16 +2,15 @@
 {% block page_content %}
 
   {% if request.user.profile.has_transactions %}
-  <div class="row text-center">
-    <div class="col">
-      <h2 class="m-5"><i class="fas fa-dollar-sign"></i> Expenditures Dashboard</h2>
+  <div class="row text-left">
+    <div class="col offset-2">
     </div>
   </div>
   <nav class="col-md-2 d-none d-md-block bg-light sidebar card">
     <div class="sidebar-sticky">
       <ul class="nav flex-column">
         <li class="nav-item">
-          <a class="nav-link active" href="{% url 'master_dashboard' %}">
+          <a class="nav-link " href="{% url 'master_dashboard' %}">
             <i class="fas fa-brain"></i>
             Master
           </a>
@@ -23,7 +22,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'expenditures_dashboard' %}">
+          <a class="nav-link active" href="{% url 'expenditures_dashboard' %}">
             <i class="fas fa-dollar-sign"></i>
             Expenditures <span class="sr-only">(current)</span>
           </a>
@@ -62,7 +61,9 @@
     </div>
   </nav>
 
-  <div class="col-lg-8 text-center">
+  <div class="col-lg-10 offset-1 text-center dashboard-content">
+    <h2 class="m-5"><i class="fas fa-dollar-sign"></i> Expenditures Dashboard</h2>
+
     {% if user.profile.planned_life_expenses %}
       <div class="card shadow p-4 mb-4">
                 <p>Each month your living expenses cost you approximately:
@@ -92,7 +93,8 @@
       <div id="chart_container_1" class="mt-3"></div>
     </div>
     <div class="card shadow p-4 mb-4">
-      <table id="table" class="table table-bordered">
+      <h3>Your Spending Transactions</h3>
+      <table id="table" class="table table-bordered table-striped">
           <thead>
               <tr>
                   <th>Date</th>

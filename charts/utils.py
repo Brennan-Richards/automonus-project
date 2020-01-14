@@ -71,17 +71,10 @@ class ChartData():
                         amortization_series.insert(0, [])
                     # print(date, "XX")
 
-                if amortization_series[-1] > amortization_series[-2]: #If slope is increasing
-                    # print(amortization_series[-1], amortization_series[-2])
-                    color = 'red'
-                else: # slope decreasing
-                    color = 'green'
-
                 chart_series.append({
                     "name": "Projection of your {} loan balance at minimum payment amount".format(loan.guarantor_name),
                     "data": amortization_series,
-                    "color":color
-                    })
+                })
 
         # print(chart_categories)
         chart_categories = [item.strftime("%m/%d/%Y") for item in chart_categories]

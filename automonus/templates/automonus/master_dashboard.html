@@ -1,9 +1,8 @@
 {% extends 'charts/base.html' %} {% load static %}
 {% block page_content %}
 {% if user.profile.get_user_institutions %}
-<div class="row text-center">
-  <div class="col">
-    <h2 class="m-5"><i class="fas fa-brain"></i> Master Dashboard</h2>
+<div class="row text-left">
+  <div class="col offset-2">
   </div>
 </div>
  <nav class="col-md-2 d-none d-md-block bg-light sidebar card">
@@ -42,7 +41,9 @@
      </ul>
    </div>
  </nav>
-<div class="col-lg-8">
+<div class="col-lg-10 offset-1 text-center dashboard-content">
+  <h2 class="m-5"><i class="fas fa-brain"></i> Master Dashboard</h2>
+
   <div class="card shadow p-4 mb-4">
     <div class="row">
       <div class="col text-center">
