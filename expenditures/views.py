@@ -31,12 +31,11 @@ def expenditures_dashboard(request):
         account_types = ["depository", "credit"]
         charts_data = ChartData().get_charts_data_by_module(user=user, chart_type="line", category="spending",
                                                             account_types=account_types, date_period_days=30)
-        transactions_in_period = Transaction.objects.filter(account__user_institution__user=user,
-                                                            account__type__name__in=account_types,
-                                                            date__gte=timezone.now()-timedelta(days=30),
-                                                            amount__gt= 0, account__user_institution__is_active=True
-                                                            ).aggregate(sum=Sum("amount"))
-        sum_transactions = round(transactions_in_period.get("sum", ""), 2)
+        transactions_this_month = user.profile.has_spending_data_time_period(days=30)
+
+        if transactions_this_month:
+            sum_transactions = round(transactions_this_month.get("sum"), 2)
+
         all_transactions = Transaction.objects.filter(account__user_institution__user=user,
                                                   account__type__name__in=account_types, amount__gt=0,
                                                   account__user_institution__is_active=True

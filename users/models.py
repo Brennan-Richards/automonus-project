@@ -13,6 +13,8 @@ from payments.models import MockSubscription
 from expenditures.models import Housing, Car, Miscellaneous, Utilities, Food
 from django.db.models import Sum
 from django.conf import settings
+from django.utils import timezone
+from datetime import datetime, timedelta
 from plaid import Client
 client = Client(client_id=settings.PLAID_CLIENT_ID,
     secret=settings.PLAID_SECRET,
@@ -126,6 +128,18 @@ class Profile(models.Model):
         investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__is_active=True, account__user_institution__user=self.user)
         if investment_transactions:
              return True
+
+    def has_spending_data_time_period(self, days=30):
+        account_types = ["depository", "credit"]
+        transactions = transactions_in_period = Transaction.objects.filter(account__user_institution__user=self.user,
+                                                                    account__type__name__in=account_types,
+                                                                    date__gte=timezone.now()-timedelta(days=days),
+                                                                    amount__gt= 0, account__user_institution__is_active=True
+                                                                    ).aggregate(sum=Sum("amount"))
+        if transactions:
+            return transactions
+
+        return False
 
     def has_transactions_for_liabilities(self):
         account_types = ["loan"]

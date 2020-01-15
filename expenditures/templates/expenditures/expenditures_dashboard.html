@@ -2,10 +2,8 @@
 {% block page_content %}
 
   {% if request.user.profile.has_transactions %}
-  <div class="row text-left">
-    <div class="col offset-2">
-    </div>
-  </div>
+    {% if request.user.profile.has_spending_data_time_period %}
+
   <nav class="col-md-2 d-none d-md-block bg-light sidebar card" id="sidebar">
     <div class="sidebar-sticky">
       <ul class="nav flex-column">
@@ -125,6 +123,16 @@
   </div>
 
   </div>
+  {% else %}
+    <div class="row">
+      <div class="col-sm-4 offset-sm-4">
+        <div class="card shaow p-4 text-center">
+          <p class="text-muted">No spending data was provided.</p>
+          <a href="{% url 'link_institution' %}">Link another institution?</a>
+        </div>
+      </div>
+    </div>
+  {% endif %}
 
 {% else %}
 
