@@ -8,7 +8,7 @@
   <div class="col offset-2">
   </div>
 </div>
-<nav class="col-md-2 d-none d-md-block bg-light sidebar card">
+<nav class="col-lg-2 d-none d-md-block bg-light sidebar card" id="sidebar">
   <div class="sidebar-sticky">
     <ul class="nav flex-column">
       <li class="nav-item">
@@ -62,7 +62,11 @@
     </ul>
   </div>
 </nav>
-<div class="col-lg-10 offset-1 text-center">
+<div class="col-lg-10 offset-lg-1 text-center">
+  <button class="navbar-toggler d-block d-md-none col" type="button" data-toggle="collapse" data-target="#sidebar"
+    aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="btn btn-primary"><i class="fas fa-ellipsis-v"></i> Toggle Sidebar</span>
+  </button>
 <h2 class="m-5"><i class="fas fa-file-invoice-dollar"></i> Liabilities Dashboard</h2>
 
 
@@ -73,20 +77,20 @@
       <hr>
       <h4>Student Loan Details:</h4>
       <table class="table table-bordered">
-        <tr>
           <thead class="thead-dark">
-            <th scope="col">Student Loan #</th>
-            <th>Guarantor</th>
-            <th scope="col">Minimum payment amount:</th>
-            <th scope="col">Interest rate percentage:</th>
-            <th scope="col">Next statement amount due:</th>
-            <th scope="col">Next payment due date:</th>
+            <tr>
+              <th class="d-none d-md-table-cell">Student Loan #</th>
+              <th>Guarantor</th>
+              <th>Minimum payment amount:</th>
+              <th>Interest rate percentage:</th>
+              <th>Next statement amount due:</th>
+              <th>Next payment due date:</th>
+            </tr>
           </thead>
-        </tr>
         <tbody>
           {% for student_loan in student_loans %}
             <tr>
-                <td>{{ forloop.counter }}</td>
+                <td class="d-none d-md-table-cell">{{ forloop.counter }}</td>
                 <td>{{ student_loan.guarantor_name }}</td>
                 <td>${{ student_loan.minimum_payment_amount }}</td>
                 <td>{{ student_loan.interest_rate_percentage }}%</td>
@@ -109,7 +113,7 @@
             <th>Minimum payment amount:</th>
             <th>Interest rate percentage:</th>
             <th>Next statement amount due:</th>
-            <th class="">Next payment due date:</th>
+            <th>Next payment due date:</th>
           </tr>
         </thead>
         <tbody>
@@ -166,7 +170,7 @@
     <table class="table table-bordered">
       <thead class="thead-dark">
         <tr>
-          <th>Student Loan #</th>
+          <th class="d-none d-md-table-cell">Student Loan #</th>
           <th>Guarantor:</th>
           <th>Minimum payment amount:</th>
           <th>Interest rate percentage:</th>
@@ -177,7 +181,7 @@
       <tbody>
         {% for student_loan in student_loans %}
         <tr>
-            <td>{{ forloop.counter }}</td>
+            <td class="d-none d-md-table-cell">{{ forloop.counter }}</td>
             <td>{{ student_loan.guarantor_name }}</td>
             <td>${{ student_loan.minimum_payment_amount }}</td>
             <td>{{ student_loan.interest_rate_percentage }}%</td>

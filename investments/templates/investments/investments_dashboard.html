@@ -5,8 +5,7 @@
 
 {% if request.user.profile.has_investments %}
 
-<div class="row">
-  <nav class="col-md-2 d-none d-md-block bg-light sidebar card">
+  <nav class="col-lg-2 d-none d-md-block bg-light sidebar card" id="sidebar">
     <div class="sidebar-sticky">
       <ul class="nav flex-column">
         <li class="nav-item">
@@ -53,10 +52,13 @@
       </ul>
     </div>
   </nav>
-</div>
 
-  <div class="col-lg-10 offset-1 text-center dashboard-content">
-        <h2 class="m-5"><i class="fas fa-hand-holding-usd"></i> Investments Dashboard</h2>
+  <div class="col-lg-10 offset-lg-1 text-center dashboard-content">
+    <button class="navbar-toggler d-block d-md-none col" type="button" data-toggle="collapse" data-target="#sidebar"
+      aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="btn btn-primary"><i class="fas fa-ellipsis-v"></i> Toggle Sidebar</span>
+    </button>
+      <h2 class="m-5"><i class="fas fa-hand-holding-usd"></i> Investments Dashboard</h2>
       <div class="card shadow mb-4 p-4">
         <div id="charts_container" class="mt-3"></div>
       </div>

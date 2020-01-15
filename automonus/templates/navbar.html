@@ -1,25 +1,23 @@
 {% load static %}
 
-<nav class="navbar navbar-dark navbar-fixed-top bg-dark p-0 navbar-expand">
+<nav class="navbar navbar-dark navbar-fixed-top bg-dark p-0 navbar-expand-sm">
   <a class="navbar-brand" href="#">
-
     <a href="{% url 'home' %}">
       <img src="{% static 'img/automonus-beta-light-compressed.png' %}" height="150">
     </a>
-
   </a>
 
   <!-- Bootstrap navbar toggler -->
-  <a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03"
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03"
     aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
-  </a>
+  </button>
 
   <div class="collapse navbar-collapse" id="navbarsExample03">
     <ul class="navbar-nav mr-auto">
 
       <li class="nav-item">
-        <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'home' %}" style="width: 10rem">
+        <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'home' %}" style="width: 10rem">
           <!-- <img src="{% static 'img/house.png' %}" width=40> -->
           <i class="fab fa-fort-awesome-alt"></i>
           Home
@@ -28,14 +26,14 @@
     {% if request.user.is_authenticated %}
       {% if user.profile.get_user_institutions %}
         <li class="nav-item">
-          <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'master_dashboard' %}">
+          <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'master_dashboard' %}">
             <!-- <img src="{% static 'img/dollar sign.png' %}" width=40> -->
             <i class="fas fa-tachometer-alt"></i>
             Dashboard
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'external_transfer_create' %}">
+          <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'external_transfer_create' %}">
             <!-- <img src="{% static 'img/aurum.jpeg' %}" width=40> -->
             <i class="fas fa-comments-dollar"></i>
             Payments
@@ -43,22 +41,20 @@
         </li>
       {% else %}
           <li class="nav-item">
-            <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'master_dashboard' %}">
+            <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'master_dashboard' %}">
               <i class="fas fa-tachometer-alt"></i>
               Dashboard
             </a>
           </li>
           <li>
-            <a class="nav-item nav-link mr-sm-2 btn btn-secondary" href="{% url 'link_institution' %}">
+            <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'link_institution' %}">
               Connect an Institution!
             </a>
           </li>
       {% endif %}
-
-    </ul>
-    <ul class="nav navbar-nav navbar-right mr-5">
+    <!-- <ul class="nav navbar-nav navbar-right mr-5"> -->
         <li class="nav-item dropdown">
-          <button class="nav-link dropdown-toggle btn btn-secondary mr-5" id="navbarDropdown" role="button"
+          <button class="nav-item nav-link m-2 dropdown-toggle btn btn-secondary" id="navbarDropdown" role="button"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="far fa-user"></i>
             Your Profile
@@ -73,11 +69,13 @@
         </li>
       {% else %}
         <li>
-          <a class="nav-item nav-link mr-sm-2 btn btn-secondary float-right" href="{% url 'login_signup' %}">
-            Log in / Create an account
+          <a class="nav-item nav-link m-2 btn btn-secondary float-right" href="{% url 'login_signup' %}">
+            <i class="fas fa-plus-square"></i>
+
+Log in / Create an account
           </a>
         </li>
       {% endif %}
-    </ul>
-  </div>
+      </ul>
+    </div>
 </nav>
