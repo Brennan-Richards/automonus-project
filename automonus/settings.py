@@ -244,7 +244,7 @@ SCHEDULER_CONFIG = {
     },
     "apscheduler.executors.processpool": {"type": "threadpool"},
 }
-SCHEDULER_AUTOSTART = env.bool("SCHEDULER_AUTOSTART", default=False)
+SCHEDULER_AUTOSTART = env.bool("SCHEDULER_AUTOSTART", default=True)
 
 if IS_ON_PROD:
     ACH_STRIPE_TEST = env.bool("ACH_STRIPE_TEST", default=False)

@@ -62,31 +62,32 @@
       <div class="card shadow mb-4 p-4">
         <div id="charts_container" class="mt-3"></div>
       </div>
+    {% if holdings %}
       <h3 class="mt-5">Your Investments</h3>
+        {% for holding in holdings %}
+          {% if forloop.first %} <div class="row">{% endif %}
+            <div class="col">
 
-    {% for holding in holdings %}
-      {% if forloop.first %} <div class="row">{% endif %}
-        <div class="col">
+                <div class="card shadow mb-2 p-2 border-{% if holding.is_profitable %}success{% else %}danger{% endif %}">
+                  <div class="card-header">
+                    <h4>{{ holding.user_security.security }}</h4>
+                    <h6>{{ holding.user_security }}</h6>
+                  </div>
+                  <div class="card-body">
+                    <p><strong>Total Profit: ${{ holding.get_profit_or_loss_current }}</strong></p>
+                    <p>Purchase Price/Share: ${{ holding.get_purchase_price }}</p>
+                    <p>Purchase Cost: ${{ holding.cost_basis }}</p>
+                    <p>Current Price/Share: ${{ holding.get_current_price }}</p>
+                    <p>Total Value: ${{ holding.institution_value }}</p>
+                    <p>Account Type: {{ holding.account.subtype }}</p>
+                  </div>
+                </div>
 
-            <div class="card shadow mb-2 p-2 border-{% if holding.is_profitable %}success{% else %}danger{% endif %}">
-              <div class="card-header">
-                <h4>{{ holding.user_security.security }}</h4>
-                <h6>{{ holding.user_security }}</h6>
-              </div>
-              <div class="card-body">
-                <p><strong>Total Profit: ${{ holding.get_profit_or_loss_current }}</strong></p>
-                <p>Purchase Price/Share: ${{ holding.get_purchase_price }}</p>
-                <p>Purchase Cost: ${{ holding.cost_basis }}</p>
-                <p>Current Price/Share: ${{ holding.get_current_price }}</p>
-                <p>Total Value: ${{ holding.institution_value }}</p>
-                <p>Account Type: {{ holding.account.subtype }}</p>
-              </div>
             </div>
-
-        </div>
-      {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
-      {% if forloop.last %}</div>{% endif %}
-    {% endfor %}
+        {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
+        {% if forloop.last %}</div>{% endif %}
+      {% endfor %}
+    {% endif %}
 
 
   {% if request.user.profile.has_investment_transactions %}

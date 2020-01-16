@@ -23,13 +23,16 @@ def investments_dashboard(request):
 
         holdings = Holding.objects.filter(account__user_institution__user=user,
                                           account__user_institution__is_active=True)
+        print(holdings)
 
         investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__user=user,
                                                                        account__user_institution__is_active=True)[:100]
         charts_data = ChartData().get_charts_data_by_module(user=user, chart_type="line", category="investments", account_types=account_types)
         context = {
-                   "charts_data": charts_data, "total_investments": total_investments,
-                   "investment_transactions": investment_transactions, "holdings":holdings
+                   "charts_data": charts_data,
+                   "total_investments": total_investments,
+                   "investment_transactions": investment_transactions,
+                   "holdings":holdings
                    }
     return render(request, 'investments/investments_dashboard.html', context)
 

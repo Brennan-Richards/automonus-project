@@ -8,6 +8,42 @@ from django.contrib.contenttypes.models import ContentType
 
 
 class ChartData():
+    # def loan_future_amortization(self, user):
+    #                 student_loans = StudentLoan.objects.filter(user_institution__user=user, user_institution__is_active=True)
+    #                 for loan in student_loans:
+    #                     amortization_series = list()
+    #                     amortization_dates = list()
+    #                     amortization_data = loan.amortize(30, loan.minimum_payment_amount)
+    #                     amortization_points_data = amortization_data[0]
+    #                     amortization_dates_data = amortization_data[1]
+    #                     counter = 0
+    #                     for value in amortization_points_data: #[val1, val2, ...]
+    #                         if (len(amortization_series) - 1) <= counter:
+    #                             amortization_series.append(value)
+    #                             # print(counter)
+    #                             # print(value, len(amortization_series), "append")
+    #                             counter += 1
+    #                         else:
+    #                             amortization_series[counter] += amount
+    #                             # print(counter)
+    #                             # print(value, len(amortization_series), "aggregate")
+    #                             counter += 1
+    #
+    #                     for date in amortization_dates_data: #[date1, date2, ...]
+    #                         if not date in chart_categories:
+    #                             chart_categories.append(date)
+    #
+    #                     # print(type(amortization_dates_data[0]), type(chart_categories[0]))
+    #
+    #                     for snapshot_date in chart_categories:
+    #                         if amortization_dates_data[0] > snapshot_date:
+    #                             amortization_series.insert(0, [])
+    #                         # print(date, "XX")
+    #
+    #                     return({
+    #                         "name": "Projection of your {} loan balance at minimum payment amount".format(loan.guarantor_name),
+    #                         "data": amortization_series,
+    #                     })
 
     def prepare_chart_data(self, data, user, chart_name, chart_type):
         chart_series = list()
@@ -39,42 +75,8 @@ class ChartData():
             })
         # print(chart_series, "1")
 
-        if chart_name == "Your student loan debt total over time":
-            student_loans = StudentLoan.objects.filter(user_institution__user=user, user_institution__is_active=True)
-            for loan in student_loans:
-                amortization_series = list()
-                amortization_dates = list()
-                amortization_data = loan.amortize(30, loan.minimum_payment_amount)
-                amortization_points_data = amortization_data[0]
-                amortization_dates_data = amortization_data[1]
-                counter = 0
-                for value in amortization_points_data: #[val1, val2, ...]
-                    if (len(amortization_series) - 1) <= counter:
-                        amortization_series.append(value)
-                        # print(counter)
-                        # print(value, len(amortization_series), "append")
-                        counter += 1
-                    else:
-                        amortization_series[counter] += amount
-                        # print(counter)
-                        # print(value, len(amortization_series), "aggregate")
-                        counter += 1
-
-                for date in amortization_dates_data: #[date1, date2, ...]
-                    if not date in chart_categories:
-                        chart_categories.append(date)
-
-                # print(type(amortization_dates_data[0]), type(chart_categories[0]))
-
-                for snapshot_date in chart_categories:
-                    if amortization_dates_data[0] > snapshot_date:
-                        amortization_series.insert(0, [])
-                    # print(date, "XX")
-
-                chart_series.append({
-                    "name": "Projection of your {} loan balance at minimum payment amount".format(loan.guarantor_name),
-                    "data": amortization_series,
-                })
+        # if chart_name == "Your student loan debt total over time":
+        #     chart_series.append(loan_future_amortization(user))
 
         # print(chart_categories)
         chart_categories = [item.strftime("%m/%d/%Y") for item in chart_categories]
@@ -223,6 +225,7 @@ class ChartData():
             snapshots = qs \
                 .values('date', 'account__currency__code')\
                 .annotate(field=Sum('current_balance'))
+            print(snapshots)
 
         else: #CreditCard
             model = ContentType.objects.get(model=model_name.lower()).model_class()
@@ -239,27 +242,14 @@ class ChartData():
             if not currency_code in data: #Creates a new empty dictionary for each currency_code (i.e. USD, GBP).
                 data[currency_code] = dict()
             if not date in data[currency_code]: #Creates a key in currency_code dict. for each new date and sets = 0.
-                data[currency_code][date] = 0
-            data[currency_code][date] += val #Sets the value of date key to the 'val' of specified snapshot field.
-
-        for k,v in data.items():
-            #(Check) -- Aggregates items with same date in <data> dictionary to create a pretty series and returns it.
-            v_mod = dict(sorted(v.items()))
-            total_value = 0
-            for key, value in v_mod.items():
-                total_value += value
-                v_mod[key] = round(total_value, 2)
-            data[k] = v_mod
-
+                data[currency_code][date] = val
+            else:
+                data[currency_code][date] += val #Sets the value of date key to the 'val' of specified snapshot field.
+        print("Data after snapshots for loop: ", data)
         return data, qs
 
     def get_data_by_chart_name(self, user, chart_name, chart_type, date_period_days=None, qs_data=None, account_types=None, account_subtypes=None):
-        """
-        :param user:
-        :param chart_name:
-        :param chart_type:  "line", "pie", "column"
-        :return:
-        """
+
         #Accounts
         if chart_name == "Progress of your cash balances":
             print("2")
@@ -314,9 +304,6 @@ class ChartData():
 
         elif category == "income":
             chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Your monthly income by income stream", chart_type=chart_type)
-            charts_data.append(chart_data)
-        elif category == "income2":
-            chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Last year's income before and after taxes, cost of tax", chart_type=chart_type)
             charts_data.append(chart_data)
 
             chart_data, qs_data = self.get_data_by_chart_name(user=user, chart_name="Projected income before and after taxes", chart_type=chart_type)

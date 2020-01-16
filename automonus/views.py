@@ -33,6 +33,7 @@ def master_dashboard(request):
         account_types = ["depository"]
         charts_data = ChartData().get_charts_data_by_module(user=user, chart_type="line", category="accounts",
                                                             account_types=account_types)
+        print(charts_data)
         accounts = Account.objects.filter(user_institution__user=user, user_institution__is_active=True,
                                           type__name__in=account_types)
         payment_orders = PaymentOrder.objects.filter(from_account__in=accounts)
