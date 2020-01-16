@@ -90,7 +90,7 @@ class AccountNumber(ModelBaseFieldsAbstract):
     )
 
     account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL, related_name='accounts_number_to_account')
-    number_type = models.CharField(max_length=128, choices=NUMBER_TYPES, blank=True, null=True, default=NUMBER_TYPES[0])
+    number_type = models.CharField(max_length=128, choices=NUMBER_TYPES, blank=True, null=True, default=None)
     number_id = models.CharField(max_length=128, blank=True, null=True, default=None)
     number_routing = models.CharField(max_length=128, blank=True, null=True, default=None)
 

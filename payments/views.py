@@ -17,7 +17,7 @@ import stripe
 from payments.stripe_manager import StripleManager
 from decimal import Decimal
 from institutions.models import UserInstitution
-from accounts.models import Account
+from accounts.models import Account, AccountNumber
 from .models import MockSubscription
 
 # Create your views here.
@@ -39,7 +39,25 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
 class PaymentsHome(TemplateView):
-    pass
+    template_name = "payments/payments_home.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(PaymentsHome, self).get_context_data(**kwargs)
+        institutions = UserInstitution.objects.filter(user=self.request.user, is_active=True)
+        user_accounts = Account.objects.filter(user_institution__user=self.request.user)
+        print(user_accounts)
+        if len(institutions) > 0:
+            print("Institutions", len(institutions))
+            # #Check is user has added ACH payments capability.
+            # for acc in user_accounts:
+            #     account_number_object = AccountNumber.objects.get(account=acc)
+            #     if account_number_object.number_type == 'ACH':
+            context['ach_payments_enabled'] = True
+        else:
+            context['ach_payments_enabled'] = False
+        return context
+
+
 
 @csrf_exempt
 def stripe_create_customer(request):
@@ -257,8 +275,8 @@ class ExternalTransferValueView(FormView):
         context = super(ExternalTransferValueView, self).get_context_data(**kwargs)
         uuid = self.kwargs.get("to_user", "")
         to_user = User.objects.get(profile__uuid=uuid)
-        src_user_institutions = UserInstitution.objects.filter(user=self.request.user)
-        dest_user_institutions = UserInstitution.objects.filter(user=to_user)
+        src_user_institutions = UserInstitution.objects.filter(user=self.request.user, is_active=True)
+        dest_user_institutions = UserInstitution.objects.filter(user=to_user, is_active=True)
         context["src_user_institutions"] = src_user_institutions
         context["dest_user_institutions"] = dest_user_institutions
         context["to_user"] = to_user
@@ -317,7 +335,7 @@ class InternalTransferValueView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(InternalTransferValueView, self).get_context_data(**kwargs)
-        src_user_institutions = UserInstitution.objects.filter(user=self.request.user)
+        src_user_institutions = UserInstitution.objects.filter(user=self.request.user, is_active=True)
         context["src_user_institutions"] = src_user_institutions
         context["dest_user_institutions"] = src_user_institutions
         return context

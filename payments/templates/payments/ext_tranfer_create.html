@@ -3,13 +3,8 @@
 {% load static %}
 
 {% block content %}
-<div class="container">
-  <div class="row text-center">
-    <div class="col-sm-4 offset-sm-4">
-    </div>
-  </div>
-
-<div class="col-sm-6 offset-sm-3 card shadow p-5 text-center">
+<div class="col-sm-6 offset-sm-3">
+  <div class="card shadow p-5 text-center">
   <p class="text-muted">Aurum</p>
   <div class="mx-auto">
     <img src="{% static 'img/aurum.jpeg' %}" class="text-center" width=150>
@@ -60,16 +55,14 @@
           {% endfor %}
           </div>
       </div>
-      <div class="col mt-4">
-          <button type="submit" class="btn btn-primary btn-block">
-              Next
-          </button>
-      </div>
+      <button type="submit" class="btn btn-primary btn-block mt-4">
+          Next
+      </button>
     </form>
 </div>
 
-
 </div>
+
 {% endblock %}
 {% block js_stuff %}
 {% endblock %}

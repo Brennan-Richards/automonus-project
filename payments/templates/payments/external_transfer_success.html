@@ -7,13 +7,18 @@
   <div class="row text-center">
     <div class="col-sm-6 offset-sm-3">
       <div class="card shadow p-4">
+        <p class="alert alert-success text-center mt-5 mb-5" role="alert">
+          <i class="fas fa-check-circle"></i> Transfer completed successfully!</p>
         <img src="{% static 'img/aurum.jpeg' %}" class="mx-auto" width=150>
       <div class="progress mb-4">
           <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0"
               aria-valuemax="100"></div>
       </div>
-      <p class="alert alert-success text-center" role="alert">Transfer completed successfully!</p>
-      <a class='btn btn-sm btn-secondary' href="{% url 'master_dashboard' %}">Return to dashboard.</a>
+      <div class="row text-center">
+        <div class="col">
+          <a class='btn btn-secondary m-4' style="" href="{% url 'master_dashboard' %}">Return to dashboard.</a>
+        </div>
+      </div>
     </div>
    </div>
 </div>

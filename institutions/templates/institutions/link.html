@@ -79,7 +79,10 @@
                     }
               });
               toastr.success("Success!");
-              window.location.href = "{% url 'master_dashboard' %}";
+              setTimeout(function(){
+                window.location.href = "{% url 'master_dashboard' %}";
+              }, 3000);
+
             },
             onExit: function(err, metadata) {
               // The user exited the Link flow.
