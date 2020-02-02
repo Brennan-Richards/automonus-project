@@ -351,7 +351,7 @@ class UserInstitution(ModelBaseFieldsAbstract):
                                                                 defaults=bank_account_defaults)
             for arc in arc_data:
                 if arc['account_id'] == account.account_id:
-                    acc_obj = objects.create(account=account,
+                    acc_obj = AccountNumber.objects.create(account=account,
                                              number_type=AccountNumber.ACH,
                                              number_id=arc.get('account', None),
                                              number_routing=arc.get('routing', None))

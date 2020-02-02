@@ -70,7 +70,7 @@ class ChartData():
                 chart_series_data.append(amount)
             # print(chart_series_data)
             chart_series.append({
-                "name": "Current Total Balance",
+                "name": "USD",
                 "data": chart_series_data
             })
         # print(chart_series, "1")

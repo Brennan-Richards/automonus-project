@@ -41,7 +41,7 @@
 
 <div class="row">
   <div class="col">
-    <div class="card m-2 bg-light" style="height: 28rem; width:21rem">
+    <div class="card m-2 bg-light p-2" style="width:21rem">
         <h4 class="card-title text-center"><i class="fas fa-wallet"></i> Income</h4>
         <br>
         <div class="card-text">
@@ -51,12 +51,14 @@
           </ul>
         </div>
         {% if user.profile.get_user_institutions %}
-          <a href="{% url 'income_dashboard' %}" class="btn btn-primary">Go to Income</a>
+          <div class="col text-center">
+            <a href="{% url 'income_dashboard' %}" class="btn btn-primary">Go to Income</a>
+          </div>
         {% endif %}
     </div>
   </div>
   <div class="col">
-    <div class="card m-2 bg-light" style=" width:21rem">
+    <div class="card m-2 p-2 bg-light" style="width:21rem">
         <h4 class="card-title text-center"><i class="fas fa-dollar-sign"></i> Expenditures</h4>
         <br>
         <div class="card-text">
@@ -68,13 +70,15 @@
             <li><span class="text-muted">COMING SOON</span>- Pay all bills from any US provider from one screen.</li>
           </ul>
           {% if user.profile.get_user_institutions %}
-            <a href="{% url 'expenditures_dashboard' %}" class="btn btn-primary">Go to Expenditures</a>
+            <div class="col text-center">
+              <a href="{% url 'expenditures_dashboard' %}" class="btn btn-primary">Go to Expenditures</a>
+            </div>
           {% endif %}
         </div>
     </div>
   </div>
   <div class="col">
-    <div class="card m-2 bg-light" style="height: 28rem; width:21rem">
+    <div class="card m-2 p-2 bg-light" style="width:21rem">
         <h4 class="card-title text-center"><i class="fas fa-file-invoice-dollar"></i> Liabilities</h4>
         <br>
         <div class="card-text">
@@ -85,12 +89,14 @@
           </ul>
         </div>
         {% if user.profile.get_user_institutions %}
-          <a href="{% url 'liabilities_dashboard' %}" class="btn btn-primary">Go to Liabilities</a>
+          <div class="col text-center">
+            <a href="{% url 'liabilities_dashboard' %}" class="btn btn-primary">Go to Liabilities</a>
+          </div>
         {% endif %}
     </div>
   </div>
   <div class="col">
-    <div class="card m-2 bg-light" style="height: 28rem; width:21rem">
+    <div class="card m-2 p-2 bg-light" style="width:21rem">
         <h4 class="card-title text-center"><i class="fas fa-hand-holding-usd"></i> Investments</h4>
         <br>
         <div class="card-text">
@@ -100,7 +106,9 @@
           </ul>
         </div>
         {% if user.profile.get_user_institutions %}
-          <a href="{% url 'investments_dashboard' %}" class="btn btn-primary">Go to Investments</a>
+          <div class="col text-center">
+            <a href="{% url 'investments_dashboard' %}" class="btn btn-primary">Go to Investments</a>
+          </div>
         {% endif %}
       </div>
     </div>
@@ -125,10 +133,11 @@
       <div class="card-img text-center">
         <img src="{% static 'img/aurum.jpeg' %}" class="rounded" width=150>
       </div>
+      <hr>
       <p class="card-body">
-        Our payments system allows you to send money to any other user on our platform, as well as to
+        <strong>Aurum</strong> is our payments system which allows you to send money to any other user on our platform, as well as to
         move money across your own accounts. If it is possible, your accounts are immediately authorized
-        upon adding an institution. The standard fee of any transaction made through Automonus is 1%.
+        upon adding an institution. The standard fee of any transaction made through the Aurum system is 1%.
       </p>
     </div>
   </div>
