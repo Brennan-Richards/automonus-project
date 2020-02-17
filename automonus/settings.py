@@ -169,14 +169,14 @@ AUTHENTICATION_BACKENDS = [
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-PLAID_ENV = env("PLAID_ENV", default="sandbox")
+PLAID_ENV = env("PLAID_ENV", default="development")
 PLAID_CLIENT_ID = env("PLAID_CLIENT_ID", default="5d37fe8b737a4f001252bfd9")
-PLAID_SECRET = env("PLAID_SECRET", default="176040b1d82a9d35dfc9aca8fe9943")
+PLAID_SECRET = env("PLAID_SECRET", default="2d6db9fadca7ccbe0b5f2650ef928b")
 PLAID_PUBLIC_KEY = env("PLAID_PUBLIC_KEY", default="6c5492915411a3645fdd0368516aa9")
 
 """Replace ngrok server address (it is the string till "/webhooks/webhook-handler/" with your server address"""
 PLAID_WEBHOOK_URL = env(
-    "PLAID_WEBHOOK_URL", default="http://c58484f3.ngrok.io/webhooks/webhook-handler/"
+    "PLAID_WEBHOOK_URL", default="http://1f2101d8.ngrok.io/webhooks/webhook-handler/"
 )
 
 # STRIPE DATA
@@ -188,7 +188,7 @@ STRIPE_SECRET_KEY = env(
     "STRIPE_SECRET_KEY", default="sk_test_Cm8UAku0L4hL4G2aOpDMIM7r00iBv2frlo"
 )
 
-# SendGrid for emails
+# Sendgrid for emails
 SENDGRID_API_KEY = os.getenv(
     "SENDGRID_API_KEY",
     default="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",
