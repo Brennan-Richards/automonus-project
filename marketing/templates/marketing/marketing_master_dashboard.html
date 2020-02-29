@@ -1,0 +1,53 @@
+{% extends 'charts/base.html' %}{% load static %}
+
+{% block page_content %}
+
+ <nav class="col-md-2 d-none d-md-block bg-light sidebar card" id="sidebar">
+   <div class="sidebar-sticky">
+     <ul class="nav flex-column">
+       <li class="nav-item">
+         <a class="nav-link active" href="{% url 'accounting_master_dashboard' %}">
+           <i class="fas fa-brain"></i>
+           Master <span class="sr-only">(current)</span>
+         </a>
+       </li>
+       <li class="nav-item">
+         <a class="nav-link" href="{% url 'facebook_ads_dashboard' %}">
+           <i class="fab fa-facebook-square"></i>
+           Facebook Ads
+         </a>
+       </li>
+       <li class="nav-item">
+         <a class="nav-link" href="{% url 'google_ads_dashboard' %}">
+           <i class="fab fa-google"></i>
+           Google Ads
+         </a>
+       </li>
+       <li class="nav-item">
+         <a class="nav-link" href="{% url 'yelp_ads_dashboard' %}">
+           <i class="fab fa-yelp"></i>
+           Yelp Ads
+         </a>
+       </li>
+     </ul>
+   </div>
+ </nav>
+
+
+ <div class="row">
+  <div class="col-lg-10 offset-lg-1 text-center">
+    <button class="navbar-toggler d-block d-md-none col" type="button" data-toggle="collapse" data-target="#sidebar"
+      aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="btn btn-primary"><i class="fas fa-ellipsis-v"></i> Toggle Sidebar</span>
+    </button>
+  </div>
+</div>
+
+
+ <div class="row">
+   <div class="col">
+     <h1 class="text-center"><i class="fas fa-poll"></i> Marketing Master Dashboard</h1>
+   </div>
+ </div>
+
+{% endblock page_content%}

@@ -25,7 +25,7 @@ urlpatterns = [
     #Main application views
     path('', views.home, name='home'),
     path('login_signup/', views.login_signup, name='login_signup'),
-    path('master_dashboard/', views.master_dashboard, name="master_dashboard"),
+    path('accounting-master-dashboard/', views.accounting_master_dashboard, name="accounting_master_dashboard"),
     path('adminnewurl/', admin.site.urls),
 
     #Extends to utilitity URLs
@@ -41,6 +41,7 @@ urlpatterns = [
     path('investments/', include('investments.urls')),
     path('liabilities/', include('liabilities.urls')),
     path('expenditures/', include('expenditures.urls')),
+    path('marketing/', include('marketing.urls')),
 
     # django all-auth
     path('accounts/', include('allauth.urls')),

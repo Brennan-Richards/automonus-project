@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "users",
     "institutions",
     "webhooks",
+    "marketing",
     # external packages
     "mathfilters",
     "axes",
@@ -169,14 +170,14 @@ AUTHENTICATION_BACKENDS = [
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-PLAID_ENV = env("PLAID_ENV", default="development")
+PLAID_ENV = env("PLAID_ENV", default="sandbox")
 PLAID_CLIENT_ID = env("PLAID_CLIENT_ID", default="5d37fe8b737a4f001252bfd9")
-PLAID_SECRET = env("PLAID_SECRET", default="2d6db9fadca7ccbe0b5f2650ef928b")
+PLAID_SECRET = env("PLAID_SECRET", default="176040b1d82a9d35dfc9aca8fe9943")
 PLAID_PUBLIC_KEY = env("PLAID_PUBLIC_KEY", default="6c5492915411a3645fdd0368516aa9")
 
 """Replace ngrok server address (it is the string till "/webhooks/webhook-handler/" with your server address"""
 PLAID_WEBHOOK_URL = env(
-    "PLAID_WEBHOOK_URL", default="http://1f2101d8.ngrok.io/webhooks/webhook-handler/"
+    "PLAID_WEBHOOK_URL", default="http://5db5c341.ngrok.io/webhooks/webhook-handler/"
 )
 
 # STRIPE DATA
@@ -245,6 +246,9 @@ SCHEDULER_CONFIG = {
     "apscheduler.executors.processpool": {"type": "threadpool"},
 }
 SCHEDULER_AUTOSTART = env.bool("SCHEDULER_AUTOSTART", default=True)
+
+# Facebook Reporting API
+FACEBOOK_REPORTING_API_KEY = "EAAIumzAi7NMBAOtadxq9q3rBWZBZAM0aSeZADTLpiY9TSEfdI52ZC5W9UDDn2MhhzZCXyMxytJr89ifBmlRA5o23rnzQgC7olrMk9HMAVfNfTFpBUlPhZAcbQ6ZBWycwml7GkSvHj4ls0V3lcuWZBjWX5uMcyJjCwoS7npaMFkaKAU7ZA05dNBvsyfMw48nW68bkZD"
 
 if IS_ON_PROD:
     ACH_STRIPE_TEST = env.bool("ACH_STRIPE_TEST", default=False)

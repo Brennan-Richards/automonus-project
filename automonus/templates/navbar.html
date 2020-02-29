@@ -3,7 +3,8 @@
 <nav class="navbar navbar-dark navbar-fixed-top bg-dark p-0 navbar-expand-sm">
   <a class="navbar-brand" href="#">
     <a href="{% url 'home' %}">
-      <img src="{% static 'img/automonus-beta-light-compressed.png' %}" height="150">
+      <img src="{% static 'img/automonus-x-midfield-light.png' %}" width=350
+       class="p-4">
     </a>
   </a>
 
@@ -26,24 +27,37 @@
     {% if request.user.is_authenticated %}
       {% if user.profile.get_user_institutions %}
         <li class="nav-item">
-          <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'master_dashboard' %}">
+          <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'accounting_master_dashboard' %}">
             <!-- <img src="{% static 'img/dollar sign.png' %}" width=40> -->
             <i class="fas fa-tachometer-alt"></i>
-            Dashboard
+            Accounting Dashboard
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'marketing_master_dashboard' %}">
+            <!-- <img src="{% static 'img/dollar sign.png' %}" width=40> -->
+            <i class="fas fa-tachometer-alt"></i>
+            Marketing Dashboard
+          </a>
+        </li>
+        <!-- <li class="nav-item">
           <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'external_transfer_create' %}">
-            <!-- <img src="{% static 'img/aurum.jpeg' %}" width=40> -->
             <i class="fas fa-comments-dollar"></i>
             Payments
           </a>
-        </li>
+        </li> -->
       {% else %}
           <li class="nav-item">
-            <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'master_dashboard' %}">
+            <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'accounting_master_dashboard' %}">
               <i class="fas fa-tachometer-alt"></i>
-              Dashboard
+              Accounting Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'marketing_master_dashboard' %}">
+              <!-- <img src="{% static 'img/dollar sign.png' %}" width=40> -->
+              <i class="fas fa-poll"></i>
+              Marketing Dashboard
             </a>
           </li>
           <li>

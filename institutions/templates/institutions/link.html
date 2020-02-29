@@ -34,14 +34,14 @@
     <script type="text/javascript">
         (function($) {
             csrf_token = "{{ csrf_token }}";
-            //console.log(csrf_token);
+            console.log(csrf_token);
           var handler = Plaid.create({
             clientName: 'Automonus',
             // Optional, specify an array of ISO-3166-1 alpha-2 country
             // codes to initialize Link; European countries will have GDPR
             // consent panel
             countryCodes: ['US'],
-            env: 'development',
+            env: 'sandbox',
             // Replace with your public_key from the Dashboard
             key: '6c5492915411a3645fdd0368516aa9',
             product: ['auth', 'transactions'],
@@ -80,7 +80,7 @@
               });
               toastr.success("Success!");
               setTimeout(function(){
-                window.location.href = "{% url 'master_dashboard' %}";
+                window.location.href = "{% url 'accounting_master_dashboard' %}";
               }, 3000);
 
             },

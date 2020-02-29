@@ -22,11 +22,11 @@ def home(request):
 def login_signup(request):
     user = request.user
     if user.is_authenticated:
-        return HttpResponseRedirect(reverse_lazy("master_dashboard"))
+        return HttpResponseRedirect(reverse_lazy("accounting_master_dashboard"))
     return render(request, 'automonus/login_signup.html')
 
 @login_required
-def master_dashboard(request):
+def accounting_master_dashboard(request):
     context = dict()
     user = request.user
     if user.profile.get_user_institutions():
@@ -42,4 +42,4 @@ def master_dashboard(request):
             "accounts":accounts,
             "payment_orders": payment_orders
         }
-    return render(request, 'automonus/master_dashboard.html', context)
+    return render(request, 'automonus/accounting_master_dashboard.html', context)
