@@ -23,7 +23,8 @@ urlpatterns = [
     path('error-logger-debug/', trigger_error),
 
     #Main application views
-    path('', views.home, name='home'),
+    path('', views.coming_soon, name='coming_soon'),
+    path('/development', views.home, name='home'),
     path('login_signup/', views.login_signup, name='login_signup'),
     path('master_dashboard/', views.master_dashboard, name="master_dashboard"),
     path('adminnewurl/', admin.site.urls),
