@@ -155,8 +155,8 @@ class UserInstitution(ModelBaseFieldsAbstract):
         bulk_create_list = list()
         for transaction in transactions_data["investment_transactions"]:
             kwargs = dict()
-            account_id = transaction.get("account_id", "")
-            account = Account.objects.get(account_id=account_id)
+            # account_id = transaction.get("account_id", "")
+            # account = Account.objects.get(account_id=account_id)
 
             user_security = UserSecurity.objects.get(user_institution=self, security__plaid_security_id=transaction["security_id"])
 
@@ -250,8 +250,8 @@ class UserInstitution(ModelBaseFieldsAbstract):
             user_security.create_snapshot()
 
         for item in holdings:
-            account_id = item.get("account_id", "")
-            account = Account.objects.get(account_id=account_id)
+            # account_id = item.get("account_id", "")
+            # account = Account.objects.get(account_id=account_id)
 
             security_id = item.get("security_id", "")
             user_security, created = UserSecurity.objects.get_or_create(security__plaid_security_id=security_id,

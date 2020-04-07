@@ -176,7 +176,7 @@ PLAID_PUBLIC_KEY = env("PLAID_PUBLIC_KEY", default="6c5492915411a3645fdd0368516a
 
 """Replace ngrok server address (it is the string till "/webhooks/webhook-handler/" with your server address"""
 PLAID_WEBHOOK_URL = env(
-    "PLAID_WEBHOOK_URL", default="http://1f2101d8.ngrok.io/webhooks/webhook-handler/"
+    "PLAID_WEBHOOK_URL", default="http://be8b9a6b.ngrok.io/webhooks/webhook-handler/"
 )
 
 # STRIPE DATA
@@ -244,7 +244,7 @@ SCHEDULER_CONFIG = {
     },
     "apscheduler.executors.processpool": {"type": "threadpool"},
 }
-SCHEDULER_AUTOSTART = env.bool("SCHEDULER_AUTOSTART", default=True)
+SCHEDULER_AUTOSTART = env.bool("SCHEDULER_AUTOSTART", default=False)
 
 if IS_ON_PROD:
     ACH_STRIPE_TEST = env.bool("ACH_STRIPE_TEST", default=False)

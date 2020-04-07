@@ -26,6 +26,13 @@ def login_signup(request):
     return render(request, 'automonus/login_signup.html')
 
 @login_required
+def tylers_whiteboards(request):
+    context = dict()
+    user = request.user
+    return render(request, 'automonus/tylers_whiteboards.html')
+
+
+@login_required
 def master_dashboard(request):
     context = dict()
     user = request.user

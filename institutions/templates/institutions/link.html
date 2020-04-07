@@ -44,7 +44,7 @@
             env: 'development',
             // Replace with your public_key from the Dashboard
             key: '6c5492915411a3645fdd0368516aa9',
-            product: ['auth', 'transactions'],
+            product: ['investments'],
             // Optional, use webhooks to get transaction and error updates
             webhook: '{{ webhook_url }}',
             // Optional, specify a language to localize Link
@@ -88,6 +88,7 @@
               // The user exited the Link flow.
               if (err != null) {
                 // The user encountered a Plaid API error prior to exiting.
+
               }
               // metadata contains information about the institution
               // that the user selected and the most recent API request IDs.

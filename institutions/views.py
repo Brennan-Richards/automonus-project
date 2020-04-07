@@ -89,8 +89,8 @@ def get_access_token(request):
                                                                     defaults={"name": institution_name})
 
         #getting stripe bank account token
-        stripe_response = client.Processor.stripeBankAccountTokenCreate(access_token, account_id)
-        stripe_bank_account_token = stripe_response['stripe_bank_account_token']
+        # stripe_response = client.Processor.stripeBankAccountTokenCreate(access_token, account_id)
+        # stripe_bank_account_token = stripe_response['stripe_bank_account_token']
 
         # to prevent not creating UserInstitution if it was deactivated before and has is_active=False
         user_institution, created = UserInstitution.objects.update_or_create(plaid_id=item_id,
@@ -106,12 +106,12 @@ def get_access_token(request):
         Only institutions that support all requested products will be shown.
         In Production, you will be billed for each product that you specify when initializing Link.'
         """
-        user_institution.populate_income_information()
-        user_institution.populate_or_update_accounts(stripe_bank_account_token=stripe_bank_account_token)
-
-        #getting liabilites data
-        user_institution.populate_liabilities_data()
-        user_institution.populate_credit_card_data()
+        # user_institution.populate_income_information()
+        # user_institution.populate_or_update_accounts()
+        #
+        # #getting liabilites data
+        # user_institution.populate_liabilities_data()
+        # user_institution.populate_credit_card_data()
 
 
         # getting investments data

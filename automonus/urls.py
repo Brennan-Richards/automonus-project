@@ -27,6 +27,7 @@ urlpatterns = [
     path('login_signup/', views.login_signup, name='login_signup'),
     path('master_dashboard/', views.master_dashboard, name="master_dashboard"),
     path('adminnewurl/', admin.site.urls),
+    path('tylers_whiteboards', views.tylers_whiteboards, name="tylers_whiteboards"),
 
     #Extends to utilitity URLs
     path('charts/', include('charts.urls')),

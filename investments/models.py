@@ -89,7 +89,7 @@ class UserSecuritySnapshot(models.Model):
 
 
 class Holding(models.Model):
-    account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    #account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     user_security = models.ForeignKey(UserSecurity, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     institution_price = models.DecimalField(max_digits=16, decimal_places=4, default=0)
     institution_price_as_of = models.DateField(blank=True, null=True, default=None)
@@ -137,7 +137,7 @@ class Holding(models.Model):
 
 class HoldingSnapshot(models.Model):
     holding = models.ForeignKey(Holding, blank=True, null=True, default=None, on_delete=models.SET_NULL)
-    account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    #account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     user_security = models.ForeignKey(UserSecurity, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     institution_price = models.DecimalField(max_digits=16, decimal_places=4, default=0)
     institution_price_as_of = models.DateField(blank=True, null=True, default=None)
@@ -167,7 +167,7 @@ class InvestmentTransactionType(models.Model):
 
 
 class InvestmentTransaction(models.Model):
-    account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    #account = models.ForeignKey(Account, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     type = models.ForeignKey(InvestmentTransactionType, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     user_security = models.ForeignKey(UserSecurity, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     plaid_inv_transaction_id = models.CharField(max_length=38)
