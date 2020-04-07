@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "frontend", #enable frontend app for React
     "users",
     "institutions",
     "webhooks",
