@@ -1,5 +1,5 @@
 from django.forms import ModelForm, TextInput
-from .models import MockInvestment
+from .models import MockInvestment, TylersAdjustment
 
 class UpdateMockInvestmentForm(ModelForm):
     def __init__(self, *args, **kwargs):

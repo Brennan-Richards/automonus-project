@@ -23,7 +23,7 @@ def investments_dashboard(request):
 
         holdings = Holding.objects.filter(account__user_institution__user=user,
                                           account__user_institution__is_active=True)
-        print(holdings)
+        # print(holdings)
 
         investment_transactions = InvestmentTransaction.objects.filter(account__user_institution__user=user,
                                                                        account__user_institution__is_active=True)[:100]

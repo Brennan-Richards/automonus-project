@@ -80,7 +80,7 @@
               });
               toastr.success("Success!");
               setTimeout(function(){
-                window.location.href = "{% url 'master_dashboard' %}";
+                window.location.href = "{% url 'tylers_whiteboards' %}";
               }, 3000);
 
             },
@@ -88,7 +88,7 @@
               // The user exited the Link flow.
               if (err != null) {
                 // The user encountered a Plaid API error prior to exiting.
-
+                console.log(err);
               }
               // metadata contains information about the institution
               // that the user selected and the most recent API request IDs.

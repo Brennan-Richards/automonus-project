@@ -2,7 +2,7 @@
 
 <nav class="navbar navbar-dark navbar-fixed-top bg-dark p-0 navbar-expand-sm">
   <a class="navbar-brand" href="#">
-    <a href="{% url 'home' %}">
+    <a href="{% url 'tylers_whiteboards' %}">
       <img src="{% static 'img/automonus-beta-light-compressed.png' %}" height="150">
     </a>
   </a>
@@ -16,36 +16,21 @@
   <div class="collapse navbar-collapse" id="navbarsExample03">
     <ul class="navbar-nav mr-auto">
 
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'home' %}" style="width: 10rem">
-          <!-- <img src="{% static 'img/house.png' %}" width=40> -->
           <i class="fab fa-fort-awesome-alt"></i>
           Home
         </a>
+      </li> -->
+      <li class="nav-item">
+        <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'tylers_whiteboards' %}">
+          <i class="fas fa-tachometer-alt"></i>
+          Dashboard
+        </a>
       </li>
     {% if request.user.is_authenticated %}
-      {% if user.profile.get_user_institutions %}
-        <li class="nav-item">
-          <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'master_dashboard' %}">
-            <!-- <img src="{% static 'img/dollar sign.png' %}" width=40> -->
-            <i class="fas fa-tachometer-alt"></i>
-            Dashboard
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'external_transfer_create' %}">
-            <!-- <img src="{% static 'img/aurum.jpeg' %}" width=40> -->
-            <i class="fas fa-comments-dollar"></i>
-            Payments
-          </a>
-        </li>
-      {% else %}
-          <li class="nav-item">
-            <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'master_dashboard' %}">
-              <i class="fas fa-tachometer-alt"></i>
-              Dashboard
-            </a>
-          </li>
+      {% if not user.profile.get_user_institutions %}
+
           <li>
             <a class="nav-item nav-link m-2 btn btn-secondary" href="{% url 'link_institution' %}">
               <i class="fas fa-university"></i> Connect an Institution!

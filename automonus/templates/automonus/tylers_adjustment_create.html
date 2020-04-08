@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="col-lg-6 offset-lg-3 text-center">
+  <h1>Add Adjustment Value</h1>
+  <form class="form" method="post"> {% csrf_token %}
+    {{ form }}
+    <input class="btn btn-block btn-primary" type="submit" value="Submit">
+  </form>
+</div>
+
+
+{% endblock content %}

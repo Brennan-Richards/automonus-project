@@ -97,24 +97,9 @@ def get_access_token(request):
                                                                              user=user, institution=institution, is_active=True,
                                                                              defaults={"access_token": access_token}
                                                                              )
-        """
-        Some products can be unavailable for the chosen institution, if they were not included on js side, like docs say
-        about this:
-
-        'A list of Plaid product(s) you wish to use.
-        Valid products are: transactions, auth, identity, income, assets, investments, and liabilities.
-        Only institutions that support all requested products will be shown.
-        In Production, you will be billed for each product that you specify when initializing Link.'
-        """
-        # user_institution.populate_income_information()
-        # user_institution.populate_or_update_accounts()
-        #
-        # #getting liabilites data
-        # user_institution.populate_liabilities_data()
-        # user_institution.populate_credit_card_data()
-
 
         # getting investments data
+        user_institution.populate_or_update_accounts()
         user_institution.populate_securities_and_holdings()
         user_institution.populate_transactions_loop_launch(type="investment_transactions")
 

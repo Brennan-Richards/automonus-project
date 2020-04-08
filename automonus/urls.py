@@ -27,7 +27,10 @@ urlpatterns = [
     path('login_signup/', views.login_signup, name='login_signup'),
     path('master_dashboard/', views.master_dashboard, name="master_dashboard"),
     path('adminnewurl/', admin.site.urls),
-    path('tylers_whiteboards', views.tylers_whiteboards, name="tylers_whiteboards"),
+    path('tylers_whiteboards/', views.tylers_whiteboards, name="tylers_whiteboards"),
+    path('tylers_adjustment/create/', views.TylersAdjustmentCreate.as_view(), name="tylers_adjustment_create"),
+    path('tylers_adjustment/<int:pk>/update/', views.TylersAdjustmentUpdate.as_view(), name="tylers_adjustment_update"),
+    path('tylers_whiteboards/update_account_info/', views.update_account_info, name="update_account_info"),
 
     #Extends to utilitity URLs
     path('charts/', include('charts.urls')),
