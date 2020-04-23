@@ -1,0 +1,86 @@
+{% load staticfiles %}
+
+<!doctype html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <title>The Automonus Project</title>
+  <meta name="description" content="The Automonus Project">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/png" href="{% static 'img/snake&brain.png' %}"/>
+  <script
+      src="https://kit.fontawesome.com/23dbe734f4.js"
+      crossorigin="anonymous"
+    ></script>
+  <!-- Load static files -->
+  <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highcharts/7.2.0/css/highcharts.css"></link>
+  <link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"></link>
+
+  {% block header_stuff %}
+  {% endblock header_stuff %}
+
+</head>
+
+<body>
+  <div class="container">
+    <div class="text-center mt-5">
+      <h1> Student Loan Total Cost Calculator </h1>
+      <h5>by Brennan Richards</h5>
+    </div>
+    <br>
+    <br>
+    <div class="row">
+      <div class="col-lg-6 offset-lg-3 card p-5 shadow mb-5">
+          {% if no_abstract_loan %}
+              <div class="row text-center">
+                <h5>Student loan info not added. <a href="{% url 'abstract_loan_create' %}">Add info now.</a></h5>
+              </div>
+          {% else %}
+
+            {% if not reduces %}
+
+              <p>You must <a href="{%url 'abstract_loan_update' %}">update your payment amount</a>, <b>Pick a higher number, greater than {{ minimum_payment_amount }} as your payment. </b> </p>
+
+            {% else %}
+            <h5 class="card-title">This is how much your loan
+              will cost, in full, by the time you pay it off.</h5>
+
+            <div class="row">
+              <div class="col-lg-8 offset-lg-2">
+                <ul class="list-group">
+                  <li class="list-group-item active">At a payment amount of: ${{ payment_amount }}:</li>
+                  <li class="list-group-item">Your loan will be paid off on {{ payoff_date }}.</li>
+                  <li class="list-group-item">You will pay <strong>${{ total_interest }}</strong> in interest on your loan by the payoff date, on top of the
+                     <strong>${{ total_principal }}</strong> you must pay in principal.</li>
+                  <li class="list-group-item">In total, between interest and principal, your loan will cost <strong>${{ total_cost_of_loan }}</strong></li>
+                </ul>
+              </div>
+              <br>
+              <br>
+                <div class="col text-center">
+                  <a href="{% url 'abstract_loan_update' %}" class="btn btn-sm btn-secondary">Update Student Loan Information</a>
+                </div>
+
+
+          {% endif %}
+
+          {% endif %}
+
+      </div>
+    </div>
+  </div>
+</body>
+
+<!-- Import Javascript and Jquery files. -->
+<script src="//code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</html>

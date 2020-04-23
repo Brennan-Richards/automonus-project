@@ -11,7 +11,8 @@ urlpatterns = [
     path('your-student-loans/', views.StudentLoanListView.as_view(), name="student_loan_list"),
     path('student-loans/make-a-payment/<int:student_loan_id>', views.StudentLoanPayView.as_view(), name="pay_student_loan"),
     path('link-a-guarantor/<int:student_loan_id>', views.GuarantorCreate.as_view(), name="guarantor_link"),
-    path('transfer-success/<int:student_loan_id>', views.LoanPaymentSuccess.as_view(), name="loan_payment_success")
+    path('transfer-success/<int:student_loan_id>', views.LoanPaymentSuccess.as_view(), name="loan_payment_success"),
+
 ]
 
 if settings.DEBUG:

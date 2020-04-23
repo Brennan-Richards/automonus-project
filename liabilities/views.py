@@ -12,6 +12,7 @@ from charts.utils import ChartData
 
 # Create your views here.
 
+
 @login_required
 def liabilities_dashboard(request):
     context = dict()

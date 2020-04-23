@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "income.apps.IncomeConfig",
     "investments.apps.InvestmentsConfig",
     "liabilities.apps.LiabilitiesConfig",
+    "content.apps.ContentConfig",
     "django.contrib.admin",
     "django.contrib.sites",
     "django.contrib.auth",

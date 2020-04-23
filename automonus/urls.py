@@ -42,6 +42,7 @@ urlpatterns = [
     path('investments/', include('investments.urls')),
     path('liabilities/', include('liabilities.urls')),
     path('expenditures/', include('expenditures.urls')),
+    path('content/', include('content.urls')),
 
     # django all-auth
     path('accounts/', include('allauth.urls')),
