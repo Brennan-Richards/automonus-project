@@ -33,7 +33,7 @@ def expenditures_dashboard(request):
                                                             account_types=account_types, date_period_days=30)
         transactions_this_month = user.profile.has_spending_data_time_period(days=30)
 
-        if transactions_this_month:
+        if transactions_this_month is not None:
             sum_transactions = round(transactions_this_month.get("sum"), 2)
 
         all_transactions = Transaction.objects.filter(account__user_institution__user=user,

@@ -1,16 +1,13 @@
 {% extends "charts/base.html" %}
-{% block page_content %}
+{% block dashboard_content %}
 
   {% if request.user.profile.has_transactions %}
     {% if request.user.profile.has_spending_data_time_period %}
 
 {% include 'automonus/dashboard_sidebar.html' with page='Expenditures' %}
 
-  <div class="col-lg-10 offset-lg-1 text-center dashboard-content">
-    <button class="navbar-toggler d-block d-md-none col" type="button" data-toggle="collapse" data-target="#sidebar"
-      aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="btn btn-primary"><i class="fas fa-ellipsis-v"></i> Toggle Sidebar</span>
-    </button>
+<div class="row text-center dashboard-content">
+  <div class="col">
     <h2 class="m-5"><i class="fas fa-dollar-sign"></i> Expenditures Dashboard</h2>
 
     {% if user.profile.planned_life_expenses %}
@@ -70,6 +67,7 @@
   </div>
 
   </div>
+</div>
   {% else %}
     <div class="row">
       <div class="col-sm-4 offset-sm-4">
@@ -90,4 +88,4 @@
     </a>
 {% endif %}
 
-{% endblock page_content %}
+{% endblock dashboard_content %}

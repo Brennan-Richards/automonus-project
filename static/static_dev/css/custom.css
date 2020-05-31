@@ -28,7 +28,7 @@ body {padding-top: 115px;}
 
 /* Active/current link */
 .sidebar a.active {
-  background-color: #fcba03;
+  background-color: #fbcafc;
   color: white;
 }
 
@@ -53,7 +53,7 @@ div.dashboard-content {
     position: relative;
   }
   .sidebar a {float: left;}
-  div.content {margin-left: 0;}
+  div.dashboard-content {margin-left: 0;}
 }
 
 /* On screens that are less than 400px, display the bar vertically, instead of horizontally */
