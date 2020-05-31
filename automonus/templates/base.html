@@ -27,23 +27,23 @@
 </head>
 
 <header>
-
   <!-- Navbar -->
   {% include "navbar.html" %}
-
   <br>
   <br>
 
 </header>
 
+
 <body>
 
+  {% block dashboard_content %}
+  {% endblock dashboard_content %}
+
   <div class="container">
-    <div class="content">
-      <!-- Website Content -->
+        <!-- Website Content -->
         {% block content %}
         {% endblock content %}
-    </div>
   </div>
 
 </body>

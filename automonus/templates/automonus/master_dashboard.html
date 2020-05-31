@@ -1,46 +1,13 @@
-{% extends 'charts/base.html' %} {% load static %}
-{% block page_content %}
+{% extends 'charts/base.html' %}
+
+{% load static %}
+
+{% block dashboard_content %}
+
 {% if user.profile.get_user_institutions %}
-<div class="row text-left">
-  <div class="col offset-2">
-  </div>
-</div>
- <nav class="col-md-2 d-none d-md-block bg-light sidebar card" id="sidebar">
-   <div class="sidebar-sticky">
-     <ul class="nav flex-column">
-       <li class="nav-item">
-         <a class="nav-link active" href="{% url 'master_dashboard' %}">
-           <i class="fas fa-brain"></i>
-           Master <span class="sr-only">(current)</span>
-         </a>
-       </li>
-       <li class="nav-item">
-         <a class="nav-link" href="{% url 'income_dashboard' %}">
-           <i class="fas fa-wallet"></i>
-           Income
-         </a>
-       </li>
-       <li class="nav-item">
-         <a class="nav-link" href="{% url 'expenditures_dashboard' %}">
-           <i class="fas fa-dollar-sign"></i>
-           Expenditures
-         </a>
-       </li>
-       <li class="nav-item">
-         <a class="nav-link" href="{% url 'liabilities_dashboard' %}">
-           <i class="fas fa-file-invoice-dollar"></i>
-           Liabilities
-         </a>
-       </li>
-       <li class="nav-item">
-         <a class="nav-link" href="{% url 'investments_dashboard' %}">
-           <i class="fas fa-hand-holding-usd"></i>
-           Investments
-         </a>
-       </li>
-     </ul>
-   </div>
- </nav>
+
+{% include 'automonus/dashboard_sidebar.html' with page='Master' %}
+
 <div class="col-lg-10 offset-lg-1 text-center dashboard-content">
   <button class="navbar-toggler d-block d-md-none col" type="button" data-toggle="collapse" data-target="#sidebar"
     aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
@@ -119,4 +86,4 @@
     </a>
   </div>
 </div>
-{% endif %} {% endblock page_content%}
+{% endif %} {% endblock dashboard_content%}

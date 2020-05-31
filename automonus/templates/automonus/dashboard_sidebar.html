@@ -1,0 +1,43 @@
+<!-- The sidebar -->
+
+<div class="sidebar">
+  {% if page == 'Master' %}
+    <a  class="active"  href="{% url 'master_dashboard' %}"><i class="fas fa-brain"></i>Master</a>
+  {% else %}
+    <a href="{% url 'master_dashboard' %}"><i class="fas fa-brain"></i>Master</a>
+  {% endif %}
+
+  {% if page == 'Income' %}
+    <a class="active"  href="{% url 'income_dashboard' %}"><i class="fas fa-wallet"></i>Income</a>
+  {% else %}
+    <a href="{% url 'income_dashboard' %}"><i class="fas fa-wallet"></i>Income</a>
+  {% endif %}
+
+  {% if page == 'Expenditures' %}
+    <a class="active" href="{% url 'expenditures_dashboard' %}"><i class="fas fa-dollar-sign"></i>Expenditures</a>
+  {% else %}
+    <a href="{% url 'expenditures_dashboard' %}"><i class="fas fa-dollar-sign"></i>Expenditures</a>
+  {% endif %}
+
+  {% if page == 'Liabilities' %}
+    <a class="active" href="{% url 'liabilities_dashboard' %}">
+      <i class="fas fa-file-invoice-dollar"></i>
+      Liabilities</a>
+  {% else %}
+    <a href="{% url 'liabilities_dashboard' %}">
+      <i class="fas fa-file-invoice-dollar"></i>
+    Liabilities</a>
+  {% endif %}
+
+  {% if page == 'Investments' %}
+    <a class="active" href="{% url 'investments_dashboard' %}">
+      <i class="fas fa-hand-holding-usd"></i>
+      Investments
+    </a>
+  {% else %}
+    <a href="{% url 'investments_dashboard' %}">
+      <i class="fas fa-hand-holding-usd"></i>
+      Investments
+    </a>
+  {% endif %}
+</div>

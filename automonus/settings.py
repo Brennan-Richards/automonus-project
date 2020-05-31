@@ -155,7 +155,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = "/static/"
+STATIC_URL = "/automonus/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static", "static_dev")]
 STATIC_ROOT = os.path.join(BASE_DIR, "static", "static_prod")
 
@@ -177,7 +177,7 @@ PLAID_PUBLIC_KEY = env("PLAID_PUBLIC_KEY", default="6c5492915411a3645fdd0368516a
 
 """Replace ngrok server address (it is the string till "/webhooks/webhook-handler/" with your server address"""
 PLAID_WEBHOOK_URL = env(
-    "PLAID_WEBHOOK_URL", default="http://c58484f3.ngrok.io/webhooks/webhook-handler/"
+    "PLAID_WEBHOOK_URL", default="http://0088f3748e92.ngrok.io/webhooks/webhook-handler/"
 )
 
 # STRIPE DATA

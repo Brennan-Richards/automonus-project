@@ -1,8 +1,9 @@
 {% extends "charts/base.html" %}
 
 
-{% block page_content %}
+{% block dashboard_content %}
 
+{% include 'automonus/dashboard_sidebar.html' with page='Income' %}
 
 {% if request.user.profile.has_income %}
 <div class="row text-left">
@@ -140,4 +141,4 @@
     </div>
   </div>
 {% endif %}
-{% endblock page_content %}
+{% endblock dashboard_content %}

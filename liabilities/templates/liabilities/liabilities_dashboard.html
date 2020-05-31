@@ -1,74 +1,16 @@
 {% extends "charts/base.html" %}
 
-{% block page_content %}
+{% block dashboard_content %}
+
+
+{% include 'automonus/dashboard_sidebar.html' with page='Liabilities' %}
 
 {% if request.user.profile.has_liabilities %}
 
-<div class="row text-left">
-  <div class="col offset-2">
-  </div>
-</div>
-<nav class="col-lg-2 d-none d-md-block bg-light sidebar card" id="sidebar">
-  <div class="sidebar-sticky">
-    <ul class="nav flex-column">
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'master_dashboard' %}">
-          <i class="fas fa-brain"></i>
-          Master
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'income_dashboard' %}">
-          <i class="fas fa-wallet"></i>
-          Income
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'expenditures_dashboard' %}">
-          <i class="fas fa-dollar-sign"></i>
-          Expenditures
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link active" href="{% url 'liabilities_dashboard' %}">
-          <i class="fas fa-file-invoice-dollar"></i>
-          Liabilities <span class="sr-only">(current)</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'investments_dashboard' %}">
-          <i class="fas fa-hand-holding-usd"></i>
-          Investments
-        </a>
-      </li>
-    </ul>
 
-    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-      <span>Liabilities Tools:</span>
-    </h6>
-    <ul class="nav flex-column mb-2">
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'student_loan_list' %}">
-          <i class="fas fa-percent"></i>
-          Loan Optimizer
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'student_loan_list' %}">
-          <i class="fas fa-money-bill"></i>
-          Pay Loans
-        </a>
-      </li>
-    </ul>
-  </div>
-</nav>
-<div class="col-lg-10 offset-lg-1 text-center">
-  <button class="navbar-toggler d-block d-md-none col" type="button" data-toggle="collapse" data-target="#sidebar"
-    aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="btn btn-primary"><i class="fas fa-ellipsis-v"></i> Toggle Sidebar</span>
-  </button>
-<h2 class="m-5"><i class="fas fa-file-invoice-dollar"></i> Liabilities Dashboard</h2>
+<h2 class="m-5 text-center"><i class="fas fa-file-invoice-dollar"></i> Liabilities Dashboard</h2>
 
+<div class="dashboard-content text-center">
 
   {% if user.profile.has_student_loans_data and user.profile.has_credit_card_data %}
     <div class="card shadow mb-4 p-4">
@@ -243,4 +185,5 @@
   </div>
 
   {% endif %}
-  {% endblock page_content %}
+
+{% endblock dashboard_content %}

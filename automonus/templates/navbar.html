@@ -1,6 +1,6 @@
 {% load static %}
 
-<nav class="navbar navbar-dark navbar-fixed-top bg-dark p-0 navbar-expand-sm">
+<nav class="navbar navbar-dark fixed-top bg-dark navbar-expand-sm">
   <a class="navbar-brand" href="#">
     <a href="{% url 'home' %}">
       <img src="{% static 'img/automonus-beta-light-compressed.png' %}" height="150">
@@ -52,21 +52,21 @@
             </a>
           </li>
       {% endif %}
-    <!-- <ul class="nav navbar-nav navbar-right mr-5"> -->
-        <li class="nav-item dropdown">
-          <button class="nav-item nav-link m-2 dropdown-toggle btn btn-secondary" id="navbarDropdown" role="button"
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="far fa-user"></i>
-            Your Profile
-          </button>
 
-          <div class="dropdown-menu card mr-5 p-1  text-left" aria-labelledby="navbarDropdown">
-            <p class="pt-3 text-muted text-center card p-1"> ({{ request.user.email }})'s Account </p>
-            <a class="dropdown-item" href="{% url 'update_subscription' %}"><i class="fas fa-arrow-circle-up"></i> Update Subscription</a>
-            <a class="dropdown-item" href="{% url 'user_institutions' %}"><i class="fas fa-university"></i> Manage Institutions</a>
-            <a class="dropdown-item" href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt"></i> Log Out</a>
-          </div>
-        </li>
+
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle ml-3 btn btn-secondary m-2" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Your Profile
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="{% url 'update_subscription' %}"><i class="fas fa-arrow-circle-up"></i> Update Subscription</a>
+          <a class="dropdown-item" href="{% url 'user_institutions' %}"><i class="fas fa-university"></i> Manage Institutions</a>
+          <a class="dropdown-item" href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+        </div>
+      </li>
+
+
       {% else %}
         <li>
           <a class="nav-item nav-link m-2 btn btn-secondary float-right" href="{% url 'login_signup' %}">
