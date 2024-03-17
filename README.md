@@ -1,5 +1,8 @@
+# Purpose of this project
+This project is a Django application with an extensive feature set for managing personal finances. The application includes integrations into Plaid, which enables access and storage of users' personal financial data and useful downstream analyses and visualizations. Additionally, an integration into Stripe enables users to send and receive money from within the application.
+
 # List of context variables
-IS_ON_PROD  # set True on production
+IS_ON_PROD  # set True on production \n
 SECRET_KEY  # set some different key on production, but the same length as the initial one
 ALLOWED_HOSTS  # a list of available hosts
 DEBUG  # set False for production
